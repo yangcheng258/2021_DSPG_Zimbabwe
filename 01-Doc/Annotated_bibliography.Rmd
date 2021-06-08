@@ -14,7 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Yang Cheng (This is an oversimplified version of literature review ) 
+# Yang Cheng (This is an example of literature review ) 
 
 ## Multidimensional Poverty in Crisis: Lessons from Zimbabwe [PDF](https://doi-org.ezproxy.lib.vt.edu/10.1080/00220388.2015.1087511)
 
@@ -25,6 +25,7 @@ During the first decade of the twenty-first century, Zimbabwe experienced a shar
 
 
 **MLA citations**
+
 ## Reference 
 1. Stoeffler, Quentin, et al. "Multidimensional poverty in crisis: Lessons from Zimbabwe." The journal of development studies 52.3 (2016): 428-446.
 2. 
