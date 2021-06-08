@@ -1,0 +1,72 @@
+---
+title: "Annotated Bibliography"
+author: "Zimbabwe Project"
+date: "6/7/2021"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Your Name
+
+## Title of Paper Health Outcomes in Young Adults From Foster Care and Economically Diverse Background [PDF](Web Link to this paper)
+
+Ahrens, Kym R. , Garrison, Michelle M., Courtney, Mark E.(names of authors)
+
+
+Foster youth have a high rate of health problems in their childhood and this study sought to see if their health problems continued and/or increased once they transitioned to adulthood. Three groups were looked at including young adults that were in foster care, those who are economically insecure, and those who come from economically secure backgrounds while concluding that there is certainly an increase in health issues for young adults that were in foster care. The main indicator of the differences in helath issues was access to health care. Adults who were in foster care are most likely to receive Medicaid or have no insurance but also were the least likely to report a health issue. I believe this article is helpful because it provides evidence that young adults aging out of the foster care system are more likely to have chronic illness but not have the ability like insurance to receive aid. This report may also be helpful for future policies on extended insurance or foster care programs that could provide aid for those who have just aged out of the system. 
+
+
+## Youth in foster care with adult mentors during adolescence have improved adult outcomes [PDF](https://pediatrics-aappublications-org.ezproxy.lib.vt.edu/content/pediatrics/121/2/e246.full.pdf)
+
+Ahrens KR , DuBois DL , Richardson LP, Fan MY, Lozano P
+
+
+Role models can make a huge impact on a child's future and can help motivate that child to do something with their life. Youth in the foster care either were let down by a parent or guardian or had no choice due to a death or incident and their experience and support in the foster care system affect their adult outcome if they age out of the system. This article examines how adult mentors can ahve a positive influence in adulthood on youth in the foster care system. Mentored youth were less likely to report suicidal ideation, having received a diagnosis of a sexually transmitted infection, and having hurt someone in a fight in the past year. They wanted to participate in school or strive for a higher education once they aged out of the system. I think this article is very informative and important to this project because this shows that with a mentor program, the transition aged youth have a more positive outcome compared to those who do not have someone who focuses on them and listens and supports them through their foster care experience. 
+
+
+
+## “At times I kinda felt I was in an institution”: Supportive housing for transition age youth and young adults[PDF](https://pdf.sciencedirectassets.com/271857/1-s2.0-S0190740916X00138/1-s2.0-S0190740916304716/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEKX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDpewWQA1INkiCecQdL267WtxEaUbJPmVpX00Ettx7GPAIgHjgtFMpm6iWsE%2FykTv8nx17rZ5tCr%2BbjSXjM9Z9Y2iQq%2BgMIXhAEGgwwNTkwMDM1NDY4NjUiDLEUTZsgwIJxQEMO1SrXA3%2BFwFLcItqxZGPq9PtkdUzxEdkhUQ3TTvchHOnTs9jblvyHMhyrnjU6vo56spw%2B%2BtoqYuZIubRBwTM1lKeXEGV50QVyKiY50moJCCCi78ebgf8bWYzFw%2FSGQm4avFvYOlazjG%2Bfb8Nb7a3EjuDGkxmIowscp9fJoqTglQlxYitvxrt6uMmoGONMb5KTLjo1QUa2Lh07e1c2c3or5Dl1j8w9rUDaOIkOh0K3zWPa%2BIsXaRW4XC0pcD1Jz6XXbDnk8fCpZDb%2BTfMnvnhZIeFMd6UBIpxV6yPvwGsdmCjlkw%2BRIHP6hzX3Ofs%2FBvofXpPNu%2B1JSIvoUfz8EJe%2B4BBWWMNJHOrjORT079pZG%2FCPfALtQ5gzHlf%2F%2F3LDZwElLSMxEVKAHq%2BK8sLHdZg3NWpbzblpEJmYMQjxmdOcHa1I2DpnXuguvjrgZmK8M3Y9wHBuCg6QTrtYXL5wj4BIjLKBDAx9uayxsOqMvgWPqHPiK1yxT9QVIAcJ3dj%2ByFCxEM0M0xHkQ16K9YkE3re%2BUwdirGnNtU3Kr8hWHWwPyN7cttoJe0PIRPIn6%2BmEwpzodobdYwVEqGrc%2BHyvGwF%2BGqpg9OX1TtJNzMHAbShQ3N39Tz8aliAc2Wgu0zCRpviFBjqlAT%2BoGyI5aLPXOEfuor1fZe4%2FR097O66K2q81ADN84tQKuquOKRYEXEkYV%2BvcnM5M5qGzEiZCxewt7HDRvgiAuOyqcyc332XEcF%2Fm5iqOp%2FcKdTTxR4o5dqhyQ5sOkIj1gcSfH9JyyC%2FnRNgw371qUBVJuJxvO5GgTNVr4GMtYmDS%2BEaJyKqwhwO96V6qLzshhPio0IOavDE9YKeEadhR9c4xyd9X%2Fw%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20210607T133308Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTYRT6767X5%2F20210607%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=45b207244067ee7b3d545292d3b8aa2f66b3d7fc4b82610f5363fb5d67e8244f&hash=9e78102408efb5a2eaac9803edd997bbf70161552711765c1473fadc5c4a77a3&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S0190740916304716&tid=spdf-bd5d3a47-8bef-4e41-8292-89ace15c57e9&sid=de93790a9813f94a89191ae7c571e5580512gxrqa&type=client)
+
+
+Munson, Michelle R. , Stanhope, Victoria, Small, Latoya, Atterbury, Kendall
+
+
+Housing stability is essential for the transitional aged youth once they are "on their own". In recent years, supportive housing policies and programs have increased but this study shows the real impact of the housing programs now. Though there are programs for this age group who are trying to be more independent and responsible, they are still feeling lost and somewhat held back. With this study, overall 40 young adults were surveyed on their sentiments on the housing program they were support by. Majority of the young adults felt as though they were in a "manchild" phase where they knew they had to be more independent and were living on their own but still needed extra help. Also, they felt that they were being controlled with extensive rules and procedures even though the staff was promoting independence. I believe this article will be helpful with this project because it shows how even with increase housing policies and programs as services for this transitional aged youth, there needs to be the correct amount of rules and expectations of the programs and staff or else the young adults do not feel as they are moving towards their independence and future. 
+
+
+
+## A Multi-Level Analysis of the Effects of Independent Living Programs on Educational Attainment, Employment, and Housing Outcomes of Youth Aging Out of Foster Care [PDF](http://content.ebscohost.com/ContentServer.asp?T=P&P=AN&K=148842481&S=R&D=a9h&EbscoContent=dGJyMMvl7ESeprU4yOvsOLCmsEmep7JSrq24TbWWxWXS&ContentCustomer=dGJyMPGsr1CyqbNNuePfgeyx44Dt6fIA)
+
+Chun Liu 
+
+
+This study had many different aspects to it but all these aspects were put together to answer the question: Which Independent Living Programs (ILPs) had the most effect on education, housing and employment? and Why? Young adults who age out of the foster care system and have access to these ILPs had a positive impact on their education attainment, employment status and housing situations but the most influential service provided was services related to education. Post-secondary educational services like SAT prep, counseling about college, information about financial aid and scholarships, help completing college or loan applications, or tutoring while in college had the most impact on all three subjects. But what kept young adults from achieving employment or stable housing or getting a degree was their finances. This study is very important because it shows that young adults are trying to take advantage of these ILPs but their finances limit how much they can do. Also, it provides insights on programs that make the most impact and could be expanded. 
+
+
+## Reference
+1. Ahrens, Kym R., et al. “Health Outcomes in Young Adults From Foster Care and Economically Diverse Backgrounds.” Pediatrics, vol. 134, no. 6, Dec. 2014, pp. 1067–1074. EBSCOhost, doi:10.1542/peds.2014-1150. 
+2. Ahrens KR, et al. “Youth in Foster Care with Adult Mentors during Adolescence Have Improved Adult Outcomes.” Pediatrics, vol. 121, no. 2, Feb. 2008, pp. e246-52. EBSCOhost, doi:10.1542/peds.2007-0508. 
+3. Munson, Michelle R., et al. “‘At Times I Kinda Felt I Was in an Institution’: Supportive Housing for Transition Age Youth and Young Adults.” Children & Youth Services Review, vol. 73, Feb. 2017, pp. 430–436. EBSCOhost, doi:10.1016/j.childyouth.2016.11.027.
+4. Chun Liu. “A Multi-Level Analysis of the Effects of Independent Living Programs on Educational Attainment, Employment, and Housing Outcomes of Youth Aging Out of Foster Care.” Child Welfare, vol. 98, no. 4, July 2020, pp. 97–120. EBSCOhost, search.ebscohost.com.ezproxy.lib.vt.edu/login.aspx?direct=true&db=fgh&AN=148842481&scope=site.
+
+
+# Yang Cheng
+## First Paper
+
+## Second Paper
+
+## Third Paper
+
+## Reference
+
+
+
+
