@@ -1,0 +1,46 @@
+---
+title: "Annotated Bibliography"
+author: "Zimbabwe Project"
+date: "6/7/2021"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Matthew Burkholder
+## Measuring Acute Poverty in the Developing World: Robustness and Scope of the Multidimensional Poverty Index
+[Link](https://reader.elsevier.com/reader/sd/pii/S0305750X14000278?token=3815C1BC84E3A1A1D245A801F981151F6E948AFD033F628EC2EF7DB41F96D110736462BDC596410EA17FAACCDAF7B13A&originRegion=us-east-1&originCreation=20210609132956)
+
+Sabina Alkire & Maria Emma Santos
+
+
+To make clear the methodology behind DSPG’s work, this review will first examine literature surrounding the composition and use of multidimensional poverty indices in developing countries. Here, a review of Sabina Alkire and Maria Emma Santo’s work surrounding the effectiveness of the global MPI in measuring acute poverty will be helpful. Their article first delineates the construction of a MPI. Inspired largely by Amartya Sen’s work, emplyment of a MPI takes a ‘direct’ approach to measuring poverty in the sense that it seeks to determine whether people have the ability to satisfy basic needs as opposed to determining whether they receive a certain income. The work notes that this approach, and their MPI in particular, is advantageous because it accounts for discrepancies in areas such as consumption, prices, functioning, market differences and household income distribution. By breaking poverty into three dimensions (Education, Health, Living Standard) with ten weighted and corresponding indicators (Nutrition, Child Mortality, Years of Schooling, School Attendance, Cooking Fuel, Sanitation, Water, Electricity, Floor, Assets), their MPI provides a consistent and deconstructable measure of poverty. The authors utilized the MPI to assess 104 countries and determined that the world’s MPI poor are located in South America (49%) and Sub-Saharan Africa (27%). They additionally used the MPI to calculate the intensity of poverty, revealing the average percentage of deprivation in each country. Because this intensity is accounted for in the total MPI value, countries with similar poverty incidence but greater intensity output more severe MPI values. Overall,the study showed that the MPI is an extremely advanced and effective tool that can be wielded to highlight overall poverty and, most importantly, acute poverty at district levels. It also highlighted certain data constraints faced when implementing an MPI, most notably in the categories of dimensions, comparability, and unit of analysis.
+
+
+## The Hyperinflation in Zimbabwe 
+[Link](http://mises-media.s3.amazonaws.com/qjae14_3_3.pdf)
+
+Jayson Coomer & Thomas Gstraunthaler
+
+Before investigating the practicality of a multidimensional poverty index to assess district specific poverty in Zimbabwe, it is necessary to understand the country’s economic evolution. The Hyperinflation in Zimbabwe, a journal article compiled by Jayson Coomer and Thomas Gstraunthaler, proves especially helpful in contextualizing Zimbabwe’s present situation. In this work, the two utilize data collected by the United Nations and the International Monetary Fund (IMF) as a means of crafting a historical report of the events that contributed to Zimbabwe’s economic crisis and significant inflation rates. They found that in 1997, seventeen years after Zimbabwe won independence from Britain, the government began to provide veteran pensions and to make compulsory purchases of white-owned, commercial farmland. While these actions satisfied a growing public demand, they lacked sufficient financing and thus put the government budget in deficit. At the same time, these policies gave rise to inflation as veterans continued to receive and spend government funded pensions. The combination of these negative economic indicators sparked panic among investors, the loss of foreign capital, and the eventual crash of the Zimbabwean dollar. A combination of the government printing increasingly more money to mitigate the damage and the formation of a parallel black market caused Zimbabwe to suffer from sever hyperinflation. This trend continued until the country dollarized in 2009 and began to exhibit a three percent month-on-month decline. The effects of this crisis, however, have been long lasting and are largely responsible for modern day economic hardship in Zimbabwe.
+
+## Multidimensional Poverty in Crisis: Lessons from Zimbabwe [Link](https://doi-org.ezproxy.lib.vt.edu/10.1080/00220388.2015.1087511)
+
+Quentin Stoeffler, Jeffrey Alwang, Bradford Mills & Nelson Taruvinga
+
+
+Most recently, Stoeffler et al. utilized 2001, 2007, and 2011-2012 data in order to understand the evolution of multidimensional poverty in Zimbabwe during and after the economic crisis. Here, the advantages of applying an MPI to a country undergoing such turmoil are made clear, as the authors note the futility of measuring poverty through monetarily. Similar to Alkire and Santos, Stoeffler et al. describe in detail the composition of multidimensional indices as well as their uses when applied in the field. A heavy emphasis is placed on dimension and variable choices that comprise the MPI used in their project and the reasoning behind said choices. Relying on k, the poverty threshold generated by weighted deprivation levels, they conclude that the multidimensional poverty incidence increased during the crisis (between 2001 and 2007) and decreased in the succeeding years although the consequences of the crisis were still noticeable in the data. Stoeffler et al. backed this finding with an analysis of the depth and severity of multidimensional poverty present in the same data set. Addtionally, the team decomposed the index’s dimensions, measured their findings against money-metric analyses as well as against the MPI of Zimbabwe. The ability exhibited here to manipulate and breakdown the methodology while maintaining a surface level intuitiveness and simplicity indicates the profound potential of an MPI when used to analyze a crisis and aid the recovery process.
+
+## Reference
+1. Alkire, S., & Santos, M. "Measuring Acute Poverty in the Developing World: Robustness and Scope of the Multidimensional Poverty Index." World Development 59 (2014): 251-274.
+
+2. Coomer, J., & Gstraunthaler. "The Hyperinflation in Zimbabwe." Quarterly journal of Australian economics 14.3 (2011): 311-346.
+
+3. Stoeffler, Quentin, et al. "Multidimensional poverty in  crisis: Lessons from Zimbabwe." The journal of development studies 52.3 (2016): 428-446.
