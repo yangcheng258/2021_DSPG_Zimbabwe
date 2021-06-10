@@ -1,0 +1,40 @@
+---
+title: "Preliminary Zimbabwe Literature Review"
+author: "Atticus Rex"
+date: "6/10/2021"
+output: html_document
+---
+
+***
+## Multidimensional Poverty in Crisis: Lessons from Zimbabwe [PDF](https://doi-org.ezproxy.lib.vt.edu/10.1080/00220388.2015.1087511)
+*Quentin Stoeffler, Jeffrey Alwang, Bradford Mills & Nelson Taruvinga*
+
+This paper was written to assess the quantification and change in poverty from 2001 to 2012 in Zimbabwe, with special attention paid to 2007 when the country experienced its highest inflation rates. The paper seeks to define its own multidimensional algorithm to assess poverty in Zimbabwe.
+
+This paper gives a comprehensive approach and structure to the dimensions, the weights of the dimensions, the concrete questions each dimension is answering, the difference between urban and rural weighting, further poverty data for more specific regions and acknowledgement to the reality that the study must rely on non-monetary measures because the value of Zimbabwean currency was so unreliable during the period the data was gathered.
+
+This paper is limited in the respect that it doesn’t give a concise explanation of how to mathematically combine the dimensions it describes so thoroughly. Furthermore, it uses very simple weighting. It makes the assumption that in most of these categories, individuals in urban areas are half as poor as those in rural areas, or two thirds as poor, which seems to be an arbitrary mathematical convenience rather than an evidence-based strategy. Due to this kind of false dichotomy and oversimplification, this algorithm in this paper threatens to be unreflective of the actual needs of Zimbabwe’s population.
+
+## Counting and multidimensional poverty measurement [PDF](https://doi.org/10.1016/j.jpubeco.2010.11.006)
+*Sabina Alkire, James Foster*
+
+This paper was written in 2011 to attempt to provide a baseline framework for assessing poverty across multiple dimensions. The overall goal of this paper was to provide a way to quantify poverty for individuals within a certain region across an undefined range of dimensions.
+
+The value in this paper comes from the mathematical methodology described within the context of the research. This paper derives a measure called the headcount ratio which is the ratio of poor people to the entire population. And then, the paper goes into what it calls the adjusted headcount ratio in which it takes into account the dimensionality of poverty to provide a more nuanced view of the measure.
+
+This entire paper could have been about three paragraphs long. I understand that to get research published, it is often important to use sophisticated methodology, but the methodology used in this paper at its core was quite simple. It was presented in a way that seemed sophisticated, but was a convoluted mess of elementary mathematical operations. It does not take over a page to calculate an average or to index a matrix. Furthermore, this paper seeks a framework to assess poverty in a more multidimensional and scalable way, but at the end of the day, it does not take a weighted average of the dimensions; it simply assigns a threshold algorithm and designates an individual as “poor” or “not poor” and then takes the average of the whole population as a result of that to produce a figure that looks nuanced and polished but is a really a gross simplification of underlying information.
+
+## Zimbabwe’s Recovery Path: A Conceptual Framework [PDF](https://www.sahistory.org.za/sites/default/files/file%20uploads%20/hany_besada_zimbabwe_picking_up_the_piecesbook4you.pdf)
+*Hany Besada and Jason LaChapelle*
+
+This chapter of Besada’s book helps to lend perspective to Zimbabwe’s political and economic contexts during the 21st century. It is the first chapter of the book and helps to provide a lot of historical consideration for further study.
+
+The value in this text comes from understanding Zimbabwe’s economic and social trajectory coming out of the year 2011 when the last PICES data was collected. We have a lot of information available to us and when coming up with a multidimensional index, it’s important to keep in mind contextual and cultural realities that might make certain measures less effective. As described in other sources, the Zimbabwean currency is an unreliable and inconsistent measure of economic assets because of the hyperinflation in the 2000's era.
+
+This source gives no indication of how to actually measure poverty, nor really any technical aspects of our research. It is also over a decade old and the cultural contexts of Zimbabwe have changed rather substantially throughout the last ten years and this perspective is  likely to be outdated when considering what has occurred geopolitically in the subsequent years.
+
+
+## References
+1. Stoeffler, Quentin, et al. "Multidimensional poverty in crisis: Lessons from Zimbabwe." The journal of development studies 52.3 (2016): 428-446.
+2. Alkire, Sabina, and James Foster. “Counting and Multidimensional Poverty Measurement.” Journal of Public Economics, vol. 95, no. 7-8, 2011, pp. 476–487., doi:10.1016/j.jpubeco.2010.11.006.
+3. Besada, Hany, and Jason LaChapelle. “Zimbabwe’s Recovery Path: A Conceptual Framework.” Zimbabwe, 2011, pp. 1–9., doi:10.1057/9780230116436_1.
