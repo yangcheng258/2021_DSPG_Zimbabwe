@@ -15,13 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# Yang Cheng
+# Matthew Burkholder
 
-*Few sentences*
-
-
-# Your Name
-
+A Multidimensional Poverty Index (MPI) is tool that determines levels of poverty by measuring the capability of individuals to satisfy a determined set of needs rather than the income they receive. MPIs are comprised of separate poverty dimensions that demarcate the areas in which poverty most prominently manifests. Each dimension is accompanied by certain indicators that imply a population’s status in said dimension. As data is analyzed, it is categorized by indicator and, therefore, by the larger dimension which encompasses each indicator. Each dimension is weighted on the grounds of how important it is to the wellbeing of the study/survey’s participants. A threshold level of deprivation is set such that individuals that fall under said threshold are considered poor and those above are not considered poor. When an MPI is applied, a decision must be made regarding conceptions of poverty. The ‘union approach’ defines a household as impoverished if they fall below the threshold level of deprivation in any one of the MPI’s dimensions. The ‘intersection approach’, alternatively, defines a household as impoverished if they fall below the threshold level of deprivation in all dimensions. A third tactic, the ‘counting approach’, combines the aforementioned approaches and thus defines a household as impoverished if they are deprived anywhere between one or all of the dimensions. The Alkire-Foster, or AF, approach utilizes this third technique and employs a double cut-off in the identification process: A household is deprived in a dimension if they fall below the set threshold of said dimension and are poor if the sum of their deprivation is greater than the overall MPI threshold level. This technique allows for sort of weeding process in which only those who are broadly categorized as poor are factored in to the MPI value and those who are not poor but are somewhat deprived are not factored in at all. The main value, M0, is then a product of H, the ratio of poor in relation to the overall population, multiplied by A, the average deprivation share among this poor population. This approach is useful because it allows for multiple dimensions of poverty to be measured in a single metric and enables the impact of individual dimensions on overall index change to be identified through decomposition of the MPI. MPIs can also be uniquely beneficial insofar as they reveal intensity of poverty at both acute and more general levels both inside and among poverty dimensions.
 
 
 
