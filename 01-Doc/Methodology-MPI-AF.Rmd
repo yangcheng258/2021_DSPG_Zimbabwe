@@ -31,12 +31,19 @@ The aggregate methodology for determining the multidimensional poverty indices p
 
 These are the main metrics that will inform our geographical interpretation of the PICES data. It is also important to discuss the dimensions of poverty that will form the number of deprivations in our study. The dimensions include Education, Health, Employment, Housing Conditions, Living Conditions, Assets, Agricultural Assets (Only applies to those living in Rural areas) and Access to Services. It is also important to note that if the individual lives in a rural area, he or she has more possible deprivations than someone living in an urban area. These dimensions are broken down into a couple of variables which have certain weights in determining how much of the overall dimension weight it accounts for. Many of the variables are binary as simple yes or no questions, but some of them are also continuous. With the continuous ones, we will be using threshold algorithms provided by Stoeffler et al. to assess whether or not the individual is considered poor within this variable. (*Author's Note: I believe this is a counterproductive methodology because continuous variables can provide more nuanced data and do not have to be dichotomized into a "poor" or "not poor" relationship. If we used a sigmoid-type function to scale the values into the preferred weight range, we could come up with more accurate measures, but I digress.) 
 
-*H = (Headcount Ratio) # of poor people / population*
+**Headcount Ratio**
 
-*A = (Average deprivation share) # of deprivations / # of potential deprivations*
-*k = Threshold (If an index is above threshold, k, then the individual is considered poor)*
+$H = \frac{n_{poor}}{n_{pop}}$
 
-Poverty Index
+**Average Deprivation Share**
+
+$A = \frac{n_{deprivations}}{n_{potential}}$
+
+**Deprivation Threshold**
+
+$k$ = *Threshold (If an index is above threshold, k, then the individual is considered poor)*
+
+**Poverty Index**
 
 $M_{0} = H*A$
 
