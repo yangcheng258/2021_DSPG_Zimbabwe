@@ -32,15 +32,37 @@ The aggregate methodology for determining the multidimensional poverty indices p
 These are the main metrics that will inform our geographical interpretation of the PICES data. It is also important to discuss the dimensions of poverty that will form the number of deprivations in our study. The dimensions include Education, Health, Employment, Housing Conditions, Living Conditions, Assets, Agricultural Assets (Only applies to those living in Rural areas) and Access to Services. It is also important to note that if the individual lives in a rural area, he or she has more possible deprivations than someone living in an urban area. These dimensions are broken down into a couple of variables which have certain weights in determining how much of the overall dimension weight it accounts for. Many of the variables are binary as simple yes or no questions, but some of them are also continuous. With the continuous ones, we will be using threshold algorithms provided by Stoeffler et al. to assess whether or not the individual is considered poor within this variable. (*Author's Note: I believe this is a counterproductive methodology because continuous variables can provide more nuanced data and do not have to be dichotomized into a "poor" or "not poor" relationship. If we used a sigmoid-type function to scale the values into the preferred weight range, we could come up with more accurate measures, but I digress.) 
 
 *H = (Headcount Ratio) # of poor people / population*
+
 *A = (Average deprivation share) # of deprivations / # of potential deprivations*
 *k = Threshold (If an index is above threshold, k, then the individual is considered poor)*
 
-*M0 = Poverty Index (H x A) *
-*M1 = Adjusted Poverty Gap (Mean(differences below poverty gap k))*
-*M2 = Adjusted Poverty Severity (Squared Poverty Gap = Mean(differences squared below poverty gap k))*
+Poverty Index
 
-*Dimension Weight = The number of deprivations possible in a particular dimension*
-*Variable Weight = The part of the dimension weight responsible for a particular question*
+$M_{0} = H*A$
 
-*Total deprivation = Sum(Dimension Weights) where Dimension Weight = Sum(Variable Weights*
+**Adjusted Poverty Gap**
 
+$M_{1} = μ(g^{1}(k))$
+
+$g^{1}_{i} = k - \frac{\sum deprivations}{\sum possible\ deprivations}$ *if* $g^{1}_{i} > 0$
+
+$else\ g^{1}_{i} = 0$
+
+
+**Adjusted Poverty Severity**
+
+$M_{2} = μ(g^{2}(k))$
+
+$g^{2}_{i} = [k - \frac{\sum deprivations}{\sum possible\ deprivations}]^{2}$ *if* $g^{2}_{i} > 0$
+
+$else\ g^{2}_{i} = 0$
+
+**Dimensional Aggregation**
+
+$Deprivation_{total} = \sum_{i=1}^{d}\sum_{j=1}^{v_{d}} w_{i, j}$
+
+$d =$ *number of dimensions*
+
+$v_{d}$ = *number of variables for a specific dimension*
+
+$w_{i,j}$ = *weight of a specific variable for a specific dimension*
