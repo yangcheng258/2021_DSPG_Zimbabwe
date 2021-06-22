@@ -28,6 +28,7 @@ library(shinyjs)
 #library(scales)
 #library(nycflights13)
 
+
 #install.packages("rsconnect")
 #library(rsconnect)
 #rsconnect::deployApp('~/git/WytheFinalDash/ShinyFinalPresentation', account = "wythecountydash")
@@ -62,11 +63,11 @@ sidebar <- dashboardSidebar(
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
       tabName = "humancapital",
-      text = "Gaps--TBD",
+      text = "Comparisons--TBD",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
       tabName = "jobs",
-      text = "Usage--TBD",
+      text = "Code--TBD",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     # menuItem(
     #   tabName = "access",
@@ -112,7 +113,7 @@ body <- dashboardBody(
                   br(),
                   
                   box(
-                    title = "Loudoun County",
+                    title = "Zimbabwe",
                     closable = FALSE,
                     status = "warning",
                     solidHeader = TRUE,
@@ -142,11 +143,11 @@ body <- dashboardBody(
                 )
               )),
       
-      ## Tab Introduction to Loudoun --------------------------------------------
-      tabItem(tabName = "loudoun",
+      ## Tab Introduction to Zimbabwe --------------------------------------------
+      tabItem(tabName = "Zimbabwe",
               #fluidRow(
               box(
-                title = "Loudoun",
+                title = "Zimbabwe",
                 closable = FALSE,
                 width = NULL,
                 status = "warning",
@@ -690,7 +691,7 @@ body <- dashboardBody(
 
 # UI--------------------------
 ui <- dashboardPage(
-    dashboardHeader(title = "Loudoun County"),
+    dashboardHeader(title = "Zimbabwe(Draft)"),
     sidebar = sidebar,
     body = body
 )
