@@ -1,7 +1,5 @@
 setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus")
 
-
-
 # IMPORTS
 
 library(ggplot2)
@@ -45,11 +43,11 @@ ZimMap8@data[["Deprivation"]] <- apply(ZimMap8@data[["Deprivation"]], 2, as.nume
 
 # Plots the final map of Zimbabwe
 
-if (TRUE) {
-  ggplot(ZimMap8, aes(x = long, y = lat, group = group)) + 
-    geom_polygon(aes(fill = ZimMap@data$Deprivation, color = 'black'))
-}
+
+ggplot(ZimMap8, aes(x = long, y = lat, group = group)) + 
+  geom_polygon(color = 'black', size = 0.5) + 
+  scale_fill_gradient(low='blue', high = 'red')
 
 
-map <- ggplot() + geom_polygon(data = shp_df, aes(x = long, y = lat, group = group, fill = isKingdom), colour = "black") + theme_void()
-map
+
+ggplot() + geom_polygon(data = ZimMap8, aes(x = long, y = lat, group = group, fill = 'orange'), colour = "black") + theme_void()
