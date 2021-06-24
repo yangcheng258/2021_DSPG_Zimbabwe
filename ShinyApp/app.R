@@ -147,68 +147,22 @@ body <- dashboardBody(
       tabItem(tabName = "Zimbabwe",
               #fluidRow(
               box(
-                title = "Zimbabwe",
+                title = "Zimbabwe Project Introduction",
                 closable = FALSE,
                 width = NULL,
                 status = "warning",
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 
+                img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
                 
-                
-                img(src="ACS.jpg", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                br(),
-                p("We used data from the American Community Survey to visualize labor, 
-                  housing and infrastructure data to identify built and human capital currently in Wythe County."),
-                br(),
-                br(),
-                br(),
-                br(),
-                br(),
-                br(),
-                br(),
-                br()
+                h2("Poverty in Zimbabwe"),
+                p("In the first decade of the 21st century, Zimbabwe suffered from significant hyperinflation resultant of an overall government budget deficit and a simultaneous period of monetary policy that increased the amount of money in circulation. This hyperinflation, in turn, led to economic crisis as foreign investment dropped and Zimbabwean currency eventually crashed. In 2009, Zimbabwe was dollarized in an effort to mitigate inflation. Although this move was relatively successful at stabilizing the economy, the effects of economic strife still linger throughout the country. A money metric approach to defining poverty is understandably insufficient in this case due to the extreme discrepancies between Zimbabwe’s modern currency and its antiquated currency. Additionally, variations in consumption, prices, and household income distribution can make it difficult to provide an accurate account of money metric poverty as the value of money is hardly standardized."),
+                h2("Potential Application of a Multidimensional Poverty Index"),
+                p("To address these shortcomings of typical poverty analysis, Alkire-Foster developed methodology requisite for Multidimensional Poverty Indices (MPIs). An MPI is designed to account for such discrepancies by interpreting poverty as the inability to satisfy a certain list of needs. In this way, MPIs allow for an encompassing assessment of poverty that is applicable regardless of the predictability, or lack thereof, of money. This feature is especially helpful when measuring poverty in Zimbabwe due to the recent volatility of the country’s economy. Due to the demonstrated utility and applicability of such indexes, the DSPG Zimbabwe team has been tasked with creating an MPI that will accurately measure poverty in Zimbabwe and to map the calculated values across the country’s districts. The final result will include an interactive visualization of poverty in Zimbabwe as it exists in multiple dimensions, incidences, and intensities. ")
                 
               ),
-              
-              
-              box(
-                title = "Foster Care",
-                closable = FALSE,
-                width = NULL,
-                status = "warning",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                
-                p("One of the central aims of this project is to create comparable measures of accessibility to 
-                  educational facilities in the county.  In rural areas, metrics such as distance do not have the same 
-                  meaning as they do in urban areas. Large distances in rural areas can often be traversed quickly 
-                  due to lower traffic density and a lack of other traffic impediments. To create our accessibility 
-                  measures, we rely on travel time, which accounts for both distance and traffic flow. We construct 
-                  accessibility measures for each county in the region by estimating the travel time between the county
-                  population weighted centroid and foci for educational and workforce training (Waldorf and Chen, 2010). 
-                  We use a floating catchment area around each county centroid and vary the size of the travel time 
-                  window to include 30, 45, and 60 min windows for each catchment area. We then count the services 
-                  by type within each of the travel time windows. This allows us, for each county, to construct:")
-                ),
-              
-              
-              
-              box(
-                title = "Juvenile",
-                closable = FALSE,
-                width = NULL,
-                status = "warning",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                
-                p("Luo, Wei and Wang, Fahui (2003). 'Measures of spatial accessibility to health care in a GIS environment: synthesis and a case study in the Chicago region.' Environment and Planning B: Planning and Design 30(6):865—884."),
-                p("Waldorf, B. S., & Chen, S. E. (2010). 'Spatial models of health outcomes and health behaviors: the role of health care accessibility and availability.' In Progress in spatial analysis (339-362). Springer: Berlin, Heidelberg.")
-                
-              ),
-              
-              
-              
+
               box(
                 title = "References",
                 closable = FALSE,
@@ -217,10 +171,10 @@ body <- dashboardBody(
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 
-                p("Luo, Wei and Wang, Fahui (2003). 'Measures of spatial accessibility to health care in a GIS environment: synthesis and a case study in the Chicago region.' Environment and Planning B: Planning and Design 30(6):865—884."),
-                p("Waldorf, B. S., & Chen, S. E. (2010). 'Spatial models of health outcomes and health behaviors: the role of health care accessibility and availability.' In Progress in spatial analysis (339-362). Springer: Berlin, Heidelberg.")
+                p("Alkire, S., & Santos, M. “Measuring Acute Poverty in the Developing World: Robustness and Scope of the Multidimensional Poverty.” Index World Development 59 (2014): 251-274."),
+                p("Coomer, J., & Gstraunthaler. “The Hyperinflation in Zimbabwe.” Quarterly journal of Australian economics 14.3 (2011): 311-346.")
                 
-              )
+              ),
               
       ),
       
@@ -237,37 +191,37 @@ body <- dashboardBody(
                 
                   
                   #### Could try the Flipbox???
-                  img(src="ACS.jpg", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  br(),
-                  p("We used data from the American Community Survey to visualize labor, housing and infrastructure data to identify built and human capital currently in Wythe County."),
-                  br(),
-                  br(),
-                  br(),
-                  br(),
-                  img(src="careerWorks.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  br(),
-                  p("We used Virginia Careerworks Data to identify industries, colleges and universities, and workforce training facilities in Wythe county."),
-                  br(),
-                  br(),
-                  br(),
-                  img(src="VEC.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  br(),
-                  p("VirginiaWorks is a collaboration of agencies run by the Virginia Employment Commission."),
-                  br(),
-                  br(),
-                  br(),
-                  img(src="onet.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  p("We used O*Net to gathered industry/occupation data for occupations that have a “bright outlook” which is defined as having an expectation of growth over the next several years. We also gather the skill set, education level, work experience, and training needed for these occupations."),
-                  br(),
-                  br(),
-                  br(),
-                  img(src="OSM.jpg", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  br(),
-                  p("We used OpenStreetMap and the VirginiaWorks data to construct time-to-travel measures for access to education and workforce training. With this data, we were able to map floating catchment areas for various time windows in around Wythe County. "),
-                  br()
-                  
+                  img(src = "zimstat_logo.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
+                  p("To gather data necessary for MPI construction, the DSPG team utilized the 2017 Poverty, Income, Consumption and Expenditure Survey (PICES) administered by the Zimbabwe National Statistics Agency (ZimStat). The country-wide survey is conducted every five years as a means of collecting comprehensive informatin regarding demographics, overall standards of living, poverty levels, and disparities between socio-economic groups. This information is categorized along individual, household, district, and country levels. The PICES Questionnaire is comprised of various modules that collect respondent input. The 2017 iteration included modules focused on population and household characteristics, household economy, household incomes, agriculture output and input, informal sector activities, international migration, and disability. These modules, completed by survey respondents in the civilian sector, provide insight on the general state of the country and its population and will be used by our team to understand specific aspects of poverty in Zimbabwe.")
                 ),
               
+              #Methodology box
+              box(
+                title = "Methodology",
+                closable = FALSE,
+                width = NULL,
+                status = "warning",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                
+                h2("Overview"),
+                p("Work produced by the DSPG team will emulate that of Stoeffler, et al. which constructed an MPI and utilized 2001, 2007, and 2011-2012 PICES data to track Zimbabwean poverty over time in a 2015. Following their lead, our MPI will consist of eight dimensions and fourteen variables that indicate a populations status in said dimension. Each dimension and variable is weighted on the grounds of how impactful it is to the wellbeing of either the individual or the household. 
+The relevant dimensions, their respective variables, and the designated weights of the MPI can be found under the ‘Tables’ tab below:
+")
+              ),
+              
+              box(
+                title = "Table",
+                closable = FALSE,
+                width = NULL,
+                status = "warning",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                collapsed = TRUE,
+                
+                img(src = "zimbabwe_var_dim.png", height="500", width="650", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
+                p("Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")
+              ),
               
               box(
                 title = "Methodology",
@@ -277,14 +231,31 @@ body <- dashboardBody(
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 
-                p("One of the central aims of this project is to create comparable measures of accessibility to educational facilities in the county.  In rural areas, metrics such as distance do not have the same meaning as they do in urban areas. Large distances in rural areas can often be traversed quickly due to lower traffic density and a lack of other traffic impediments. To create our accessibility measures, we rely on travel time, which accounts for both distance and traffic flow. We construct accessibility measures for each county in the region by estimating the travel time between the county population weighted centroid and foci for educational and workforce training (Waldorf and Chen, 2010). We use a floating catchment area around each county centroid and vary the size of the travel time window to include 30, 45, and 60 min windows for each catchment area. We then count the services by type within each of the travel time windows. This allows us, for each county, to construct:"),
-                p("1. No. of workforce training sites within 30 (45, 60) minute driving distance of the county"),
-                p("2. No. of community colleges within 30 (45, 60) minute driving distance of the county"),
-                p("3. No. of four-year colleges and universities within 30 (45, 60) minute driving distance of the county")
-                
+                h2("Measurements"),
+                p("A deprivation count, k, falling between k = 1 and k = 4 is used as a threshold for determining poverty. Those who exceed or equal threshold k will be considered poor while those who do not exceed or equal threshold k will be considered not poor and thus will not be included. To achieve this result, an Alkire-Foster  ‘counting approach’ will be employed and poverty will be assigned only to those whose weighted sum deprivation count is greater than k. This creates a double cut-off in which only those who are deprived in multiple dimensions are considered and those who are deprived in a single dimension are non-factors. Once these impoverished populations are determined, three main measurements can be calculated."),
+                h3("M0"),
+                p("M0 is the primary method for determining a population’s poverty. It is calculated by multiplying the Headcount Ratio, H, with the Average Deprivation Share. The Headcount Ratio is the number of people who are considered poor based on a threshold, k. The Average Deprivation Share is the number of actual deprivations collected from each dimension divided by the number of potential deprivations that the state could have. In our case, this is the sum of the weights of each dimension multiplied by the population of the country."),
+                h3("M1"),
+                p("M1 measures what is called the Adjusted Poverty Gap. This measure is obtained by taking the average of the gaps of poor individuals below some poverty line, k. If the individual is above this threshold, k, their poverty gap is zero. Otherwise, it is always positive. This ensures that the needs of poor people are not skewed by wealthier counterparts."),
+                h3("M2"),
+                p("M2 is a measure of the Adjusted Poverty Severity. This measure is obtained by taking the average of the square of the gaps of poor individuals below some poverty line, k. It is very similar to M1, the only difference is that the poverty gap is squared. The quadratic nature of this measurement helps to give more weight to the people who are significantly below the poverty line as opposed to those who fall just beneath it."),
+                p("The formulas needed to calculate these measures are indicated in the 'Formulas' tab below:")
               ),
               
-              ####Might try the DT output  in this part???
+              box(
+                title = "Formulas",
+                closable = FALSE,
+                width = NULL,
+                status = "warning",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                collapsed = TRUE,
+                
+                img(src = "zimbabwe_formulas.png", height="700", width="500", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
+                p("Source: Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")
+              ),
+              
+              ####Methodology references
               box(
                 title = "References",
                 closable = FALSE,
@@ -293,9 +264,7 @@ body <- dashboardBody(
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 
-                p("Luo, Wei and Wang, Fahui (2003). 'Measures of spatial accessibility to health care in a GIS environment: synthesis and a case study in the Chicago region.' Environment and Planning B: Planning and Design 30(6):865—884."),
-                p("Waldorf, B. S., & Chen, S. E. (2010). 'Spatial models of health outcomes and health behaviors: the role of health care accessibility and availability.' In Progress in spatial analysis (339-362). Springer: Berlin, Heidelberg.")
-                
+                p("Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")
               )
               
               ),
