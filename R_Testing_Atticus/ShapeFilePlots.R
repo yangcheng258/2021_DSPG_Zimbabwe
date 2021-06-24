@@ -12,19 +12,28 @@ library(sf)
 # SCRIPT
 
 # Loads the raw shapefile
-ZimMap <-  readOGR(dsn = paste0(getwd(),"/shapefiles"), layer="zwe_admbndl_admALL_zimstat_ocha_itos_20180911")
+ZimMap <-  readOGR(dsn = paste0(getwd(),"/zwe_admbnda_adm2_zimstat_ocha_20180911"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
 
-# summary(ZimMap)
-# length(ZimMap)
-# head(ZimMap@data)
+summary(ZimMap8)
+length(ZimMap8)
+head(ZimMap8@data)
 
-#you might want to check/replace the "districs"
+
+### you might want to check/replace the "districs" By Yang
 stats = sample(1:100, length(districts), replace=TRUE)
 
 fake_data <- matrix(c(districts, stats), ncol = 3)
 
 View(fake_data)
+
+
+### 'fortify' the data to get a dataframe format required by ggplot2  By Yang
+library(broom)
+spdf_fortified <- tidy(ZimMap, region = "NAME")
+
+
+
 
 # Merges the shapefile and the district data
 
