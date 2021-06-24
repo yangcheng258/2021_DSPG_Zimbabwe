@@ -12,7 +12,7 @@ library(sf)
 ZimMap = readOGR(dsn = "D:\\Virginia Tech\\DSPG\\2021_DSPG_Zimbabwe\\R_Testing_Atticus", layer="ZimMap")
 
 
-districts = ZimMap@data[["NAME_2"]]
+
 
 stats = sample(1:100, length(districts), replace=TRUE)
 
