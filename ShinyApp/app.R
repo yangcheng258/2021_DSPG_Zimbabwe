@@ -48,35 +48,31 @@ sidebar <- dashboardSidebar(
     menuItem(
       tabName = "overview",
       text = "Project Overview",
-      icon = icon("info circle")),
+      icon = icon("location-arrow")),
     menuItem(
       tabName = "Zimbabwe",
       text = "Introduction to Zimbabwe",
-      icon = icon("database")),
+      icon = icon("globe-africa")),
     menuItem(
       tabName = "data",
       text = "Data & Methodology",
       icon = icon("database"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
-      tabName = "builtcapital",
+      tabName = "MPI",
       text = "MPI",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
-      tabName = "humancapital",
+      tabName = "comparison",
       text = "Comparisons--TBD",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
-    menuItem(
-      tabName = "jobs",
-      text = "Code--TBD",
-      icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
-    # menuItem(
-    #   tabName = "access",
-    #   text = "Access",
-    #   icon = icon("map-marked-alt")),
     menuItem(
       tabName = "conclusions",
       text = "Conclusions",
       icon = icon("chart-pie")),
+    menuItem(
+      tabName = "code",
+      text = "Code--TBD",
+      icon = icon("code-branch"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
       tabName = "team",
       text = "Team",
@@ -126,12 +122,12 @@ body <- dashboardBody(
                   ),
                   
                   h2("Project Goals"),
-                  p("We partnered with Virginia Cooperative Extension to contextualize industry and workforce factors at levels that are actionable for stakeholders and that promote informed policy and investment in Wythe County amenities and infrastructure. We identified industries and particular jobs within those industries that are expected to grow rapidly in the future. We visualized these jobs by both the skill set and education-level necessary for vocational success. We then created measures to help stakeholders assess the ability of Wythe County and the surrounding region to train the workforce of tomorrow."),
+                  p("We partnered with Virginia Cooperative Extension to contextualize industry and workforce factors at levels that are actionable for stakeholders and that promote informed policy and investment in Wythe County amenities and infrastructure. We identified industries and particular code within those industries that are expected to grow rapidly in the future. We visualized these code by both the skill set and education-level necessary for vocational success. We then created measures to help stakeholders assess the ability of Wythe County and the surrounding region to train the workforce of tomorrow."),
                   
                   h2("Project Approach"),
-                  p("Acemoglu and Autor (2012) demonstrate that investments in human capital have large effects on both the labor market and the economy. They build on work by Goldin and Katz (2007), who also argue that investments in human capital, particularly in the area of education, have far reaching effects on the economy, public policy, and society. Our approach to studying future industry growth potential in Wythe  focused predominantly on human capital; to that end, we examined Wythe’s comparative ability to develop its population of workers to meet  workforce needs for the jobs of tomorrow, i.e., those jobs with the most promising outlook for employment and income growth."),
+                  p("Acemoglu and Autor (2012) demonstrate that investments in human capital have large effects on both the labor market and the economy. They build on work by Goldin and Katz (2007), who also argue that investments in human capital, particularly in the area of education, have far reaching effects on the economy, public policy, and society. Our approach to studying future industry growth potential in Wythe  focused predominantly on human capital; to that end, we examined Wythe’s comparative ability to develop its population of workers to meet  workforce needs for the code of tomorrow, i.e., those code with the most promising outlook for employment and income growth."),
                   p("In their article “Developing High Growth Businesses in Rural Areas: A study of Four States,” William and Lamb (2010) note the key characteristics that a county can use to attract high growth businesses (HGBs). We will focus on three of them: (1) having a skilled and educated workforce, (2) access to research institutions, and (3), access to broadband. We expanded their idea of “access to research institutions” to include community colleges, which provide suitable education and job skills for many high-paying occupations. Job skill enhancements can also be made through workforce training sites.  Additionally, high schools can provide important training certificates in computer science, cyber security, and so on."),
-                  p("The US rural economy is diverse and changing. Increasingly, the share of workers in service jobs is overtaking traditional industries, e.g., manufacturing and agriculture (Laughlin, 2016). As a result, it is important for counties to be nimble in their approach to workforce training.  This also demonstrates to HGBs that counties have the capacity to train a skilled workforce for new opportunities in high-growth areas, like information technology."),
+                  p("The US rural economy is diverse and changing. Increasingly, the share of workers in service code is overtaking traditional industries, e.g., manufacturing and agriculture (Laughlin, 2016). As a result, it is important for counties to be nimble in their approach to workforce training.  This also demonstrates to HGBs that counties have the capacity to train a skilled workforce for new opportunities in high-growth areas, like information technology."),
                   p("Rural areas face many unique challenges when trying to attract and retain industry. Their natural amenities, affordable and less dense housing, and access to education and training services make counties like Wythe desirable places to live.  Our approach to studying Wythe was to examine two main drivers of industry attraction: people and business amenities."),
                   p("In our project we provide a visual overview of the built/physical capital available in Wythe County.  Based on this framework, our team combined publicly available demographic, infrastructure, and labor information related to the current and potential workforce in Wythe County. The data were used to identify the human capital in Wythe, assess the potential of Wythe County to train its workforce in various industries, and construct a spatial measure of accessibility to education and workforce training centers."),
                   
@@ -178,7 +174,7 @@ body <- dashboardBody(
               
       ),
       
-      ## Tab Data --------------------------------------------
+      ## Tab Data & Methodology--------------------------------------------
       tabItem(tabName = "data",
               #fluidRow(
                 box(
@@ -268,10 +264,10 @@ The relevant dimensions, their respective variables, and the designated weights 
               )
               
               ),
-      ## Tab 3--------------------------------------------
-      tabItem(tabName = "builtcapital",
+      ## Tab 3 MPI--------------------------------------------
+      tabItem(tabName = "MPI",
               fluidRow(
-                h2("Service/Program Availability"),
+                h2("MPI"),
                 p("To understand the full suite of amenities available to HGBs in Wythe, 
                   we used publicly available demographic and infrastructure data to provide 
                   an overview of the built capital amenities in Wythe."),
@@ -388,14 +384,14 @@ The relevant dimensions, their respective variables, and the designated weights 
                 #   enable_dropdown = TRUE,
                 #   dropdown_icon = "",
                 #   dropdown_menu = tagList(selectInput("var","Select a Variable",choices = c("Home Age", "Home Values", "Building Permit Trend"))),
-                #   plotOutput("builtCapital")
+                #   plotOutput("MPI")
                 # ),
                 br()
               )),
-      ## Tab 4--------------------------------------------
-      tabItem(tabName = "humancapital",
+      ## Tab 4 comparisons--------------------------------------------
+      tabItem(tabName = "comparison",
               fluidRow(
-                h2("Human Capital in Wythe County"),
+                h2("Comparisons"),
                 p("Investing in human capital is yet another way of attracting and retaining HGBs. It can also provide an engine for entrepreneurship. Wythe has a total population of 29,000 with 13,000 workers. The median age of the population in Wythe county is 44, and approximately 42 percent of the population is under the age of 34. Because of its size and rural location, Wythe’s actual labor market pool is much larger than its population; it is within a 60-minute drive of most adjoining counties. The white cloud on the map surrounding Wythe represents all parts of the region that are within a 60-minute drive from the center of the county (the red dot)."),
                 br(),
                 box(
@@ -427,7 +423,7 @@ The relevant dimensions, their respective variables, and the designated weights 
                 ),
                 br(),
                 p("The dashboard above shows important features of Wythe’s labor market with regard to industry concentration, salary, and household size."),
-                p("First, the workforce in Wythe County is concentrated in the health, education, manufacturing, and retail industries. Outside of education and healthcare, many workers in Wythe are in the retail sector.  While these types of service jobs are important, it should be recognized that these are not jobs that are typically associated with high earning potential. Moreover, e-commerce is continuing to crowd out many of these types of businesses. From an economic growth perspective, it is therefore important to continue diversifying the industrial base. "),
+                p("First, the workforce in Wythe County is concentrated in the health, education, manufacturing, and retail industries. Outside of education and healthcare, many workers in Wythe are in the retail sector.  While these types of service code are important, it should be recognized that these are not code that are typically associated with high earning potential. Moreover, e-commerce is continuing to crowd out many of these types of businesses. From an economic growth perspective, it is therefore important to continue diversifying the industrial base. "),
                 
                 p("Second, the majority of households in Wythe have incomes between $25,000 to $150,000, with the median household income between $50,000 and $75,000."),
                 p("Third, households in Wythe County are relatively small. The majority of households have one or two people. Given the median age and proportion of the population under the age of 34, the population of Wythe does not appear to be overly skewed toward older workers and retired individuals (as the prevalence of one-person and two-person households might suggest). "),
@@ -435,13 +431,13 @@ The relevant dimensions, their respective variables, and the designated weights 
                 p("[1] https://datausa.io/profile/geo/wythe-county-va#:~:text=In%202017%2C%20the%20median%20age,County%2C%20VA%20residents%20was%2044."),
                 br()
               )),
-      ## Tab 5--------------------------------------------
-      tabItem(tabName = "jobs",
+      ## Tab 5 code--------------------------------------------
+      tabItem(tabName = "code",
               fluidRow(
-                p("One of the key tasks for the VT-DSPG team was to identify some of the best jobs available over the next several years. To accomplish this, we mined data from the ONet project. ONet databases list categories of occupations by sector and industry and rate them according to future job growth.  The ratings are a standardized index (0-100) created from reported importance and scale factors for each occupation. We call ONet high-growth occupations the “jobs of tomorrow.” To represent these high-growth occupation categories, we use a collapsible tree diagram, which allows us to compactly present large quantities of data. In this way, we can map careers from broad industries to particular occupation to the skill set and education level typically needed for each occupation. For comparison purposes, the ratings are listed next to each reported education level, job training time period, and experience time period."),
+                p("One of the key tasks for the VT-DSPG team was to identify some of the best code available over the next several years. To accomplish this, we mined data from the ONet project. ONet databases list categories of occupations by sector and industry and rate them according to future job growth.  The ratings are a standardized index (0-100) created from reported importance and scale factors for each occupation. We call ONet high-growth occupations the “code of tomorrow.” To represent these high-growth occupation categories, we use a collapsible tree diagram, which allows us to compactly present large quantities of data. In this way, we can map careers from broad industries to particular occupation to the skill set and education level typically needed for each occupation. For comparison purposes, the ratings are listed next to each reported education level, job training time period, and experience time period."),
                 h3("Highlighted Industry"),
-                p("As an example, consider jobs within the information technology (IT) industry. The user can choose between careers in Information Systems, Network Systems, Programming/Software Development, and Web and Digital Communications. For each career path, the viewer can select specific occupations and find information about the skill set necessary for that occupation. A similar collapsible tree for education, which is also available in the dropdown dashboard, demonstrates the typical education credential necessary for someone in a particular occupation."),
-                p("The occupations listed in the tree were selected because they are careers with bright futures; as such, they represent the jobs of tomorrow. "),
+                p("As an example, consider code within the information technology (IT) industry. The user can choose between careers in Information Systems, Network Systems, Programming/Software Development, and Web and Digital Communications. For each career path, the viewer can select specific occupations and find information about the skill set necessary for that occupation. A similar collapsible tree for education, which is also available in the dropdown dashboard, demonstrates the typical education credential necessary for someone in a particular occupation."),
+                p("The occupations listed in the tree were selected because they are careers with bright futures; as such, they represent the code of tomorrow. "),
                 p("The trees provided actionable information for implementing programs. They also suggest curricula that might be developed to train the future workforce in a desired industry. "),
                 box(
                   title = "Information Technology",
@@ -486,11 +482,11 @@ The relevant dimensions, their respective variables, and the designated weights 
                 #   collapsibleTreeOutput("myMantree",width = "100%")
                 # ),
                 br(),
-                h3("Jobs of Tomorrow"),
+                h3("code of Tomorrow"),
                 
                 br(),
                 box(
-                  title = "Jobs of Tomorrow.",
+                  title = "code of Tomorrow.",
                   closable = FALSE,
                   status = "warning",
                   solidHeader = TRUE,
@@ -507,11 +503,11 @@ The relevant dimensions, their respective variables, and the designated weights 
                 p("Desired industries, as indicated by Wythe County officials, include manufacturing, agriculture, information systems and technology and food and beverage production. These industries are available in the visualizations above."),
                 br()
               )),
-      ## Tab 6--------------------------------------------
+      ## Tab 6 TBD--------------------------------------------
       tabItem(tabName = "access",
               fluidRow(
                 h2("A Regional Comparison of Educational Access"),
-                p("An analysis of the trees (see previous tab) shows that many of the high growth careers are in information technology. These jobs often require training in a host of critical areas, from customer support and client satisfaction to computer science and systems and electrical engineering. Aside from the heavy STEM focus in information technology, there is also a large need for people with skills in communication, education, and training. Additionally, there are many high-paying jobs in the IT sector that do not require a college degree. IT jobs such as web developer, computer programmer, systems analyst, cybersecurity analyst, graphic designer, digital marketer, and telecommunications technician can be filled by individuals that have relevant skills but not necessarily a four-year degree. In such cases, local community colleges and high schools can help with IT skill development by providing courses and certification programs that are readily accessible to residents in Wythe County."),
+                p("An analysis of the trees (see previous tab) shows that many of the high growth careers are in information technology. These code often require training in a host of critical areas, from customer support and client satisfaction to computer science and systems and electrical engineering. Aside from the heavy STEM focus in information technology, there is also a large need for people with skills in communication, education, and training. Additionally, there are many high-paying code in the IT sector that do not require a college degree. IT code such as web developer, computer programmer, systems analyst, cybersecurity analyst, graphic designer, digital marketer, and telecommunications technician can be filled by individuals that have relevant skills but not necessarily a four-year degree. In such cases, local community colleges and high schools can help with IT skill development by providing courses and certification programs that are readily accessible to residents in Wythe County."),
                 
                 tabBox(
                   title = NULL , width = 16,
@@ -577,7 +573,7 @@ The relevant dimensions, their respective variables, and the designated weights 
                 p("In this dashboard, we also display the percentage of the population who have access to broadband internet and who have a computer in the home. Online learning is an increasingly important and popular way to acquire additional skills and education. These visualizations allow us to assess Wythe’s ability to train the current and future workforce from home and to serve as a site for telework.  This is particularly important given that so many aspects of education and work have moved online due to Covid-19."),
                 br()
               )),
-      ## Tab 7--------------------------------------------
+      ## Tab 7 Conclusion--------------------------------------------
       tabItem(tabName = "conclusions",
               fluidRow(
                 box(
@@ -592,14 +588,14 @@ The relevant dimensions, their respective variables, and the designated weights 
                     has quality secondary schools and access to outdoor recreational amenities. 
                     These factors are often cited as important to millennials as they think about 
                     potential occupations and locations. To capture and retain workers, we recommend that 
-                    Wythe emphasize tech-related jobs in addition to its current industrial strengths.  
-                    These jobs include cybersecurity, data centers, and so on. There are many high-paying jobs 
+                    Wythe emphasize tech-related code in addition to its current industrial strengths.  
+                    These code include cybersecurity, data centers, and so on. There are many high-paying code 
                     in these fields that DO NOT require a college degree. Additionally, this could allow 
                     Wythe to take better advantage of Virginia's Tech Talent Pipeline Initiative. "),
                   p("Wythe has many unique features that make it an attractive place to live: 
                     low population density, reasonably low rates of violent crime, and great natural amenities. 
                     If county leaders can demonstrate through programs at their high schools and community colleges 
-                    that the local workforce is prepared for IT-related jobs and industries, then the county
+                    that the local workforce is prepared for IT-related code and industries, then the county
                     will be in a strong position to promote itself as a vital component of Southwest Virginia's 
                     Technology Corridor. Community colleges and local high schools (resources that are already 
                     available in Wythe) can help to develop workforce talent.")
@@ -618,7 +614,7 @@ The relevant dimensions, their respective variables, and the designated weights 
                   h2("Data Science for the Public Good Program"),
                   p("The Data Science for the Public Good (DSPG) Young Scholars program is a summer immersive program held at the Biocomplexity Institute’s Social and Decision Analytics Division (SDAD). In its seventh year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges around critical social issues relevant in the world today. DSPG young scholars conduct research at the intersection of statistics, computation, and the social sciences to determine how information generated within every community can be leveraged to improve quality of life and inform public policy. For more information on program highlights, how to apply, and our annual symposium, please visit the official Biocomplexity DSPG website."),
                   h2("2021 Loudoun County Summer Project"),
-                  p("Our project goal was to identify industries and the jobs that are expected to grow rapidly in the future. We visualized these jobs by the skills, education, experience and training needed to do them. We then created measures to visualize and assess the ability of Wythe County and the surrounding region to respond to training the workers of tomorrow. Our team is comprised of talented individuals with a broad range of skills and experience."),
+                  p("Our project goal was to identify industries and the code that are expected to grow rapidly in the future. We visualized these code by the skills, education, experience and training needed to do them. We then created measures to visualize and assess the ability of Wythe County and the surrounding region to respond to training the workers of tomorrow. Our team is comprised of talented individuals with a broad range of skills and experience."),
                   h2("DSPG Team Members"),
                   img(src = 'Josh.Beverly.VT.jpg', height = "150", width = "140", align = "center"),
                   img(src = 'Dylan.Glover.VT.jpg', height = "150", width = "140", align = "center"),
