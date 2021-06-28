@@ -41,3 +41,4 @@ datapoly <- merge(ZimMap_fortified, fake_data , by = c("id"))
 
 ggplot(datapoly, aes(x=long, y=lat, group = group)) +  geom_polygon(aes(fill = Deprivation, group = id)) + scale_fill_gradient(low='grey', high = 'red')
 
+
