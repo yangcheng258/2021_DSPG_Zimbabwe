@@ -84,9 +84,8 @@ ui <- dashboardPage(
           
           title = 'Deprivation Cutoff',
           sliderInput("slider0", "K-Threshold Value", 1, 9, 3),
-          width = 12
-        )
-      )
+          width = 12)
+)
     ),
     
     tabItem(
