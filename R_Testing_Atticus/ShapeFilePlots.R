@@ -9,6 +9,9 @@ library(ggplot2)
 library(rgdal)
 library(dplyr)
 library(sf)
+library(gpclib)
+gpclibPermit()
+library(maptools)
 
 
 # SCRIPT
@@ -28,7 +31,6 @@ stats  <-  sample(1:100, length(id), replace=TRUE)
 fake_data <-  cbind.data.frame( "id" = id, "Deprivation" = stats ) 
 
 
-# position
 ### 'fortify' the data to get a dataframe format required by ggplot2  By Yang
 library(broom)
 ZimMap_fortified <- tidy(ZimMap, region = "ADM2_EN")
