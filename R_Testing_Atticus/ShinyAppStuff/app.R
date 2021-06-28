@@ -1,5 +1,5 @@
 # Set Working Directory
-setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus")
+setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus/ShinyAppStuff")
 
 # clean the memory
 rm(list=ls())
