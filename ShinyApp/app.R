@@ -184,58 +184,62 @@ body <- dashboardBody(
                   status = "warning",
                   solidHeader = TRUE,
                   collapsible = TRUE,
-                
                   
-                  #### Could try the Flipbox???
-                  img(src = "zimstat_logo.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
-                  p("To gather data necessary for MPI construction, the DSPG team utilized the 2017 Poverty, Income, Consumption and Expenditure Survey (PICES) administered by the Zimbabwe National Statistics Agency (ZimStat). The country-wide survey is conducted every five years as a means of collecting comprehensive informatin regarding demographics, overall standards of living, poverty levels, and disparities between socio-economic groups. This information is categorized along individual, household, district, and country levels. The PICES Questionnaire is comprised of various modules that collect respondent input. The 2017 iteration included modules focused on population and household characteristics, household economy, household incomes, agriculture output and input, informal sector activities, international migration, and disability. These modules, completed by survey respondents in the civilian sector, provide insight on the general state of the country and its population and will be used by our team to understand specific aspects of poverty in Zimbabwe.")
+                  tabBox(
+                    title = NULL, width = 16, height = "auto",
+                    tabPanel("PICES Overview", 
+                             img(src = "zimstat_logo.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
+                             p("To gather data necessary for MPI construction, the DSPG team utilized the 2017 Poverty, Income, Consumption and Expenditure Survey (PICES) administered by the Zimbabwe National Statistics Agency (ZimStat). The country-wide survey is conducted every five years as a means of collecting comprehensive information regarding demographics, overall standards of living, poverty levels, and disparities between socio-economic groups. This data is categorized along individual, household, district, and country levels. The PICES Questionnaire is comprised of various modules that collect respondent input. The 2017 iteration included modules focused on population and household characteristics, household economy, household incomes, agriculture output and input, informal sector activities, international migration, and disability. These modules, completed by survey respondents in the civilian sector, provide insight on the general state of the population and will be used by our team to understand specific aspects of poverty in Zimbabwe."),
+                             h3("References:"),
+                             p("Zimbabwe National Statistics Agency. “Poverty, Income, Consumption and Expenditure Survey 2017 Report.” (2018): 1-160.")),
+                    tabPanel("Sampling"),
+                    tabPanel("Weights"))
                 ),
               
               #Methodology box
               box(
-                title = "Methodology",
+                title = "Methodology Overview",
                 closable = FALSE,
                 width = NULL,
                 status = "warning",
                 solidHeader = TRUE,
                 collapsible = TRUE,
                 
-                h2("Overview"),
-                p("Work produced by the DSPG team will emulate that of Stoeffler, et al. which constructed an MPI and utilized 2001, 2007, and 2011-2012 PICES data to track Zimbabwean poverty over time in a 2015. Following their lead, our MPI will consist of eight dimensions and fourteen variables that indicate a populations status in said dimension. Each dimension and variable is weighted on the grounds of how impactful it is to the wellbeing of either the individual or the household. 
+                tabBox(
+                title = NULL, width = 16, height = "auto",
+                tabPanel("Multidimensional Poverty Index",
+                         h2("MPI Overview"),
+                         p("Work produced by the DSPG team will emulate that of Stoeffler, et al. which constructed an MPI and utilized 2001, 2007, and 2011-2012 PICES data to track Zimbabwean poverty over time in a 2015. Following their lead, our MPI will consist of eight dimensions and fourteen variables that indicate a populations status in said dimension. Each dimension and variable is weighted on the grounds of how impactful it is to the wellbeing of either the individual or the household. 
 The relevant dimensions, their respective variables, and the designated weights of the MPI can be found under the ‘Tables’ tab below:
-")
+")),
+                tabPanel("Measurements",
+                         h2("Measurements"),
+                         p("A deprivation count, k, falling between k = 1 and k = 4 is used as a threshold for determining poverty. Those who exceed or equal threshold k will be considered poor while those who do not exceed or equal threshold k will be considered not poor and thus will not be included. To achieve this result, an Alkire-Foster  ‘counting approach’ will be employed and poverty will be assigned only to those whose weighted sum deprivation count is greater than k. This creates a double cut-off in which only those who are deprived in multiple dimensions are considered and those who are deprived in a single dimension are non-factors. Once these impoverished populations are determined, three main measurements can be calculated."),
+                         h3("M0"),
+                         p("M0 is the primary method for determining a population’s poverty. It is calculated by multiplying the Headcount Ratio, H, with the Average Deprivation Share. The Headcount Ratio is the number of people who are considered poor based on a threshold, k. The Average Deprivation Share is the number of actual deprivations collected from each dimension divided by the number of potential deprivations that the state could have. In our case, this is the sum of the weights of each dimension multiplied by the population of the country."),
+                         h3("M1"),
+                         p("M1 measures what is called the Adjusted Poverty Gap. This measure is obtained by taking the average of the gaps of poor individuals below some poverty line, k. If the individual is above this threshold, k, their poverty gap is zero. Otherwise, it is always positive. This ensures that the needs of poor people are not skewed by wealthier counterparts."),
+                         h3("M2"),
+                         p("M2 is a measure of the Adjusted Poverty Severity. This measure is obtained by taking the average of the square of the gaps of poor individuals below some poverty line, k. It is very similar to M1, the only difference is that the poverty gap is squared. The quadratic nature of this measurement helps to give more weight to the people who are significantly below the poverty line as opposed to those who fall just beneath it."),
+                         p("The formulas needed to calculate these measures are indicated in the 'Formulas' tab below:")),
+                tabPanel("Formulas",
+                         img(src = "zimbabwe_formulas.png", height="700", width="500", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
+                         p("Source: Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")),
+                tabPanel("Variables and Dimensions",
+                         img(src = "zimbabwe_var_dim.png", height="700", width="500", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
+                         p("Source: Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")))
               ),
+                
+          
               
               box(
-                title = "Table",
+                title = "Detailed Methodology",
                 closable = FALSE,
                 width = NULL,
                 status = "warning",
                 solidHeader = TRUE,
-                collapsible = TRUE,
-                collapsed = TRUE,
-                
-                img(src = "zimbabwe_var_dim.png", height="500", width="650", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
-                p("Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")
-              ),
+                collapsible = TRUE
               
-              box(
-                title = "Methodology",
-                closable = FALSE,
-                width = NULL,
-                status = "warning",
-                solidHeader = TRUE,
-                collapsible = TRUE,
-                
-                h2("Measurements"),
-                p("A deprivation count, k, falling between k = 1 and k = 4 is used as a threshold for determining poverty. Those who exceed or equal threshold k will be considered poor while those who do not exceed or equal threshold k will be considered not poor and thus will not be included. To achieve this result, an Alkire-Foster  ‘counting approach’ will be employed and poverty will be assigned only to those whose weighted sum deprivation count is greater than k. This creates a double cut-off in which only those who are deprived in multiple dimensions are considered and those who are deprived in a single dimension are non-factors. Once these impoverished populations are determined, three main measurements can be calculated."),
-                h3("M0"),
-                p("M0 is the primary method for determining a population’s poverty. It is calculated by multiplying the Headcount Ratio, H, with the Average Deprivation Share. The Headcount Ratio is the number of people who are considered poor based on a threshold, k. The Average Deprivation Share is the number of actual deprivations collected from each dimension divided by the number of potential deprivations that the state could have. In our case, this is the sum of the weights of each dimension multiplied by the population of the country."),
-                h3("M1"),
-                p("M1 measures what is called the Adjusted Poverty Gap. This measure is obtained by taking the average of the gaps of poor individuals below some poverty line, k. If the individual is above this threshold, k, their poverty gap is zero. Otherwise, it is always positive. This ensures that the needs of poor people are not skewed by wealthier counterparts."),
-                h3("M2"),
-                p("M2 is a measure of the Adjusted Poverty Severity. This measure is obtained by taking the average of the square of the gaps of poor individuals below some poverty line, k. It is very similar to M1, the only difference is that the poverty gap is squared. The quadratic nature of this measurement helps to give more weight to the people who are significantly below the poverty line as opposed to those who fall just beneath it."),
-                p("The formulas needed to calculate these measures are indicated in the 'Formulas' tab below:")
               ),
               
               box(
