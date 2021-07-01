@@ -1,5 +1,5 @@
 # Set Working Directory
-setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus")
+#setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus")
 
 # clean the memory
 rm(list=ls())
@@ -13,14 +13,14 @@ library(rgdal)
 library(dplyr)
 library(sf)
 library(gpclib)
-gpclibPermit()
+#gpclibPermit()
 library(maptools)
 library(broom)
 
 ## SETTING UP MPI Data
 
 # Loads in the shapefile
-ZimMap <- readOGR(dsn = paste0(getwd(),"/ProvinceShapes"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+ZimMap <- readOGR(dsn = paste0(getwd(),"/R_Testing_Atticus/ProvinceShapes"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
 
 # Loading the MPI data and combining
 id <- ZimMap@data[["ADM1_EN"]]

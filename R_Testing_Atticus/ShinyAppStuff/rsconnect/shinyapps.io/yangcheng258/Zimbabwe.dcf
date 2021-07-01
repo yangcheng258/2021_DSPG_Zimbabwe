@@ -1,0 +1,14 @@
+name: Zimbabwe
+title: Zimbabwe
+username:
+account: yangcheng258
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4335236
+bundleId: 4776667
+url: https://yangcheng258.shinyapps.io/Zimbabwe/
+when: 1625139295.61906
+lastSyncTime: 1625139295.61906
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: ProvinceData.csv
