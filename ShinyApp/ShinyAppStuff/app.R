@@ -69,6 +69,7 @@ datapoly <- merge(ZimMap_fortified, MPIData , by = c("id"))
 
 
 
+
 # Siderbar(LEFT) ----------------------------------------------------------
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -83,7 +84,7 @@ sidebar <- dashboardSidebar(
       icon = icon("database"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
       tabName = "MPI",
-      text = "MPI Data Tables",
+      text = "MPI",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
       "Poverty Index",
@@ -121,6 +122,12 @@ body <- dashboardBody(
               
               img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="float: left; margin: 3px 12px 3px 0px; border: 1px solid #000000;"),
               
+              h2("Country Briefing"),
+              br(),
+              br(),
+              p("Text"),
+              br(),
+              br(),
               h2("Recent History"),
               p("In the first decade of the 21st century, Zimbabwe suffered from significant hyperinflation resultant of an overall government budget deficit and a simultaneous period of monetary policy that increased the amount of money in circulation. This hyperinflation, in turn, led to economic crisis as foreign investment dropped and Zimbabwean currency eventually crashed. In 2009, Zimbabwe was dollarized in an effort to mitigate inflation. Although this move was relatively successful at stabilizing the economy, the effects of economic strife still linger throughout the country. A money metric approach to defining poverty is understandably insufficient in this case due to the extreme discrepancies between Zimbabwe’s modern currency and its antiquated currency. Additionally, variations in consumption, prices, and household income distribution can make it difficult to provide an accurate account of money metric poverty as the value of money is hardly standardized.")
               
@@ -136,7 +143,7 @@ body <- dashboardBody(
               h2("Potential Application of a Multidimensional Poverty Index"),
               p("To address these shortcomings of typical poverty analysis, Alkire-Foster developed methodology requisite for Multidimensional Poverty Indices (MPIs). An MPI is designed to account for such discrepancies by interpreting poverty as the inability to satisfy a certain list of needs. In this way, MPIs allow for an encompassing assessment of poverty that is applicable regardless of the predictability, or lack thereof, of money. This feature is especially helpful when measuring poverty in Zimbabwe due to the recent volatility of the country’s economy. Due to the demonstrated utility and applicability of such indexes, the DSPG Zimbabwe team has been tasked with creating an MPI that will accurately measure poverty in Zimbabwe and to map the calculated values across the country’s districts. The final result will include an interactive visualization of poverty in Zimbabwe as it exists in multiple dimensions, incidences, and intensities. ")
             ),
-            
+
             box(
               title = "References",
               closable = FALSE,
@@ -184,7 +191,7 @@ body <- dashboardBody(
               collapsible = TRUE,
               
               tabBox(
-                title = NULL, width = "auto", height = "auto",
+                title = NULL, width = 16, height = "auto",
                 tabPanel("Multidimensional Poverty Index",
                          h2("MPI Overview"),
                          p("Work produced by the DSPG team will emulate that of Stoeffler, et al. which constructed an MPI and utilized 2001, 2007, and 2011-2012 PICES data to track Zimbabwean poverty over time in a 2015. Following their lead, our MPI will consist of eight dimensions and fourteen variables that indicate a populations status in said dimension. Each dimension and variable is weighted on the grounds of how impactful it is to the wellbeing of either the individual or the household. 
@@ -204,9 +211,10 @@ The relevant dimensions, their respective variables, and the designated weights 
                          img(src = "zimbabwe_formulas.png", height="700", width="500", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
                          p("Source: Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446.")),
                 tabPanel("Variables and Dimensions",
-                         datatable(Paper_Tables_1))
-                
-              )),
+                         img(src = "zimbabwe_var_dim.png", height="700", width="500", alt="Image", style="float: middle; margin: 10px 10px 125px 125px; border: 5px solid #000000;"),
+                         p("Source: Source: Stoeffler, Quentin, et al. “Multidimensional poverty in crisis: Lessons from Zimbabwe.” The journal of development studies 52.3 (2016): 428-446."))
+                         
+            )),
             
             ####Methodology references
             box(
@@ -221,31 +229,104 @@ The relevant dimensions, their respective variables, and the designated weights 
             ),
             
     ),
-    
+           
     ## Tab 3 MPI--------------------------------------------
     tabItem(tabName = "MPI",
-            box(
-              title = "Changes Over Time",
-              closable = FALSE,
-              width = NULL,
-              status = "warning",
-              solidHeader = TRUE,
-              collapsible = TRUE,
-            
-            tabBox(
-              title = NULL, width = "auto", height = "auto",
-              tabPanel("Raw Headcount Raio",
-                       datatable(Paper_Tables_2)),
-              tabPanel("MPI Values",
-                       datatable(Paper_Tables_3)),
-              tabPanel("Headcount Ratio and Average Deprivation Share",
-                       datatable(Paper_Tables_4)),
-              tabPanel("Dimension Contribution",
-                       datatable(Paper_Tables_5))
-            ))),
-              
+            fluidRow(
+              h2("MPI"),
+              p("To understand the full suite of amenities available to HGBs in Wythe, 
+                we used publicly available demographic and infrastructure data to provide 
+                an overview of the built capital amenities in Wythe."),
+              p("In many respects, Wythe County is uniquely endowed with built amenities 
+                attractive to businesses (William and Lamb, 2010).  It is situated at the 
+                intersection of two major interstates, and it is within a six-to-eight-hour 
+                drive of most of the population in the United States. As the map shows, 
+                it also has easy access to rail and other supporting infrastructure (e.g., powerplants) 
+                for commerce and manufacturing. From an “access to major markets” perspective, 
+                Wythe is an attractive location for both light and heavy industry."),
+              box(
+                title = "Loudoun County Programs/Services",
+                closable = FALSE,
+                status = "warning",
+                solidHeader = TRUE,
+                collapsible = TRUE,
+                width = NULL,
+                #enable_dropdown = TRUE,
+                #dropdown_icon = "",
+                #dropdown_menu = tagList(selectInput("var","Select a Variable",choices = c("Level of Education","Industry","Home Values","Household Income","Household Size"))),
+                #leafletOutput("wythe_infrastructure"),
+                
+                
+                tabBox(
+                  title = NULL , width = 16,
+                  # The id lets us use input$tabset1 on the server to find the current tab
+                  id = "tabset1", height = "350px",
+                  tabPanel("All", 
+                           sidebarLayout(
+                              sidebarPanel(
+                                selectInput("pillar_variable", "Pillar Variable:",
+                                            c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All")),
+                                ### Can add more inputs????
+                                # selectInput("time_variable", "Time Variable:",
+                                #             c("60 minutes" = "60",
+                                #               "45 minutes" = "45",
+                                #               "30 minutes" = "30"))
+                                             ),
+                            # Show a plot of the generated distribution
+                            mainPanel(
+                              tableOutput("label_1"),
+                              leafletOutput("mapplot_1"),
+                              #mapview:::plainViewOutput("test")
+                                   )
+                                          )
+                  
+                          ),
+                  
+                  tabPanel("Juvenile",
+                           sidebarPanel(
+                             selectInput("pillar_variable", "Pillar Variable:",
+                                         c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All"))
+                             
+                           ),
+                           
+                           # Show a plot of the generated distribution
+                           mainPanel(
+                             tableOutput("label_2"),
+                             leafletOutput("mapplot_2")
+                             #mapview:::plainViewOutput("test")
+                           )
+                           
+                  ),
+                  
+                  tabPanel("Foster Care",
+                           sidebarPanel(
+                             selectInput("pillar_variable", "Pillar Variable:",
+                                         c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All"))
+                             
+                           ),
+                           
+                           # Show a plot of the generated distribution
+                           mainPanel(
+                             tableOutput("label_3"),
+                             leafletOutput("mapplot_3")
+                             #mapview:::plainViewOutput("test")
+                           )
+                           
+                  )                   
+                  
+                  
+                  
+                  
+                )
+                
+          
+                
+                
+              ),
+
+            )),
     ## Tab 8 Team--------------------------------------------
-    tabItem(tabName = "team",
+     tabItem(tabName = "team",
             fluidRow(
               box(
                 title = "Team",
@@ -300,7 +381,7 @@ The relevant dimensions, their respective variables, and the designated weights 
         # Make a box with a plot inside of it
         box(
           title = "Multidimensional Poverty Index (By Province)",
-          plotOutput("M0_plot", height = 600, width = 800),
+          plotOutput("M0_plot", height = 300, width = 400),
           width = 12
         ),
         
@@ -316,7 +397,7 @@ The relevant dimensions, their respective variables, and the designated weights 
       fluidPage(
         box(
           title = "Adjusted Poverty Gap (By Province)",
-          plotOutput("M1_plot", height = 600, width = 800),
+          plotOutput("M1_plot", height = 300, width = 440),
           width = 12
         ),
         box(
@@ -333,7 +414,7 @@ The relevant dimensions, their respective variables, and the designated weights 
       fluidPage(
         box(
           title = "Adjusted Poverty Severity (By Province)",
-          plotOutput("M2_plot", height = 600, width = 800),
+          plotOutput("M2_plot", height = 300, width = 480),
           width = 12
         ),
         box(
@@ -341,88 +422,87 @@ The relevant dimensions, their respective variables, and the designated weights 
           sliderInput("slider2", "K-Threshold Value", 1, 9, 3),
           width = 12
         )
+       )
       )
     )
   )
-)
 
 
 
 # UI--------------------------
 ui <- dashboardPage(
   skin = 'midnight',
-  dashboardHeader(title = "Zimbabwe(Draft)"),
-  sidebar = sidebar,
-  body = body)
+    dashboardHeader(title = "Zimbabwe(Draft)"),
+    sidebar = sidebar,
+    body = body)
 
 
 
 
 # Server------------------------------------------
 server <- function(input, output, session) {
-  output$myplot <- renderPlot({
-    gg <- ggplot(data = mtcars, aes(x = mpg, y = disp)) +
-      geom_point() 
+    output$myplot <- renderPlot({
+        gg <- ggplot(data = mtcars, aes(x = mpg, y = disp)) +
+            geom_point() 
+        
+        idx <- input$mytable_rows_selected
+        if (!is.null(idx))
+            gg + geom_point(size = 5, data = mtcars %>% slice(idx)) 
+        else gg
+    })
     
-    idx <- input$mytable_rows_selected
-    if (!is.null(idx))
-      gg + geom_point(size = 5, data = mtcars %>% slice(idx)) 
-    else gg
-  })
-  
-  output$mytable <- DT::renderDT({
-    mtcars
-  })
-  
-  output$M0_plot <- renderPlot({
-    ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
-      geom_polygon(aes(fill = switch(input$slider0, 
-                                     M0_k1,
-                                     M0_k2,
-                                     M0_k3,
-                                     M0_k4,
-                                     M0_k5,
-                                     M0_k6,
-                                     M0_k7,
-                                     M0_k8,
-                                     M0_k9), group = id)) + 
-      scale_fill_gradient(low='grey', high = 'maroon') +
-      labs(fill = "Poverty Index")
-  })
-  
-  output$M1_plot <- renderPlot({
-    ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
-      geom_polygon(aes(fill = switch(input$slider1, 
-                                     M1_k1,
-                                     M1_k2,
-                                     M1_k3,
-                                     M1_k4,
-                                     M1_k5,
-                                     M1_k6,
-                                     M1_k7,
-                                     M1_k8,
-                                     M1_k9), group = id)) + 
-      scale_fill_gradient(low='grey', high = 'maroon') +
-      labs(fill = "Adj. Poverty Gap")
-  })
-  
-  output$M2_plot <- renderPlot({
-    ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
-      geom_polygon(aes(fill = switch(input$slider2, 
-                                     M2_k1,
-                                     M2_k2,
-                                     M2_k3,
-                                     M2_k4,
-                                     M2_k5,
-                                     M2_k6,
-                                     M2_k7,
-                                     M2_k8,
-                                     M2_k9), group = id)) + 
-      scale_fill_gradient(low='grey', high = 'maroon') +
-      labs(fill = "Adj. Poverty Severity")
-  })
+    output$mytable <- DT::renderDT({
+        mtcars
+    })
+    
+    output$M0_plot <- renderPlot({
+      ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
+        geom_polygon(aes(fill = switch(input$slider0, 
+                                       M0_k1,
+                                       M0_k2,
+                                       M0_k3,
+                                       M0_k4,
+                                       M0_k5,
+                                       M0_k6,
+                                       M0_k7,
+                                       M0_k8,
+                                       M0_k9), group = id)) + 
+        scale_fill_gradient(low='grey', high = 'maroon') +
+        labs(fill = "Poverty Index")
+    })
+    
+    output$M1_plot <- renderPlot({
+      ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
+        geom_polygon(aes(fill = switch(input$slider1, 
+                                       M1_k1,
+                                       M1_k2,
+                                       M1_k3,
+                                       M1_k4,
+                                       M1_k5,
+                                       M1_k6,
+                                       M1_k7,
+                                       M1_k8,
+                                       M1_k9), group = id)) + 
+        scale_fill_gradient(low='grey', high = 'maroon') +
+        labs(fill = "Adj. Poverty Gap")
+    })
+    
+    output$M2_plot <- renderPlot({
+      ggplot(datapoly, aes(x=long, y=lat, group = group)) +  
+        geom_polygon(aes(fill = switch(input$slider2, 
+                                       M2_k1,
+                                       M2_k2,
+                                       M2_k3,
+                                       M2_k4,
+                                       M2_k5,
+                                       M2_k6,
+                                       M2_k7,
+                                       M2_k8,
+                                       M2_k9), group = id)) + 
+        scale_fill_gradient(low='grey', high = 'maroon') +
+        labs(fill = "Adj. Poverty Severity")
+    })
 }
 
 # Shiny App------------------------
 shinyApp(ui = ui, server = server)
-
