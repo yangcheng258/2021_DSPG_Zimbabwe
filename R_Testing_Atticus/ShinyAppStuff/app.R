@@ -4,7 +4,7 @@ setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus/ShinyAppStuff"
 # clean the memory
 rm(list=ls())
 
-
+library(shinythemes)
 library(shiny)
 library(ggplot2)
 library(shinydashboard)
@@ -25,6 +25,10 @@ library(sp)
 library(readxl)
 library(tigris)
 library(shinyjs)
+library(gpclib)
+library(maptools)
+gpclibPermit()
+library(broom)
 #library(RColorBrewer)
 #library(osmdata)
 #library(purrr)
@@ -46,6 +50,13 @@ library(shinyjs)
 # source("theme.R")
 # #Get Data
 
+library(ggplot2)
+library(rgdal)
+library(dplyr)
+library(sf)
+library(gpclib)
+library(maptools)
+gpclibPermit()
 
 ## SETTING UP MPI Data
 
@@ -84,14 +95,14 @@ sidebar <- dashboardSidebar(
       text = "MPI",
       icon = icon("map-marked-alt"), badgeLabel = "data", badgeColor = "green"),
     menuItem(
-      "Poverty Index",
+      "Poverty Index \\((M_{0})\\)",
       tabName = 'M0'
     ),
     menuItem(
-      "Adjusted Poverty Gap",
+      withMathJax("Adjusted Poverty Gap \\((M_{1})\\)"),
       tabName = "M1"),
     menuItem(
-      "Adjusted Poverty Severity",
+      "Adjusted Poverty Severity \\((M_{2})\\)",
       tabName = "M2"),
     menuItem(
       tabName = "team",
@@ -410,7 +421,7 @@ The relevant dimensions, their respective variables, and the designated weights 
         theme = shinytheme('superhero'),
         # Make a box with a plot inside of it
         box(
-          title = "Multidimensional Poverty Inde (By Province)",
+          title = "Multidimensional Poverty Index \\((M_{0})\\) (By Province) ",
           plotOutput("M0_plot", height = 300, width = 400),
           width = 12
         ),
@@ -426,7 +437,7 @@ The relevant dimensions, their respective variables, and the designated weights 
       
       fluidPage(
         box(
-          title = "Adjusted Poverty Gap (By Province)",
+          title = "Adjusted Poverty Gap \\((M_{1})\\) (By Province)",
           plotOutput("M1_plot", height = 300, width = 440),
           width = 12
         ),
@@ -443,7 +454,7 @@ The relevant dimensions, their respective variables, and the designated weights 
       
       fluidPage(
         box(
-          title = "Adjusted Poverty Severity (By Province)",
+          title = "Adjusted Poverty Severity \\((M_{2})\\) (By Province)",
           plotOutput("M2_plot", height = 300, width = 480),
           width = 12
         ),
