@@ -1,6 +1,6 @@
 # Set Working Directory
-setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus/ShinyAppStuff")
-
+setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/R_Testing_Atticus/ShinyAppStuff")
+ 
 # clean the memory
 rm(list=ls())
 
@@ -257,7 +257,7 @@ The relevant dimensions, their respective variables, and the designated weights 
                 for commerce and manufacturing. From an “access to major markets” perspective, 
                 Wythe is an attractive location for both light and heavy industry."),
               box(
-                title = "Loudoun County Programs/Services",
+                title = "District level",
                 closable = FALSE,
                 status = "warning",
                 solidHeader = TRUE,
@@ -273,11 +273,11 @@ The relevant dimensions, their respective variables, and the designated weights 
                   title = NULL , width = 16,
                   # The id lets us use input$tabset1 on the server to find the current tab
                   id = "tabset1", height = "350px",
-                  tabPanel("All", 
+                  tabPanel("M0", 
                            sidebarLayout(
                               sidebarPanel(
-                                selectInput("pillar_variable", "Pillar Variable:",
-                                            c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All")),
+                                selectInput("pillar_variable", "Dimension:",
+                                            c("Education", "Health", "Employment","Insurance","Living Standard","Assets","Agricultural assets","Access to services")),
                                 ### Can add more inputs????
                                 # selectInput("time_variable", "Time Variable:",
                                 #             c("60 minutes" = "60",
@@ -294,10 +294,10 @@ The relevant dimensions, their respective variables, and the designated weights 
                   
                           ),
                   
-                  tabPanel("Juvenile",
+                  tabPanel("M1",
                            sidebarPanel(
-                             selectInput("pillar_variable", "Pillar Variable:",
-                                         c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All"))
+                             selectInput("pillar_variable", "Dimension:",
+                                         c("Education", "Health", "Employment","Insurance","Living Standard","Assets","Agricultural assets","Access to services"))
                              
                            ),
                            
@@ -310,10 +310,10 @@ The relevant dimensions, their respective variables, and the designated weights 
                            
                   ),
                   
-                  tabPanel("Foster Care",
+                  tabPanel("M2",
                            sidebarPanel(
                              selectInput("pillar_variable", "Pillar Variable:",
-                                         c("Education", "Employment", "Housing","Insurance","Transportation","Policy and Funding","All"))
+                                         c("Education", "Health", "Employment","Insurance","Living Standard","Assets","Agricultural assets","Access to services"))
                              
                            ),
                            
