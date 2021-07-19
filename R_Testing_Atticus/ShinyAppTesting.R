@@ -20,7 +20,7 @@ library(broom)
 ## SETTING UP MPI Data
 
 # Loads in the shapefile
-ZimMap <- readOGR(dsn = paste0(getwd(),"/R_Testing_Atticus/ProvinceShapes"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+ZimMap <- readOGR(dsn = paste0(getwd(),"/ProvinceShapes"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
 
 # Loading the MPI data and combining
 id <- ZimMap@data[["ADM1_EN"]]
@@ -58,7 +58,7 @@ sidebar <- dashboardSidebar(
 
 ## User Interface
 ui <- dashboardPage(
-  skin = 'midnight',
+  skin = 'blue',
   dashboardHeader(
     title = 'Zimbabwe\n Multidimenzional Poverty Index'
   ),

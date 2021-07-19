@@ -11,6 +11,7 @@ library(dplyr)
 library(sf)
 library(gpclib)
 library(maptools)
+library(ggpolypath)
 gpclibPermit()
 
 
@@ -117,7 +118,10 @@ if (TRUE) {
   ZimMap@data[["ADM2_EN"]][	91	] = 	"Zvishavane Urban"
 }
 
-  
+
+ZimMap@polygons[[46]]@Polygons = ZimMap@polygons[[46]]@Polygons[1:2]
+ZimMap@polygons[[46]]@plotOrder = c(1L, 2L)
+
 # Rename the district to id
 colnames(MPIData)[1] <- "id"
 
@@ -129,5 +133,40 @@ ZimMap_fortified <- tidy(ZimMap, region = "ADM2_EN")
 datapoly <- merge(ZimMap_fortified, MPIData , by = c("id"))
 
 # Plots the data
-ggplot(datapoly, aes(x=long, y=lat, group = group)) +  geom_polygon(aes(fill = M0_k7, group = id)) + scale_fill_gradient(low='grey', high = 'red')
+plot = ggplot(datapoly, aes(x=long, y=lat, group = group))
 
+plot +geom_polygon(aes(fill = M1_k7, group = id), na.rm = TRUE) + scale_fill_gradient(low='grey', high = 'red') +
+  geom_path(color = 'black', size = .1)
+
+ggplot(ZimMap, aes(x=long, y=lat, group = group)) +
+  geom_polygon(aes(fill = 'red', color = 'white', group = id)) +
+  geom_path(color = 'white', size = 1)
+
+labels <- sprintf(
+  "<strong>%s</strong><br/>M<sub>0</sub>",
+  ZimMap@data$ADM2_EN
+) %>% lapply(htmltools::HTML)
+
+M <- leaflet(
+  options = leafletOptions(
+    minZoom = 0, maxZoom= 18,
+    drag = FALSE)) %>% addTiles() %>%
+  setView(lng = 30, lat=-19, zoom=7) %>%
+  addPolygons(data = ZimMap,
+              fillColor = 'grey',
+              weight = 1,
+              opacity = .5,
+              color = "white",
+              fillOpacity = 0.7,
+              highlight = highlightOptions(
+                weight = 5,
+                color = 'white',
+                fillOpacity = 0.7,
+                bringToFront = TRUE),
+              label = labels,
+              labelOptions = labelOptions(
+                style = list("font-weight" = "normal", padding = "3px 8px"),
+                textsize = "15px",
+                direction = "auto")
+  )
+M
