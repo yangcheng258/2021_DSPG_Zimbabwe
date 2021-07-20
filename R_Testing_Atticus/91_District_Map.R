@@ -216,9 +216,9 @@ M2 = switch(k_threshold,
 
 # This is the color palette used in the graphs
 pal <- colorNumeric(
-  palette = "viridis",
+  palette = c("light green", "orange", "red"),
   domain = M0,
-  reverse = TRUE)
+  reverse = FALSE)
 
 # This creates labels for M0, M1 and M2 
 M0_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>0</sub>", M0, switch(k_threshold,
