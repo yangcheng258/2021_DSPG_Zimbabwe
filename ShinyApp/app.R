@@ -1,5 +1,5 @@
 # Set Working Directory
-setwd("/Users/mattb24/Zimbabwe/2021_DSPG_Zimbabwe/ShinyApp/ShinyAppStuff")
+setwd(paste0(getwd(),"/ShinyAppStuff")) 
 
 # clean the memory
 rm(list=ls())
