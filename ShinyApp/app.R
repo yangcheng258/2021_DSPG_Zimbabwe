@@ -27,6 +27,7 @@ library(dplyr)
 library(sf)
 library(gpclib)
 library(maptools)
+library(shinydashboard)
 library(ggpolypath)
 gpclibPermit()
 
@@ -195,6 +196,48 @@ jscode <- "function getUrlVars() {
            "
 
 
+
+## 60 District LOADING DATA ----------------------------------------------------------------
+
+# Loads the shapefile
+Dist_60_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/60DistrictShapefiles"), layer="gadm36_ZWE_2")
+
+# Loads the district data
+Dist_60_Total_2017 = read.csv("MappingData/2017_District.csv")
+Dist_60_Urban_2017 = read.csv("MappingData/2017_District_Urban.csv")
+Dist_60_Rural_2017 = read.csv("MappingData/2017_District_Rural.csv")
+
+# Loads the national data
+National_2017 = read.csv(file = "MappingData/2017_National.csv")
+National_Urban_2017 = read.csv(file = "MappingData/2017_National_Urban.csv")
+National_Rural_2017 = read.csv(file = "MappingData/2017_National_Rural.csv")
+
+
+
+## CLEANING DISTRICT DATA-------------------------------------------------------
+
+# Fixes four spelling changes in the shapefile
+Dist_60_Map@data$NAME_2[47] = "Bulilima"
+Dist_60_Map@data$NAME_2[50] = "Mangwe"
+Dist_60_Map@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
+Dist_60_Map@data$NAME_2[25] = "Hwedza"
+
+# Renames the columns in the data to merge
+colnames(Dist_60_Total_2017)[2] <- "NAME_2"
+colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Dist_60_Total_Map = Dist_60_Map
+Dist_60_Urban_Map = Dist_60_Map
+Dist_60_Rural_Map = Dist_60_Map
+
+# Merges the shapefiles with the data csv files 
+Dist_60_Total_Map@data = merge(Dist_60_Total_Map@data, Dist_60_Total_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Urban_Map@data = merge(Dist_60_Urban_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+
 ## MAPPING FUNCTIONs------------------------------------------------------------
 # This section utilizes a function that condenses the use of labels and polygons
 # in the leaflet maps. These functions clean up the code so that there isn't 
@@ -226,7 +269,6 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
     <strong>" , metric_name , ":</strong> %g<br/>
     <strong>National " , metric_name , ":</strong> %g"),
     name_data, metric, national_metric) %>% lapply(htmltools::HTML)
-  print(label)
   return(label)
 }
 
@@ -324,15 +366,72 @@ ui <- navbarPage(title = "Hampton Roads",
 
                           # maps --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
-                          fluidRow(
-                            box(
-                              title = "91 District Map",
-                              leafletOutput("Dist_91_Map")
+                          dashboardPage(
+                            skin = 'blue',
+                            dashboardHeader(
+                              title = 'Zimbabwe Multidimenzional Poverty Index'
                             ),
-                            box(
-                                sliderInput("slider_91", "K-Threshold", 1, 9, 3)),
-                            )
-                          ),
+                            
+                            
+                            dashboardSidebar(
+                              sidebarMenu(
+                                menuItem(
+                                  "Standard 91 District Map",
+                                  tabName = '91_Dist'
+                                ),
+                                menuItem(
+                                  "Decomposed 60 District Map",
+                                  tabName = '60_Dist'
+                                )
+                              )
+                            ),
+                            
+                            dashboardBody(tabItems(
+                              ## First Sidebar ----------------------------
+                              tabItem(
+                                tabName = "91_Dist",
+                                # Everything has to be put in a row or column
+                                fluidPage(
+                                  box(
+                                    title = "91 District Poverty Map of Zimbabwe",
+                                    leafletOutput("Dist_91_Map"),
+                                    width = 12,
+                                    height = 600
+                                  ),
+                                  box(
+                                    sliderInput("slider_91", "K-Threshold Value", 1, 9, 3),
+                                    width = 12
+                                  ))),
+                              tabItem(
+                                tabName = "60_Dist",
+                                fluidPage(
+                                  box(
+                                    title = "60 District Map",
+                                    leafletOutput("Dist_60_Map"),
+                                    width = 12,
+                                    height = 600
+                                  ),
+                                  box(
+                                    radioButtons("MPI_Buttons_60", "Select Index to Display:", 
+                                                 choiceNames = c("Adj. Headcount M0",
+                                                                 "Adj. Poverty Gap M1",
+                                                                 "Adj. Poverty Severity M2"),
+                                                 choiceValues = c(1, 2, 3))
+                                  ),
+                                  box(
+                                    radioButtons("UrbRur_Buttons_60", "", 
+                                                 choiceNames = c("Total",
+                                                                 "Urban",
+                                                                 "Rural"),
+                                                 choiceValues = c(1, 2, 3))
+                                  ),
+                                  box(
+                                    sliderInput("slider_60", "K-Threshold Value", 1, 9, 3),
+                                    width = 12
+                                  )
+                                )
+                              )
+                            )))),
                  
                           # team -----------------------------------------------------------
                           tabPanel("DSPG Team", value = "team",
@@ -391,31 +490,12 @@ server <- function(input, output, session) {
   # Run JavaScript Code
   runjs(jscode)
   
+  output$allgrctable <- renderTable({
+    table <- read.csv("data/isochrones/tables/grc_iso_table.csv")
+    table$Coverage <- paste0(round(table$Coverage, 2), " %")
+    table
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
-  #educational attainment plots working on it....................
-  var_genEducationalAttainment <- reactive({
-    input$genEdAttainmentYearDrop
-  })
-  var_blackEducationalAttainment <- reactive({
-    input$blackEdAttainmentYearDrop
-  })
-  output$genEdAttainmentPlots <- renderPlot({
-    if(var_genEducationalAttainment() == "2019") {
-      generalEducationalAttainement2019 <- read.csv("data/TableS1501FiveYearEstimates/generalEducationalAttainment(2019).csv")
-      va_tot_education_bar <- generalEducationalAttainement2019  %>% 
-        mutate(NAME = str_remove(NAME, "County, Virginia")) %>% 
-        mutate(NAME = str_remove(NAME, "city, Virginia")) %>% 
-        ggplot(aes(x = NAME, y = pct_tot, fill = NAME)) + geom_col() +
-        theme_minimal() + labs(title = "Highest Educational Attainment for General Population 25 years and older: Bachelor's degree or higher",
-                               y = "Percent (%)",
-                               x = "Counties of Hampton Roads",
-                               caption = "Source: ACS 5 Year Estimate Table S1501") + theme(axis.text.x = element_text(angle = 40))
-      
-      #this is likely not the most efficient way of coloring the scale but it works so using it for now, will hopefully change later...  
-      va_tot_education_bar
-      
-      
-    }})
   
   output$Dist_91_Map <- renderLeaflet({
     # Creating variables for M0, M1 and M2
@@ -518,1910 +598,319 @@ server <- function(input, output, session) {
                                                                       "Index with K=6",
                                                                       "Index with K=7",
                                                                       "Index with K=8",
-                                                                      "Index with K=9",),
+                                                                      "Index with K=9"),
                 position = "bottomright")
   })
-  # socio plots: done -----------------------------------------------------
   
-  var <- reactive({
-    input$sociodrop
-  })
-  #age65
-  output$socioplot <- renderLeaflet({
-    if(var() == "age65") {
-      
-      pal <- colorQuantile("Blues", domain = socdem_block$age65, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population age 65 or over:</strong>",
-              round(socdem_block$age65, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$age65), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$age65),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-      #under18
-    }else if(var() == "under18"){
-      pal <- colorQuantile("Blues", domain = socdem_block$under18, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population age 18 or under: </strong>",
-              round(socdem_block$under18, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$under18), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$under18),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-      #population-tract
-    }else if(var() == "totalpop_trct"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$totalpop_trct, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_tract$NAME.y,
-              "<br />",
-              "<strong>Total population: </strong>",
-              formatC(socdem_tract$totalpop_trct, format = "f", big.mark =",", digits = 0)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_tract$totalpop_trct), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_tract$totalpop_trct),
-                  title = "Total Population<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
-                  })
-      #population-block group
-    }else if(var() == "totalpop_bgrp"){
-      pal <- colorQuantile("Blues", domain = socdem_block$totalpop_bgrp, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>Total population: </strong>",
-              formatC(socdem_block$totalpop_bgrp, format = "f", big.mark =",", digits = 0)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$totalpop_bgrp), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$totalpop_bgrp),
-                  title = "Total Population<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 0), " &ndash; ", round(cuts[-1], 0), ")")
-                  })
-    }else if(var() == "black"){
-      pal <- colorQuantile("Blues", domain = socdem_block$black, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population Black: </strong>",
-              round(socdem_block$black, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$black), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$black),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "noba"){
-      pal <- colorQuantile("Blues", domain = socdem_block$noba, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population without BA degree: </strong>",
-              round(socdem_block$noba, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$noba), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$noba),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "unempl"){
-      pal <- colorQuantile("Blues", domain = socdem_block$unempl, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population in labor force unemployed: </strong>",
-              round(socdem_block$unempl, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$unempl), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$unempl),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "nohealthins2"){
-      pal <- colorQuantile("Blues", domain = socdem_block$nohealthins2, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population without health insurance: </strong>",
-              round(socdem_block$nohealthins2, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$nohealthins2), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$nohealthins2),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "snap"){
-      pal <- colorQuantile("Blues", domain = socdem_block$snap, probs = seq(0, 1, length = 6), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_block$NAME.y,
-              "<br />",
-              "<strong>% Population receiving public assistance or SNAP benefits: </strong>",
-              round(socdem_block$snap, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_block, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_block$snap), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_block$snap),
-                  title = "Percent by<br>Quintile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "inpov"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$inpov, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_tract$NAME.y,
-              "<br />",
-              "<strong>% Population in poverty: </strong>",
-              round(socdem_tract$inpov, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_tract$inpov), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_tract$inpov),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "hispanic"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$hispanic, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_tract$NAME.y,
-              "<br />",
-              "<strong>% Population Hispanic or Latino: </strong>",
-              round(socdem_tract$hispanic, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_tract$hispanic), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_tract$hispanic),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var() == "privateins"){
-      pal <- colorQuantile("Blues", domain = socdem_tract$privateins, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_tract$NAME.y,
-              "<br />",
-              "<strong>% Population with private health insurance: </strong>",
-              round(socdem_tract$privateins, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_tract$privateins), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_tract$privateins),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else{
-      pal <- colorQuantile("Blues", domain = socdem_tract$publicins, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              socdem_tract$NAME.y,
-              "<br />",
-              "<strong>% Population with public health insurance: </strong>",
-              round(socdem_tract$publicins, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = socdem_tract, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(socdem_tract$publicins), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(socdem_tract$publicins),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }
-  })
-  
-  
-  # old plots - snap -----------------------------------------------
-  var_old <- reactive({
-    input$olddrop
-  })
-  var_hh <- reactive({
-    input$hhdrop
-  })
-  output$oldplot <- renderLeaflet({
-    # healthins wasn't coded properly so it's just all zeroes
-    if(var_old() == "visdiff") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$visdiff,
-                     "_f" = olderadults$visdiff_f,
-                     "_m" = olderadults$visdiff_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with vision difficulties: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "ambdiff") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$ambdiff,
-                     "_f" = olderadults$ambdiff_f,
-                     "_m" = olderadults$ambdiff_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with ambulatory difficulties: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "cogdiff") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$cogdiff,
-                     "_f" = olderadults$cogdiff_f,
-                     "_m" = olderadults$cogdiff_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with cognitive difficulties: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "carediff") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$carediff,
-                     "_f" = olderadults$carediff_f,
-                     "_m" = olderadults$carediff_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with self-care difficulties: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "ildiff") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$ildiff,
-                     "_f" = olderadults$ildiff_f,
-                     "_m" = olderadults$ildiff_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with independent living difficulties: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "disab") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$disab,
-                     "_f" = olderadults$disab_f,
-                     "_m" = olderadults$disab_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults with any disability: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_old() == "inpov") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$inpov,
-                     "_f" = olderadults$inpov_f,
-                     "_m" = olderadults$inpov_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults in poverty: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else 
-      # if(var_old() == "labfor")
-    {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$labfor,
-                     "_f" = olderadults$labfor_f,
-                     "_m" = olderadults$labfor_m)
-      
-      pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Older adults in the labor force: </strong>",
-              round(data, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(data), 
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(data),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }
-  })
-  output$householdplot <- renderLeaflet({
-    if(var_hh() == "hhsixty_total") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$hhsixty_total,
-                     "_f" = olderadults$hhsixty_total,
-                     "_m" = olderadults$hhsixty_total)
-      
-      pal <- colorQuantile("Blues", domain = olderadults$hhsixty_total, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Housholds with a 60+ member: </strong>",
-              round(olderadults$hhsixty_total, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(olderadults$hhsixty_total),
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(olderadults$hhsixty_total),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_hh() == "hhsixty_fhh") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$hhsixty_fhh,
-                     "_f" = olderadults$hhsixty_fhh,
-                     "_m" = olderadults$hhsixty_fhh)
-      
-      pal <- colorQuantile("Blues", domain = olderadults$hhsixty_fhh, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Housholds with a female 60+ member:</strong>",
-              round(olderadults$hhsixty_fhh, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(olderadults$hhsixty_fhh),
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(olderadults$hhsixty_fhh),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_hh() == "hhsixty_mhh") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$hhsixty_mhh,
-                     "_f" = olderadults$hhsixty_mhh,
-                     "_m" = olderadults$hhsixty_mhh)
-      
-      pal <- colorQuantile("Blues", domain = olderadults$hhsixty_mhh, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Housholds with a male 60+ member: </strong>",
-              round(olderadults$hhsixty_mhh, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(olderadults$hhsixty_mhh),
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(olderadults$hhsixty_mhh),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else if(var_hh() == "hhsixty_nonfam") {
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$hhsixty_nonfam,
-                     "_f" = olderadults$hhsixty_nonfam,
-                     "_m" = olderadults$hhsixty_nonfam)
-      
-      pal <- colorQuantile("Blues", domain = olderadults$hhsixty_nonfam, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Single housholds with a 60+ member: </strong>",
-              round(olderadults$hhsixty_nonfam, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(olderadults$hhsixty_nonfam),
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(olderadults$hhsixty_nonfam),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }else{
-      data <- switch(input$oldspecdrop,
-                     "Total" = olderadults$hhsixty_marr,
-                     "_f" = olderadults$hhsixty_marr,
-                     "_m" = olderadults$hhsixty_marr)
-      
-      pal <- colorQuantile("Blues", domain = olderadults$hhsixty_marr, probs = seq(0, 1, length = 5), right = TRUE)
-      
-      labels <- lapply(
-        paste("<strong>Area: </strong>",
-              olderadults$NAME.y,
-              "<br />",
-              "<strong>% Married households with a 60+ member: </strong>",
-              round(olderadults$hhsixty_marr, 2)),
-        htmltools::HTML
-      )
-      
-      leaflet(data = olderadults, options = leafletOptions(minZoom = 10))%>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
-        addPolygons(fillColor = ~pal(olderadults$hhsixty_marr),
-                    fillOpacity = 0.7, 
-                    stroke = TRUE, weight = 0.5, color = "#202020",
-                    label = labels,
-                    labelOptions = labelOptions(direction = "bottom",
-                                                style = list(
-                                                  "font-size" = "12px",
-                                                  "border-color" = "rgba(0,0,0,0.5)",
-                                                  direction = "auto"
-                                                ))) %>%
-        addLegend("bottomleft",
-                  pal = pal,
-                  values =  ~(olderadults$hhsixty_marr),
-                  title = "Percent by<br>Quartile Group",
-                  opacity = 0.7,
-                  labFormat = function(type, cuts, p) {
-                    n = length(cuts)
-                    paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                  })
-    }
-  })
-  
-  
-  # data and measures table: done ----------------------------------------
-  var_topic <- reactive({
-    input$topic
-  })
-  output$datatable <- renderDataTable({
-    if(var_topic() == "All Measures"){
-      table <- as.data.frame(measures_table)
-      datatable(table, rownames = FALSE, options = list(pageLength = 15)) %>% formatStyle(0, target = 'row', lineHeight = '80%')
-    }
-    else{
-      data <- switch(input$topic,
-                     "Connectivity Measures" = "connectivity",
-                     "Sociodemographic Measures" = "demographics",
-                     "Food Access Measures" = "food access",
-                     "Health Care Access Measures" = "health",
-                     "Older Adult Population Measures" = "older adults")
-      table <- subset(measures_table, Topic == data)
-      table <- as.data.frame(table)
-      datatable(table, rownames = FALSE, options = list(pageLength = 15)) %>% formatStyle(0, target = 'row', lineHeight = '80%')
-    }
-  })
-  
-  # device: done ---------------------------------------------------------
-  
-  output$deviceplot <- renderLeaflet({
-    data <- switch(input$devicedrop,
-                   "nocomputer" = connectivity$nocomputer,
-                   "laptop" = connectivity$laptop,
-                   "smartphone" = connectivity$smartphone,
-                   "tablet" = connectivity$tablet, 
-                   "nointernet" = connectivity$nointernet,
-                   "satellite" = connectivity$satellite,
-                   "cellular" = connectivity$cellular,
-                   "broadband" = connectivity$broadband)
+  output$Dist_60_Map <- renderLeaflet({
+    # Variables for total data are created 
+    M0_Total = switch(input$slider_60,
+                      Dist_60_Total_Map@data$M0_k1,
+                      Dist_60_Total_Map@data$M0_k2,
+                      Dist_60_Total_Map@data$M0_k3,
+                      Dist_60_Total_Map@data$M0_k4,
+                      Dist_60_Total_Map@data$M0_k5,
+                      Dist_60_Total_Map@data$M0_k6,
+                      Dist_60_Total_Map@data$M0_k7,
+                      Dist_60_Total_Map@data$M0_k8,
+                      Dist_60_Total_Map@data$M0_k9)
     
-    device_spec <- switch(input$devicedrop,
-                          "nocomputer" = "no computer",
-                          "laptop" = "laptop",
-                          "smartphone" = "smartphone",
-                          "tablet" = "tablet", 
-                          "nointernet" = "no internet access",
-                          "satellite" = "satellite internet",
-                          "cellular" = "cellular internet",
-                          "broadband" = "broadband internet")
+    M1_Total = switch(input$slider_60,
+                      Dist_60_Total_Map@data$M1_k1,
+                      Dist_60_Total_Map@data$M1_k2,
+                      Dist_60_Total_Map@data$M1_k3,
+                      Dist_60_Total_Map@data$M1_k4,
+                      Dist_60_Total_Map@data$M1_k5,
+                      Dist_60_Total_Map@data$M1_k6,
+                      Dist_60_Total_Map@data$M1_k7,
+                      Dist_60_Total_Map@data$M1_k8,
+                      Dist_60_Total_Map@data$M1_k9)
     
-    pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 6), right = TRUE)
+    M2_Total = switch(input$slider_60,
+                      Dist_60_Total_Map@data$M2_k1,
+                      Dist_60_Total_Map@data$M2_k2,
+                      Dist_60_Total_Map@data$M2_k3,
+                      Dist_60_Total_Map@data$M2_k4,
+                      Dist_60_Total_Map@data$M2_k5,
+                      Dist_60_Total_Map@data$M2_k6,
+                      Dist_60_Total_Map@data$M2_k7,
+                      Dist_60_Total_Map@data$M2_k8,
+                      Dist_60_Total_Map@data$M2_k9)
     
-    labels <- lapply(
-      paste("<strong>Area: </strong>",
-            connectivity$NAME.y,
-            "<br />",
-            "<strong>% Households with",
-            device_spec,
-            "access: </strong>",
-            round(data, 2)),
-      htmltools::HTML
-    )
+    # Variables for Urban data are created 
+    M0_Urban = switch(input$slider_60,
+                      Dist_60_Urban_Map@data$M0_k1,
+                      Dist_60_Urban_Map@data$M0_k2,
+                      Dist_60_Urban_Map@data$M0_k3,
+                      Dist_60_Urban_Map@data$M0_k4,
+                      Dist_60_Urban_Map@data$M0_k5,
+                      Dist_60_Urban_Map@data$M0_k6,
+                      Dist_60_Urban_Map@data$M0_k7,
+                      Dist_60_Urban_Map@data$M0_k8,
+                      Dist_60_Urban_Map@data$M0_k9)
     
-    leaflet(data = connectivity, options = leafletOptions(minZoom = 10))%>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(fillColor = ~pal(data), 
-                  fillOpacity = 0.7, 
-                  stroke = TRUE, weight = 0.5, color = "#202020",
-                  label = labels,
-                  labelOptions = labelOptions(direction = "bottom",
-                                              style = list(
-                                                "font-size" = "12px",
-                                                "border-color" = "rgba(0,0,0,0.5)",
-                                                direction = "auto"
-                                              ))) %>%
-      addLegend("bottomleft",
-                pal = pal,
-                values =  ~(data),
-                title = "Percent by<br>Quintile Group",
-                opacity = 0.7,
-                labFormat = function(type, cuts, p) {
-                  n = length(cuts)
-                  paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                })
-  })
-  
-  
-  # wifi: done -----------------------------------------------------------
-  
-  # Iso selector
-  output$wifiplot <- renderLeaflet({
-    colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+    M1_Urban = switch(input$slider_60,
+                      Dist_60_Urban_Map@data$M1_k1,
+                      Dist_60_Urban_Map@data$M1_k2,
+                      Dist_60_Urban_Map@data$M1_k3,
+                      Dist_60_Urban_Map@data$M1_k4,
+                      Dist_60_Urban_Map@data$M1_k5,
+                      Dist_60_Urban_Map@data$M1_k6,
+                      Dist_60_Urban_Map@data$M1_k7,
+                      Dist_60_Urban_Map@data$M1_k8,
+                      Dist_60_Urban_Map@data$M1_k9)
     
-    wifi_iso10 <- switch(input$wifidrop,
-                         "Meadows of Dan Elementary School" = wifi_iso_10_1,
-                         "Woolwine Elementary School" = wifi_iso_10_2,
-                         "Patrick Springs Primary School" = wifi_iso_10_3,
-                         "Blue Ridge Elementary School" = wifi_iso_10_4,
-                         "Patrick County High School" = wifi_iso_10_5,
-                         "Stuart Elementary School" = wifi_iso_10_6,
-                         "Patrick County Branch Library" = wifi_iso_10_7,
-                         "Hardin Reynolds Memorial School" = wifi_iso_10_8,
-                         "Stuart Baptist Church" = wifi_iso_10_9,                       
-                         "Patrick Henry Community College Stuart Campus" = wifi_iso_10_10)
+    M2_Urban = switch(input$slider_60,
+                      Dist_60_Urban_Map@data$M2_k1,
+                      Dist_60_Urban_Map@data$M2_k2,
+                      Dist_60_Urban_Map@data$M2_k3,
+                      Dist_60_Urban_Map@data$M2_k4,
+                      Dist_60_Urban_Map@data$M2_k5,
+                      Dist_60_Urban_Map@data$M2_k6,
+                      Dist_60_Urban_Map@data$M2_k7,
+                      Dist_60_Urban_Map@data$M2_k8,
+                      Dist_60_Urban_Map@data$M2_k9)
     
-    wifi_iso15 <- switch(input$wifidrop,
-                         "Meadows of Dan Elementary School" = wifi_iso_15_1,
-                         "Woolwine Elementary School" = wifi_iso_15_2,
-                         "Patrick Springs Primary School" = wifi_iso_15_3,
-                         "Blue Ridge Elementary School" = wifi_iso_15_4,
-                         "Patrick County High School" = wifi_iso_15_5,
-                         "Stuart Elementary School" = wifi_iso_15_6,
-                         "Patrick County Branch Library" = wifi_iso_15_7,
-                         "Hardin Reynolds Memorial School" = wifi_iso_15_8,
-                         "Stuart Baptist Church" = wifi_iso_15_9,                       
-                         "Patrick Henry Community College Stuart Campus" = wifi_iso_15_10)
+    # Variables for total data are created 
+    M0_Rural = switch(input$slider_60,
+                      Dist_60_Rural_Map@data$M0_k1,
+                      Dist_60_Rural_Map@data$M0_k2,
+                      Dist_60_Rural_Map@data$M0_k3,
+                      Dist_60_Rural_Map@data$M0_k4,
+                      Dist_60_Rural_Map@data$M0_k5,
+                      Dist_60_Rural_Map@data$M0_k6,
+                      Dist_60_Rural_Map@data$M0_k7,
+                      Dist_60_Rural_Map@data$M0_k8,
+                      Dist_60_Rural_Map@data$M0_k9)
     
-    data <- switch(input$wifidrop,
-                   "Meadows of Dan Elementary School" = 1,
-                   "Woolwine Elementary School" = 2,
-                   "Patrick Springs Primary School" = 3,
-                   "Blue Ridge Elementary School" = 4,
-                   "Patrick County High School" = 5,
-                   "Stuart Elementary School" = 6,
-                   "Patrick County Branch Library" = 7,
-                   "Hardin Reynolds Memorial School" = 8,
-                   "Stuart Baptist Church" = 9,                       
-                   "Patrick Henry Community College Stuart Campus" = 10)
+    M1_Rural = switch(input$slider_60,
+                      Dist_60_Rural_Map@data$M1_k1,
+                      Dist_60_Rural_Map@data$M1_k2,
+                      Dist_60_Rural_Map@data$M1_k3,
+                      Dist_60_Rural_Map@data$M1_k4,
+                      Dist_60_Rural_Map@data$M1_k5,
+                      Dist_60_Rural_Map@data$M1_k6,
+                      Dist_60_Rural_Map@data$M1_k7,
+                      Dist_60_Rural_Map@data$M1_k8,
+                      Dist_60_Rural_Map@data$M1_k9)
     
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            wifi_latlong[data, ]$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            wifi_latlong[data, ]$fulladdress,
-            "<br />",
-            "<strong>Notes:</strong>",
-            wifi_latlong[data, ]$notes),
-      htmltools::HTML
-    )
+    M2_Rural = switch(input$slider_60,
+                      Dist_60_Rural_Map@data$M2_k1,
+                      Dist_60_Rural_Map@data$M2_k2,
+                      Dist_60_Rural_Map@data$M2_k3,
+                      Dist_60_Rural_Map@data$M2_k4,
+                      Dist_60_Rural_Map@data$M2_k5,
+                      Dist_60_Rural_Map@data$M2_k6,
+                      Dist_60_Rural_Map@data$M2_k7,
+                      Dist_60_Rural_Map@data$M2_k8,
+                      Dist_60_Rural_Map@data$M2_k9)
     
-    m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .8, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = wifi_iso10, 
-                  fillColor = colors[1],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrone") %>%
-      addPolygons(data = wifi_iso15,
-                  fillColor = colors[2],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrone") %>%
-      addMarkers(data = wifi_latlong, ~longitude[data], ~latitude[data],
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto")))  %>%
+    # We need to select how these variables affect M0, M1 and M2 by selecting
+    # which index to look at 1 = M0, 2 = M1, 3 = M2
+    mpi_selection = strtoi(input$MPI_Buttons_60)
+    
+    # This allocates the total MPI Variables
+    education_max_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_education_max, Dist_60_Total_Map@data$M1_education_max,Dist_60_Total_Map@data$M2_education_max)
+    education_dropout_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_education_dropout, Dist_60_Total_Map@data$M1_education_dropout,Dist_60_Total_Map@data$M2_education_dropout)
+    health_chronic_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_health_chronic, Dist_60_Total_Map@data$M1_health_chronic,Dist_60_Total_Map@data$M2_health_chronic)
+    health_visit_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_health_visit, Dist_60_Total_Map@data$M1_health_visit,Dist_60_Total_Map@data$M2_health_visit)
+    employment_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_employment, Dist_60_Total_Map@data$M1_employment,Dist_60_Total_Map@data$M2_employment)
+    assets_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_assets, Dist_60_Total_Map@data$M1_assets,Dist_60_Total_Map@data$M2_assets)
+    services_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_services, Dist_60_Total_Map@data$M1_services,Dist_60_Total_Map@data$M2_services)
+    electricity_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_electricity, Dist_60_Total_Map@data$M1_electricity,Dist_60_Total_Map@data$M2_electricity)
+    cooking_fuel_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_cooking_fuel, Dist_60_Total_Map@data$M1_cooking_fuel,Dist_60_Total_Map@data$M2_cooking_fuel)
+    water_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_water, Dist_60_Total_Map@data$M1_water,Dist_60_Total_Map@data$M2_water)
+    toilet_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_toilet, Dist_60_Total_Map@data$M1_toilet,Dist_60_Total_Map@data$M2_toilet)
+    land_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_land, Dist_60_Total_Map@data$M1_land,Dist_60_Total_Map@data$M2_land)
+    livestock_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_livestock, Dist_60_Total_Map@data$M1_livestock,Dist_60_Total_Map@data$M2_livestock)
+    rural_equip_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_rural_equip, Dist_60_Total_Map@data$M1_rural_equip,Dist_60_Total_Map@data$M2_rural_equip)
+    
+    # This allocates the urban MPI Variables
+    education_max_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_education_max, Dist_60_Urban_Map@data$M1_education_max,Dist_60_Urban_Map@data$M2_education_max)
+    education_dropout_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_education_dropout, Dist_60_Urban_Map@data$M1_education_dropout,Dist_60_Urban_Map@data$M2_education_dropout)
+    health_chronic_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_health_chronic, Dist_60_Urban_Map@data$M1_health_chronic,Dist_60_Urban_Map@data$M2_health_chronic)
+    health_visit_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_health_visit, Dist_60_Urban_Map@data$M1_health_visit,Dist_60_Urban_Map@data$M2_health_visit)
+    employment_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_employment, Dist_60_Urban_Map@data$M1_employment,Dist_60_Urban_Map@data$M2_employment)
+    assets_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_assets, Dist_60_Urban_Map@data$M1_assets,Dist_60_Urban_Map@data$M2_assets)
+    services_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_services, Dist_60_Urban_Map@data$M1_services,Dist_60_Urban_Map@data$M2_services)
+    electricity_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_electricity, Dist_60_Urban_Map@data$M1_electricity,Dist_60_Urban_Map@data$M2_electricity)
+    cooking_fuel_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_cooking_fuel, Dist_60_Urban_Map@data$M1_cooking_fuel,Dist_60_Urban_Map@data$M2_cooking_fuel)
+    water_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_water, Dist_60_Urban_Map@data$M1_water,Dist_60_Urban_Map@data$M2_water)
+    toilet_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_toilet, Dist_60_Urban_Map@data$M1_toilet,Dist_60_Urban_Map@data$M2_toilet)
+    land_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_land, Dist_60_Urban_Map@data$M1_land,Dist_60_Urban_Map@data$M2_land)
+    livestock_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_livestock, Dist_60_Urban_Map@data$M1_livestock,Dist_60_Urban_Map@data$M2_livestock)
+    rural_equip_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_rural_equip, Dist_60_Urban_Map@data$M1_rural_equip,Dist_60_Urban_Map@data$M2_rural_equip)
+    
+    # This allocates the rural MPI variables
+    education_max_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_education_max, Dist_60_Rural_Map@data$M1_education_max,Dist_60_Rural_Map@data$M2_education_max)
+    education_dropout_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_education_dropout, Dist_60_Rural_Map@data$M1_education_dropout,Dist_60_Rural_Map@data$M2_education_dropout)
+    health_chronic_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_health_chronic, Dist_60_Rural_Map@data$M1_health_chronic,Dist_60_Rural_Map@data$M2_health_chronic)
+    health_visit_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_health_visit, Dist_60_Rural_Map@data$M1_health_visit,Dist_60_Rural_Map@data$M2_health_visit)
+    employment_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_employment, Dist_60_Rural_Map@data$M1_employment,Dist_60_Rural_Map@data$M2_employment)
+    assets_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_assets, Dist_60_Rural_Map@data$M1_assets,Dist_60_Rural_Map@data$M2_assets)
+    services_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_services, Dist_60_Rural_Map@data$M1_services,Dist_60_Rural_Map@data$M2_services)
+    electricity_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_electricity, Dist_60_Rural_Map@data$M1_electricity,Dist_60_Rural_Map@data$M2_electricity)
+    cooking_fuel_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_cooking_fuel, Dist_60_Rural_Map@data$M1_cooking_fuel,Dist_60_Rural_Map@data$M2_cooking_fuel)
+    water_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_water, Dist_60_Rural_Map@data$M1_water,Dist_60_Rural_Map@data$M2_water)
+    toilet_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_toilet, Dist_60_Rural_Map@data$M1_toilet,Dist_60_Rural_Map@data$M2_toilet)
+    land_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_land, Dist_60_Rural_Map@data$M1_land,Dist_60_Rural_Map@data$M2_land)
+    livestock_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_livestock, Dist_60_Rural_Map@data$M1_livestock,Dist_60_Rural_Map@data$M2_livestock)
+    rural_equip_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_rural_equip, Dist_60_Rural_Map@data$M1_rural_equip,Dist_60_Rural_Map@data$M2_rural_equip)
+    
+    
+    # We need to select how these variables affect M0, M1 and M2 by selecting
+    # which index to look at 1 = Total, 2 = Urban, 3 = Rural
+    urban_rural_selection = strtoi(input$UrbRur_Buttons_60)
+    
+    M0 = switch(urban_rural_selection, M0_Total, M0_Urban, M0_Rural)
+    M1 = switch(urban_rural_selection, M1_Total, M1_Urban, M1_Rural)
+    M2 = switch(urban_rural_selection, M2_Total, M2_Urban, M2_Rural)
+    
+    
+    
+    index = switch(mpi_selection, M0, M1, M2)
+    education_max = switch(urban_rural_selection, education_max_Total, education_max_Urban, education_max_Rural)
+    education_dropout = switch(urban_rural_selection, education_dropout_Total, education_dropout_Urban, education_dropout_Rural)
+    health_chronic = switch(urban_rural_selection, health_chronic_Total, health_chronic_Urban, health_chronic_Rural)
+    health_visit = switch(urban_rural_selection, health_visit_Total, health_visit_Urban, health_visit_Rural)
+    employment = switch(urban_rural_selection, employment_Total, employment_Urban, employment_Rural)
+    assets = switch(urban_rural_selection, assets_Total, assets_Urban, assets_Rural)
+    services = switch(urban_rural_selection, services_Total, services_Urban, services_Rural)
+    electricity = switch(urban_rural_selection, electricity_Total, electricity_Urban, electricity_Rural)
+    cooking_fuel = switch(urban_rural_selection, cooking_fuel_Total, cooking_fuel_Urban, cooking_fuel_Rural)
+    water = switch(urban_rural_selection, water_Total, water_Urban, water_Rural)
+    toilet = switch(urban_rural_selection, toilet_Total, toilet_Urban, toilet_Rural)
+    land = switch(urban_rural_selection, land_Total, land_Urban, land_Rural)
+    livestock = switch(urban_rural_selection, livestock_Total, livestock_Urban, livestock_Rural)
+    rural_equip = switch(urban_rural_selection, rural_equip_Total, rural_equip_Urban, rural_equip_Rural)
+    
+    # This is the color palette used in the graphs
+    pal <- colorNumeric(
+      palette = "inferno",
+      domain = c(0, 1),
+      reverse = TRUE)
+    
+    
+    index_labels <- get_label(Dist_60_Total_Map@data$NAME_2, paste0("M<sub>", mpi_selection - 1, "</sub>"), index, switch(input$slider_60,
+                                                                                                                          National_2017$M0_k1[1],
+                                                                                                                          National_2017$M0_k2[1],
+                                                                                                                          National_2017$M0_k3[1],
+                                                                                                                          National_2017$M0_k4[1],
+                                                                                                                          National_2017$M0_k5[1],
+                                                                                                                          National_2017$M0_k6[1],
+                                                                                                                          National_2017$M0_k7[1],
+                                                                                                                          National_2017$M0_k8[1],
+                                                                                                                          National_2017$M0_k9[1]))
+    education_max_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Max. Education", education_max, switch(mpi_selection,
+                                                                                                             National_2017$M0_education_max[1],
+                                                                                                             National_2017$M1_education_max[1],
+                                                                                                             National_2017$M2_education_max[1]))
+    education_dropout_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Education Dropout", education_dropout, switch(mpi_selection,
+                                                                                                                        National_2017$M0_education_dropout[1],
+                                                                                                                        National_2017$M1_education_dropout[1],
+                                                                                                                        National_2017$M2_education_dropout[1]))
+    health_chronic_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Chronic Illness", health_chronic, switch(mpi_selection,
+                                                                                                                National_2017$M0_health_chronic[1],
+                                                                                                                National_2017$M1_health_chronic[1],
+                                                                                                                National_2017$M2_health_chronic[1]))
+    health_visit_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Health Visit", health_visit, switch(mpi_selection,
+                                                                                                                 National_2017$M0_health_visit[1],
+                                                                                                                 National_2017$M1_health_visit[1],
+                                                                                                                 National_2017$M2_health_visit[1]))
+    employment_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Unemployment", employment, switch(mpi_selection,
+                                                                                                     National_2017$M0_employment[1],
+                                                                                                     National_2017$M1_employment[1],
+                                                                                                     National_2017$M2_employment[1]))
+    assets_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Household Assets", assets, switch(mpi_selection,
+                                                                                                 National_2017$M0_assets[1],
+                                                                                                 National_2017$M1_assets[1],
+                                                                                                 National_2017$M2_assets[1]))
+    services_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Access to Services", services, switch(mpi_selection,
+                                                                                                       National_2017$M0_services[1],
+                                                                                                       National_2017$M1_services[1],
+                                                                                                       National_2017$M2_services[1]))
+    electricity_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Electricity", electricity, switch(mpi_selection,
+                                                                                                              National_2017$M0_electricity[1],
+                                                                                                              National_2017$M1_electricity[1],
+                                                                                                              National_2017$M2_electricity[1]))
+    cooking_fuel_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Poor Cooking Fuel", cooking_fuel, switch(mpi_selection,
+                                                                                                              National_2017$M0_cooking_fuel[1],
+                                                                                                              National_2017$M1_cooking_fuel[1],
+                                                                                                              National_2017$M2_cooking_fuel[1]))
+    water_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Poor Water Source", water, switch(mpi_selection,
+                                                                                                National_2017$M0_water[1],
+                                                                                                National_2017$M1_water[1],
+                                                                                                National_2017$M2_water[1]))
+    toilet_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Toilet", toilet, switch(mpi_selection,
+                                                                                               National_2017$M0_toilet[1],
+                                                                                               National_2017$M1_toilet[1],
+                                                                                               National_2017$M2_toilet[1]))
+    land_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Land", land, switch(mpi_selection,
+                                                                                         National_2017$M0_land[1],
+                                                                                         National_2017$M1_land[1],
+                                                                                         National_2017$M2_land[1]))
+    livestock_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Livestock", livestock, switch(mpi_selection,
+                                                                                                        National_2017$M0_livestock[1],
+                                                                                                        National_2017$M1_livestock[1],
+                                                                                                        National_2017$M2_livestock[1]))
+    rural_equip_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Rural Equipment", rural_equip, switch(mpi_selection,
+                                                                                                                  National_2017$M0_rural_equip[1],
+                                                                                                                  National_2017$M1_rural_equip[1],
+                                                                                                                  National_2017$M2_rural_equip[1]))
+    
+    ## MAPPING----------------------------------------------------------------------
+    # These lines of code fix the positioning of the "No Data" label. Previously, it
+    # was appearing to the right of the data instead of at the bottom where it was 
+    # supposed to. 
+    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
+    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
+    
+    # This is where the map gets plotted 
+    leaflet(
+      options = leafletOptions(
+        minZoom = 0, maxZoom= 18,
+        drag = FALSE)) %>% addTiles() %>%
+      setView(lng = 30, lat=-19, zoom=6) %>%
+      get_polygon(Dist_60_Total_Map, pal, index, index_labels, "Poverty Index") %>%
+      get_polygon(Dist_60_Total_Map, pal, education_max, education_max_labels, "Max. Education") %>%
+      get_polygon(Dist_60_Total_Map, pal, education_dropout, education_dropout_labels, "Education Dropout") %>%
+      get_polygon(Dist_60_Total_Map, pal, health_chronic, health_chronic_labels, "Chronic Illness") %>%
+      get_polygon(Dist_60_Total_Map, pal, health_visit, health_visit_labels, "Lack of Health Visit") %>%
+      get_polygon(Dist_60_Total_Map, pal, employment, employment_labels, "Unemployment") %>%
+      get_polygon(Dist_60_Total_Map, pal, assets, assets_labels, "Lack of Household Assets") %>%
+      get_polygon(Dist_60_Total_Map, pal, services, services_labels, "Lack of Access to Services") %>%
+      get_polygon(Dist_60_Total_Map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
+      get_polygon(Dist_60_Total_Map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
+      get_polygon(Dist_60_Total_Map, pal, water, water_labels, "Poor Water Source") %>%
+      get_polygon(Dist_60_Total_Map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
+      get_polygon(Dist_60_Total_Map, pal, land, land_labels, "Lack of Land") %>%
+      get_polygon(Dist_60_Total_Map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
+      get_polygon(Dist_60_Total_Map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      clearControls() %>%
       addLayersControl(
-        position = "topright",
-        overlayGroups = c("10 Minute Isochrone",
-                          "15 Minute Isochrone",
-                          "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE))
-    m1 
+        baseGroups = c("Poverty Index", 
+                       "Max. Education", 
+                       "Education Dropout", 
+                       "Chronic Illness", 
+                       "Lack of Health Visit", 
+                       "Unemployment", 
+                       "Lack of Household Assets", 
+                       "Lack of Access to Services", 
+                       "Lack of Electricity", 
+                       "Poor Cooking Fuel",
+                       "Poor Water Source",
+                       "Lack of Toilet",
+                       "Lack of Land",
+                       "Lack of Livestock",
+                       "Lack of Rural Equipment"),
+        options = layersControlOptions(collapsed = TRUE)) %>%
+      addLegend(pal = pal, values = c(0, 1), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_60, ")"),
+                na.label = "No Data",
+                group = c("Poverty Index", "Max. Education"),
+                position = "bottomleft") %>%
+      htmlwidgets::prependContent(html_fix)
   })
   
-  # Coverage table
-  output$wifitable <- renderTable({
-    data <- switch(input$wifidrop,
-                   "Meadows of Dan Elementary School" = 1,
-                   "Woolwine Elementary School" = 2,
-                   "Patrick Springs Primary School" = 3,
-                   "Blue Ridge Elementary School" = 4,
-                   "Patrick County High School" = 5,
-                   "Stuart Elementary School" = 6,
-                   "Patrick County Branch Library" = 7,
-                   "Hardin Reynolds Memorial School" = 8,
-                   "Stuart Baptist Church" = 9,                       
-                   "Patrick Henry Community College Stuart Campus" = 10)
-    
-    table <- read.csv(paste0("data/isochrones/tables/wifi_iso_table_",data,".csv"))
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
-  
-  # Wifi deserts
-  output$allwifi <- renderLeaflet({
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            wifi_latlong$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            wifi_latlong$fulladdress,
-            "<br />",
-            "<strong>Notes:</strong>",
-            wifi_latlong$notes),
-      htmltools::HTML
-    )
-    
-    leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .5, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = wifi_iso_10_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_8, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_10_9, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_8, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_9, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = wifi_iso_15_10, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addMarkers(data = wifi_latlong,
-                 group = "Free Wi-Fi Locations",
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto")))  %>%
-      addLayersControl(
-        position = "topright",
-        overlayGroups = c("Free Wi-Fi Locations",
-                          "Residential Properties"),
-        baseGroups = c("10 Minute Isochrones",
-                       "15 Minute Isochrones"),
-        options = layersControlOptions(collapsed = FALSE))
-  })
-  
-  output$allwifitable <- renderTable({
-    table <- read.csv("data/isochrones/tables/wifi_iso_table.csv")
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
-  
-  # ems: done ------------------------------------------------------------
-  
-  output$emsplot <- renderLeaflet({
-    colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
-    
-    ems_iso8 <- switch(input$emsdrop,
-                       "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_1,
-                       "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_8_2,                                                         
-                       "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_8_3,                                                                   
-                       "VESTA RESCUE SQUAD" = ems_iso_8_4,                                                                                           
-                       "ARARAT RESCUE SQUAD" = ems_iso_8_5,                                                                                          
-                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_8_6,
-                       "JEB STUART RESCUE SQUAD" = ems_iso_8_7,                                                                                      
-                       "SMITH RIVER RESCUE SQUAD" = ems_iso_8_8,                                                                                     
-                       "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_8_9)
-    
-    ems_iso10 <- switch(input$emsdrop,
-                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_1,
-                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_10_2,                                                         
-                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_10_3,                                                                   
-                        "VESTA RESCUE SQUAD" = ems_iso_10_4,                                                                                           
-                        "ARARAT RESCUE SQUAD" = ems_iso_10_5,                                                                                          
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_10_6,
-                        "JEB STUART RESCUE SQUAD" = ems_iso_10_7,                                                                                      
-                        "SMITH RIVER RESCUE SQUAD" = ems_iso_10_8,                                                                                     
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_10_9)
-    
-    ems_iso12 <- switch(input$emsdrop,
-                        "STUART VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_1,
-                        "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = ems_iso_12_2,                                                         
-                        "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = ems_iso_12_3,                                                                   
-                        "VESTA RESCUE SQUAD" = ems_iso_12_4,                                                                                           
-                        "ARARAT RESCUE SQUAD" = ems_iso_12_5,                                                                                          
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = ems_iso_12_6,
-                        "JEB STUART RESCUE SQUAD" = ems_iso_12_7,                                                                                      
-                        "SMITH RIVER RESCUE SQUAD" = ems_iso_12_8,                                                                                     
-                        "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = ems_iso_12_9)
-    
-    data <- switch(input$emsdrop,
-                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                   "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
-                   "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
-                   "VESTA RESCUE SQUAD" = 4,                                                                                           
-                   "ARARAT RESCUE SQUAD" = 5,                                                                                          
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                   "JEB STUART RESCUE SQUAD" = 7,                                                                                      
-                   "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            str_to_title(ems[data, ]$NAME),
-            "<br />",
-            "<strong>Address:</strong>",
-            str_to_title(ems[data, ]$ADDRESS), ",", str_to_title(ems[data, ]$CITY), ", VA", ems[data, ]$ZIP,
-            "<br />",
-            "<strong>Type:</strong>",
-            str_to_title(ems[data, ]$NAICSDESCR)),
-      htmltools::HTML
-    )
-    
-    m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .8, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = ems_iso8, 
-                  fillColor = colors[1],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrone") %>%
-      addPolygons(data = ems_iso10,
-                  fillColor = colors[2],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrone") %>%
-      addPolygons(data = ems_iso12,
-                  fillColor = colors[2],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrone") %>%
-      addMarkers(data = ems, ~LONGITUDE[data], ~LATITUDE[data],
-                 group = "EMS Locations",
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto"))) %>%
-      addLayersControl(
-        position = "topright",
-        overlayGroups = c("8 Minute Isochrone",
-                          "10 Minute Isochrone",
-                          "12 Minute Isochrone",
-                          "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE))
-    m1 
-  })
-  
-  output$emstable <- renderTable({
-    data <- switch(input$emsdrop,
-                   "STUART VOLUNTEER FIRE DEPARTMENT" = 1,
-                   "MOOREFIELD STORE VOLUNTEER FIRE DEPARTMENT" = 2,                                                         
-                   "BLUE RIDGE VOLUNTEER RESCUE SQUAD" = 3,                                                                   
-                   "VESTA RESCUE SQUAD" = 4,                                                                                           
-                   "ARARAT RESCUE SQUAD" = 5,                                                                                          
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 1 - HEADQUARTERS" = 6,
-                   "JEB STUART RESCUE SQUAD" = 7,                                                                                      
-                   "SMITH RIVER RESCUE SQUAD" = 8,                                                                                     
-                   "COLLINSTOWN - CLAUDVILLE - DRYPOND - FIVE FORKS VOLUNTEER FIRE AND RESCUE DEPARTMENT STATION 2" = 9)
-    
-    
-    table <- read.csv(paste0("data/isochrones/tables/ems_iso_table_",data,".csv"))
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
-  
-  # EMS deserts
-  output$allems <- renderLeaflet({
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            str_to_title(ems$NAME),
-            "<br />",
-            "<strong>Address:</strong>",
-            paste0(str_to_title(ems$ADDRESS), ", ", str_to_title(ems$CITY), ", VA ", ems$ZIP),
-            "<br />",
-            "<strong>Type:</strong>",
-            str_to_title(ems$NAICSDESCR)),
-      htmltools::HTML
-    )
-    
-    leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .5, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = ems_iso_8_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_8, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_8_9, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "8 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_8, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_10_9, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_8, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addPolygons(data = ems_iso_12_9, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "12 Minute Isochrones") %>%
-      addMarkers(data = ems,
-                 group = "EMS Locations",
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto"))) %>%
-      addLayersControl(
-        position = "topright",
-        baseGroups = c("8 Minute Isochrones",
-                       "10 Minute Isochrones",
-                       "12 Minute Isochrones"),
-        overlayGroups = c("EMS Locations",
-                          "Residential Properties"),
-        options = layersControlOptions(collapsed = FALSE))
-  })
-  
-  output$allemstable <- renderTable({
-    table <- read.csv("data/isochrones/tables/ems_iso_table.csv")
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
-  
-  
-  # usda - lahunv10share  -----------------------------------------------------------
-  var_usda <- reactive({
-    input$usdadrop
-  })
-  output$usdaplot <- renderLeaflet({
-    data <- switch(input$usdadrop,
-                   "lakids1share" = usda$lakids1share,
-                   "lakids10share" = usda$lakids10share,
-                   "lalowi1share" = usda$lalowi1share,
-                   "lalowi10share" = usda$lalowi10share,
-                   "lapop1share" = usda$lapop1share,  
-                   "lapop10share" = usda$lapop10share,
-                   "laseniors1share" = usda$laseniors1share,
-                   "laseniors10share" = usda$laseniors10share)
-    
-    usda_spec <- switch(input$usdadrop,
-                        "lakids1share" = "low food access for children at 1 mile",
-                        "lakids10share" = "low food access for children at 10 miles",
-                        "lalowi1share" = "low food access for low income population at 1 mile",
-                        "lalowi10share" = "low food access for low income population at 10 miles",
-                        "lapop1share" = "low food access at 1 mile",  
-                        "lapop10share" = "low food access at 10 miles",
-                        "laseniors1share" = "low food access for seniors at 1 mile",
-                        "laseniors10share" = "low food access for seniors at 10 miles")
-    
-    pal <- colorQuantile("Blues", domain = data, probs = seq(0, 1, length = 5), right = TRUE)
-    
-    labels <- lapply(
-      paste("<strong>Area: </strong>",
-            usda$NAME.y,
-            "<br />",
-            "<strong>% Population with",
-            usda_spec,
-            round(data, 2)),
-      htmltools::HTML
-    )
-    
-    leaflet(data = usda, options = leafletOptions(minZoom = 10))%>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(fillColor = ~pal(data), 
-                  fillOpacity = 0.7, 
-                  stroke = TRUE, weight = 0.5, color = "#202020",
-                  label = labels,
-                  labelOptions = labelOptions(direction = "bottom",
-                                              style = list(
-                                                "font-size" = "12px",
-                                                "border-color" = "rgba(0,0,0,0.5)",
-                                                direction = "auto"
-                                              ))) %>%
-      addLegend("bottomleft",
-                pal = pal,
-                values =  ~(data),
-                title = "Percent by<br>Quartile Group",
-                opacity = 0.7,
-                labFormat = function(type, cuts, p) {
-                  n = length(cuts)
-                  paste0("[", round(cuts[-n], 2), " &ndash; ", round(cuts[-1], 2), ")")
-                })
-  })
-  
-  # grocery --------------------------------------------------------
-  
-  # Iso selector
-  output$grocplot <- renderLeaflet({
-    colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
-    
-    groc_iso10 <- switch(input$grocdrop,
-                         "Mountain Meadow Farm and Craft Market" = grc_iso_10_1,
-                         "Lowes Foods of Stuart" = grc_iso_10_2,
-                         "Patrick County Local Farmers Market" = grc_iso_10_3,
-                         "Stuart Farmers Market" = grc_iso_10_4,                
-                         "W & W Produce" = grc_iso_10_5,
-                         "Walmart Supercenter" = grc_iso_10_6,
-                         "Poor Farmers Farm" = grc_iso_10_7)
-    
-    groc_iso15 <- switch(input$grocdrop,
-                         "Mountain Meadow Farm and Craft Market" = grc_iso_15_1,
-                         "Lowes Foods of Stuart" = grc_iso_15_2,
-                         "Patrick County Local Farmers Market" = grc_iso_15_3,
-                         "Stuart Farmers Market" = grc_iso_15_4,                
-                         "W & W Produce" = grc_iso_15_5,
-                         "Walmart Supercenter" = grc_iso_15_6,
-                         "Poor Farmers Farm" = grc_iso_15_7)
-    
-    data <- switch(input$grocdrop,
-                   "Mountain Meadow Farm and Craft Market" = 1,
-                   "Lowes Foods of Stuart" = 2,
-                   "Patrick County Local Farmers Market" = 3,
-                   "Stuart Farmers Market" = 4,                
-                   "W & W Produce" = 5,
-                   "Walmart Supercenter" = 6,
-                   "Poor Farmers Farm" = 7)
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            groceries_latlong[data, ]$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            groceries_latlong[data, ]$fulladdress,
-            "<br />",
-            "<strong>Type:</strong>",
-            groceries_latlong[data, ]$type),
-      htmltools::HTML
-    )
-    
-    m1 <- leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .8, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = groc_iso10, 
-                  fillColor = colors[1],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrone") %>%
-      addPolygons(data = groc_iso15,
-                  fillColor = colors[2],
-                  fillOpacity = .8, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrone") %>%
-      addMarkers(data = groceries_latlong, ~longitude[data], ~latitude[data],
-                 group = "Fresh Food Location",
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto"))) %>%
-      addLayersControl(
-        position = "topright",
-        overlayGroups = c("15 Minute Isochrone",
-                          "10 Minute Isochrone",
-                          "Residential Properties",
-                          "Fresh Food Location"),
-        options = layersControlOptions(collapsed = FALSE))
-    m1 
-  })
-  
-  # Grocery table
-  output$groctable <- renderTable({
-    data <- switch(input$grocdrop,
-                   "Mountain Meadow Farm and Craft Market" = 1,
-                   "Lowes Foods of Stuart" = 2,
-                   "Patrick County Local Farmers Market" = 3,
-                   "Stuart Farmers Market" = 4,                
-                   "W & W Produce" = 5,
-                   "Walmart Supercenter" = 6,
-                   "Poor Farmers Farm" = 7)
-    
-    table <- read.csv(paste0("data/isochrones/tables/grc_iso_table_",data,".csv"))
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
-  
-  # Food deserts
-  output$allgroc <- renderLeaflet({
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            groceries_latlong$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            groceries_latlong$fulladdress,
-            "<br />",
-            "<strong>Type:</strong>",
-            groceries_latlong$type),
-      htmltools::HTML
-    )
-    
-    leaflet(options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addCircles(data = residential, 
-                 fillColor = colors[5],
-                 fillOpacity = .5, 
-                 stroke = FALSE, 
-                 group = "Residential Properties") %>%
-      addPolygons(data = grc_iso_10_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_10_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "10 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_1, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_2, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_3, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_4, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_5, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_6, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addPolygons(data = grc_iso_15_7, 
-                  fillColor = colors[1],
-                  fillOpacity = .5, 
-                  stroke = FALSE, 
-                  group = "15 Minute Isochrones") %>%
-      addMarkers(data = groceries_latlong,
-                 group = "Fresh Food Locations",
-                 label = labels,
-                 labelOptions = labelOptions(direction = "bottom",
-                                             style = list(
-                                               "font-size" = "12px",
-                                               "border-color" = "rgba(0,0,0,0.5)",
-                                               direction = "auto")))  %>%
-      addLayersControl(
-        position = "topright",
-        baseGroups = c("10 Minute Isochrones",
-                       "15 Minute Isochrones"),
-        overlayGroups = c("Residential Properties",
-                          "Fresh Food Locations"),
-        options = layersControlOptions(collapsed = FALSE))
-  })
-  
-  # Other food resources
-  output$othermap <- renderLeaflet({
-    
-    pal <- colorFactor(c("#0E879C", "#D9E12B", "#E6A01D"), domain = otherfood$type)
-    
-    labels <- lapply(
-      paste("<strong>Name: </strong>",
-            otherfood$name,
-            "<br />",
-            "<strong>Address:</strong>",
-            otherfood$fulladdress,
-            "<br />",
-            "<strong>Type:</strong>",
-            otherfood$type,
-            "<br />",
-            "<strong>Open to:</strong>",
-            otherfood$audience,
-            "<br />",
-            "<strong>Notes:</strong>",
-            otherfood$notes),
-      htmltools::HTML
-    )
-    
-    leaflet(data = otherfood,
-            options = leafletOptions(minZoom = 10)) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(data = patrickborder, stroke = T, weight = 2, color = "grey", fillOpacity = 0) %>%
-      addCircleMarkers(data = otherfood,
-                       stroke = FALSE,
-                       fillOpacity = 1,
-                       color = ~pal(type),
-                       radius = 7,
-                       opacity = 1,
-                       label = labels,
-                       labelOptions = labelOptions(direction = "bottom",
-                                                   style = list(
-                                                     "font-size" = "12px",
-                                                     "border-color" = "rgba(0,0,0,0.5)",
-                                                     direction = "auto"))) %>%
-      addLegend("bottomleft",
-                pal = pal,
-                values =  ~type,
-                title = "Type",
-                opacity = 0.9)
-  })
-  
-  output$allgrctable <- renderTable({
-    table <- read.csv("data/isochrones/tables/grc_iso_table.csv")
-    table$Coverage <- paste0(round(table$Coverage, 2), " %")
-    table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
 }
 
