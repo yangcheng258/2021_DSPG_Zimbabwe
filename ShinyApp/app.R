@@ -397,7 +397,7 @@ ui <- navbarPage(title = "Hampton Roads",
                           dashboardPage(
                             skin = 'blue',
                             dashboardHeader(
-                              title = 'Zimbabwe Multidimenzional Poverty Index'
+                              title = 'Mapping MPI'
                             ),
                             
                             
@@ -419,16 +419,31 @@ ui <- navbarPage(title = "Hampton Roads",
                             ),
                             
                             dashboardBody(tabItems(
-                              ## First Sidebar ----------------------------
                               tabItem(
                                 tabName = "91_Dist",
                                 # Everything has to be put in a row or column
                                 fluidPage(
                                   box(
-                                    title = "91 District Poverty Map of Zimbabwe",
+                                    title = "91 District MPI Map of Zimbabwe",
                                     leafletOutput("Dist_91_Map"),
-                                    width = 12,
-                                    height = 600
+                                    width = 8,
+                                    height = 500
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
+                                    width = 4
                                   ),
                                   box(
                                     sliderInput("slider_91", "K-Threshold Value", 1, 9, 3),
@@ -438,21 +453,37 @@ ui <- navbarPage(title = "Hampton Roads",
                                 tabName = "60_Dist",
                                 fluidPage(
                                   box(
-                                    title = "60 District Map",
+                                    title = "60 District MPI and Decomposition Map of Zimbabwe",
                                     leafletOutput("Dist_60_Map"),
-                                    width = 12,
-                                    height = 600
+                                    width = 8,
+                                    height = 500
                                   ),
                                   box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows the poverty indices at the more general 60-District level,
+                                      as well as a decomposition of the variables used to make the poverty indices. 
+                                      To adjust which index to examine, adjust the 'Select Index to Display' choices. 
+                                      This graphic also includes data on the urban and rural populations within each district. 
+                                      To adjust the graphic to display the urban, rural or total populations, adjust the 
+                                      'Select Urban/Rural Filter' choices. To examine the breakdown of each variables' contribution
+                                      to a particular index, hover over the dropdown menu in the top right corner of the map
+                                      and select the particular variable of interest. By hovering over each district, the 
+                                      measure for that district compared with the national metrics is displayed. And as always,
+                                      to adjust the k-constant for the poverty threshold, use the slider at the bottom of the page."),
+                                    width = 4
+                                  ),
+                                  box(
+                                    withMathJax(),
                                     radioButtons("MPI_Buttons_60", "Select Index to Display:", 
-                                                 choiceNames = c("Adj. Headcount M0",
-                                                                 "Adj. Poverty Gap M1",
-                                                                 "Adj. Poverty Severity M2"),
+                                                 choiceNames = c("Adj. Headcount Ratio \\((M_{0})\\)",
+                                                                 "Adj. Poverty Gap \\((M_{1})\\)",
+                                                                 "Adj. Poverty Severity \\((M_{2})\\)"),
                                                  choiceValues = c(1, 2, 3))
                                   ),
                                   box(
-                                    radioButtons("UrbRur_Buttons_60", "", 
-                                                 choiceNames = c("Total",
+                                    radioButtons("UrbRur_Buttons_60", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
                                                                  "Urban",
                                                                  "Rural"),
                                                  choiceValues = c(1, 2, 3))
@@ -467,16 +498,32 @@ ui <- navbarPage(title = "Hampton Roads",
                                 tabName = "Prov",
                                 fluidPage(
                                   box(
-                                    title = "Province Map",
+                                    title = "Province MPI and Decomposition Map of Zimbabwe",
                                     leafletOutput("Prov_Map"),
-                                    width = 12,
-                                    height = 600
+                                    width = 8,
+                                    height = 500
                                   ),
                                   box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows the poverty indices at the Province level,
+                                      as well as a decomposition of the variables used to make the poverty indices. 
+                                      To adjust which index to examine, adjust the 'Select Index to Display' choices. 
+                                      This graphic also includes data on the urban and rural populations within each province. 
+                                      To adjust the graphic to display the urban, rural or total populations, adjust the 
+                                      'Select Urban/Rural Filter' choices. To examine the breakdown of each variables' contribution
+                                      to a particular index, hover over the dropdown menu in the top right corner of the map
+                                      and select the particular variable of interest. By hovering over each province, the 
+                                      measure for that district compared with the national metrics is displayed. And as always,
+                                      to adjust the k-constant for the poverty threshold, use the slider at the bottom of the page."),
+                                    width = 4
+                                  ),
+                                  box(
+                                    withMathJax(),
                                     radioButtons("MPI_Buttons_Prov", "Select Index to Display:", 
-                                                 choiceNames = c("Adj. Headcount M0",
-                                                                 "Adj. Poverty Gap M1",
-                                                                 "Adj. Poverty Severity M2"),
+                                                 choiceNames = c("Adj. Headcount Ratio \\((M_{0})\\)",
+                                                                 "Adj. Poverty Gap \\((M_{1})\\)",
+                                                                 "Adj. Poverty Severity \\((M_{2})\\)"),
                                                  choiceValues = c(1, 2, 3))
                                   ),
                                   box(
