@@ -643,7 +643,23 @@ server <- function(input, output, session) {
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
-      palette = c("light green", "orange", "red"),
+      palette = c(
+        "#ffffff",
+        "#fffe88",
+        "#fffd38",
+        "#ed7e00",
+        "#f66324",
+        "#fe4747",
+        "#df326e",
+        "#c5208e",
+        "#b112a8",
+        "#9214b2",
+        "#6d17bd",
+        "#4f19c7",
+        "#301bd0",
+        "#2d15a3",
+        "#290c57"
+      ),
       domain = M0,
       reverse = FALSE)
     
@@ -893,9 +909,25 @@ server <- function(input, output, session) {
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
-      palette = "inferno",
+      palette = c(
+        "#ffffff",
+        "#fffe88",
+        "#fffd38",
+        "#ed7e00",
+        "#f66324",
+        "#fe4747",
+        "#df326e",
+        "#c5208e",
+        "#b112a8",
+        "#9214b2",
+        "#6d17bd",
+        "#4f19c7",
+        "#301bd0",
+        "#2d15a3",
+        "#290c57"
+      ),
       domain = c(0, 1),
-      reverse = TRUE)
+      reverse = FALSE)
     
     
     index_labels <- get_label(Dist_60_Total_Map@data$NAME_2, paste0("M<sub>", mpi_selection - 1, "</sub>"), index, switch(input$slider_60,
