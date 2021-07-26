@@ -82,17 +82,19 @@ jscode <- "function getUrlVars() {
 National_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National.csv")
 National_Urban_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Urban.csv")
 National_Rural_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Rural.csv")
+# Data--------------------------------------------------------------------------
+## 91 District DATA LOADING-----------------------------------------------------------------
 
 ## 91 District data-------------------------------------------------------------
 
 ## Loading the shapefile
 Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
-
 # Loading the MPI data at the district level
 Dist_91_Total_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District.csv')
 Dist_91_Urban_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
 Dist_91_Rural_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
+
 ## Loading the MPI data at the district level
 Dist_91_MPI = read.csv(file = 'MappingData/2017_91_District.csv')
 National_2017 = read.csv(file = 'MappingData/2017_National.csv')
@@ -3778,7 +3780,6 @@ server <- function(input, output, session) {
       htmlwidgets::prependContent(html_fix)
   })
   }
-
 
 # Run the App---------------------
 shinyApp(ui = ui, server = server)
