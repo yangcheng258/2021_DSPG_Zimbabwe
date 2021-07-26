@@ -1,5 +1,5 @@
 # Set Working Directory
-setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/R_Testing_Atticus")
+setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/ShinyApp")
 
 # clean the memory
 rm(list=ls())
@@ -22,8 +22,8 @@ gpclibPermit()
 Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
 # Loading the MPI data at the district level
-Dist_91_MPI = read.csv(file = 'MappingData/2017_91_District.csv')
-National_2017 = read.csv(file = 'MappingData/2017_National.csv')
+Dist_91_MPI = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District.csv')
+National_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_National.csv')
 
 ## NAME FIXING------------------------------------------------------------------
 # This is to fix naming discrepancies between the shapefile

@@ -43,7 +43,7 @@ Dist_60_Map@data$NAME_2[25] = "Hwedza"
 # Renames the columns in the data to merge
 colnames(Dist_60_Total_2017)[2] <- "NAME_2"
 colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
-colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+colnames(Dist_60_Rural_2017)[2] <- "NAME_2"
 
 # To avoid overlap in data, three different maps are created to host the rural, 
 # urban and total MPI Data and decompositions 
@@ -54,7 +54,7 @@ Dist_60_Rural_Map = Dist_60_Map
 # Merges the shapefiles with the data csv files 
 Dist_60_Total_Map@data = merge(Dist_60_Total_Map@data, Dist_60_Total_2017, by = c("NAME_2"), sort = FALSE)
 Dist_60_Urban_Map@data = merge(Dist_60_Urban_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
-Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Rural_2017, by = c("NAME_2"), sort = FALSE)
 
 ## MAPPING FUNCTIONs------------------------------------------------------------
 # This section utilizes a function that condenses the use of labels and polygons
