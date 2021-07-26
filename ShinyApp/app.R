@@ -31,14 +31,14 @@ library(shinydashboard)
 library(ggpolypath)
 gpclibPermit()
 
-
+# Data--------------------------------------------------------------------------
 ## 91 District DATA LOADING-----------------------------------------------------------------
 
 
-# Loading the shapefile
+## Loading the shapefile
 Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
-# Loading the MPI data at the district level
+## Loading the MPI data at the district level
 Dist_91_MPI = read.csv(file = 'MappingData/2017_91_District.csv')
 National_2017 = read.csv(file = 'MappingData/2017_National.csv')
 
@@ -300,35 +300,13 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
   return(label)
 }
 
-# user -------------------------------------------------------------
+# UI -------------------------------------------------------------
 ui <- navbarPage(title = "Hampton Roads",
                  selected = "overview",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  useShinyjs(),
-                 # main -----------------------------------------------------------
-                 # tabPanel("Home", value = "home",
-                 #          fluidRow(style = "margin: 6px;",
-                 #                   align = "center",
-                 #                   br("", style = "padding-top:10px;"),
-                 #                   img(src = "VTDSPG Logo.png", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
-                 #                   br(""),
-                 #                   h2(strong("Addressing and Tracking the Impact of Systematic Issues in Hampton Roads"),
-                 #                   br(""),
-                 #                   h4("Data Science for the Public Good Program"),
-                 #                   h4("Virginia Tech"),
-                 #                   h4("Department of Agriculture"),
-                 #                   br(),
-                 #                   br(),
-                 #                   br(),
-                 #                   br(),
-                 #                   br(),
-                 #                   p(tags$small(em('Last updated: July 2021')))
-                 #                   )
-                 #          )
-                 # ),
-                 
-                 # main -----------------------------------------------------------
+                ## Tab main -----------------------------------------------------------
                  tabPanel("Project Overview", value = "overview",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
@@ -385,14 +363,14 @@ ui <- navbarPage(title = "Hampton Roads",
                                    p(tags$small(em('Last updated: July 2021'))))
                  ),
 
-                          # data and methodology ----------------------------------------------------
+                 ## Tab data and methodology ----------------------------------------------------
                  tabPanel("Data & Methodology", value = "dm",
                              tabsetPanel(
                                tabPanel("Data", value = "data"),
                                tabPanel("Methodology", value = "methodology")
                              )),
 
-                          # maps --------------------------------------------------------------------
+                 ## Tab maps --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
                           dashboardPage(
                             skin = 'blue',
@@ -540,7 +518,7 @@ ui <- navbarPage(title = "Hampton Roads",
                                 ))
                             )))),
                  
-                          # team -----------------------------------------------------------
+                          ## Tab team -----------------------------------------------------------
                           tabPanel("DSPG Team", value = "team",
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                                             h1(strong("Zimbabwe Team"), align = "center"),
@@ -1377,4 +1355,6 @@ server <- function(input, output, session) {
   })
 }
 
+
+# Run the App---------------------
 shinyApp(ui = ui, server = server)
