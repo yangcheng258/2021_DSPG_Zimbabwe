@@ -1,11 +1,4 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+
 library(shiny)
 library(leaflet)
 library(tidyverse)
@@ -301,7 +294,7 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
 }
 
 # UI -------------------------------------------------------------
-ui <- navbarPage(title = "Hampton Roads",
+ui <- navbarPage(title = "Zimbabwe",
                  selected = "overview",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
@@ -373,7 +366,7 @@ ui <- navbarPage(title = "Hampton Roads",
                  ## Tab maps --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
                           dashboardPage(
-                            skin = 'blue',
+                            skin = 'black',
                             dashboardHeader(
                               title = 'Mapping MPI'
                             ),
@@ -1356,5 +1349,5 @@ server <- function(input, output, session) {
 }
 
 
-# Run the App---------------------
+# Run the App--------------------------
 shinyApp(ui = ui, server = server)
