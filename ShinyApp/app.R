@@ -1,3 +1,5 @@
+#Yang's seeting WD
+setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/ShinyApp")
 
 library(shiny)
 library(leaflet)
@@ -13,9 +15,9 @@ library(rsconnect)
 library(shinycssloaders)
 library(readxl)
 library(readr)
+library(rgdal)
 library(stringr)
 library(shinyjs)
-library(rgdal)
 library(dplyr)
 library(sf)
 library(gpclib)
@@ -24,18 +26,126 @@ library(shinydashboard)
 library(ggpolypath)
 gpclibPermit()
 
-# Data--------------------------------------------------------------------------
-## 91 District DATA LOADING-----------------------------------------------------------------
+## FORMATTING-------------------------------------------------------------------
+prettyblue <- "#232D4B"
+navBarBlue <- '#427EDC'
+options(spinner.color = prettyblue, spinner.color.background = '#ffffff', spinner.size = 3, spinner.type = 7)
+
+colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
+
+# CODE TO DETECT ORIGIN OF LINK AND CHANGE LOGO ACCORDINGLY
+jscode <- "function getUrlVars() {
+                var vars = {};
+                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                    vars[key] = value;
+                });
+                return vars;
+            }
+           function getUrlParam(parameter, defaultvalue){
+                var urlparameter = defaultvalue;
+                if(window.location.href.indexOf(parameter) > -1){
+                    urlparameter = getUrlVars()[parameter];
+                    }
+                return urlparameter;
+            }
+            var mytype = getUrlParam('type','Empty');
+            function changeLinks(parameter) {
+                links = document.getElementsByTagName(\"a\");
+                for(var i = 0; i < links.length; i++) {
+                   var link = links[i];
+                   var newurl = link.href + '?type=' + parameter;
+                   link.setAttribute('href', newurl);
+                 }
+            }
+           var x = document.getElementsByClassName('navbar-brand');
+           if (mytype != 'economic') {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://aaec.vt.edu/academics/undergraduate/beyond-classroom/dspg.html\">' +
+                              '<img src=\"VTDSPG Logo.png\", alt=\"DSPG 2021 Symposium Proceedings\", style=\"height:42px;\">' +
+                              '</a></div>';
+             //changeLinks('dspg');
+           } else {
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies\">' +
+                              '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
+                              '</a></div>';
+             //changeLinks('economic');
+           }
+           "
+
+## National Data
+
+National_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National.csv")
+National_Urban_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Urban.csv")
+National_Rural_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Rural.csv")
+
+## Province Data
+
+# Loads the shapefile
+Prov_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/ProvinceShapefiles"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+
+# Loads the district data
+Prov_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province.csv")
+Prov_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Urban.csv")
+Prov_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Rural.csv")
 
 
-## Loading the shapefile
+# Renames the columns in the data to merge
+colnames(Prov_Total_2017)[2] <- "ADM1_EN"
+colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
+colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Prov_Total_Map = Prov_Map
+Prov_Urban_Map = Prov_Map
+Prov_Rural_Map = Prov_Map
+
+# Merges the shapefiles with the data csv files 
+Prov_Total_Map@data = merge(Prov_Total_Map@data, Prov_Total_2017, by = c("ADM1_EN"), sort = FALSE)
+Prov_Urban_Map@data = merge(Prov_Urban_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
+Prov_Rural_Map@data = merge(Prov_Rural_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
+
+## 60 District Data
+
+# Loads the shapefile
+Dist_60_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/60DistrictShapefiles"), layer="gadm36_ZWE_2")
+
+# Loads the district data
+Dist_60_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District.csv")
+Dist_60_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Urban.csv")
+Dist_60_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Rural.csv")
+
+# Fixes four spelling changes in the shapefile
+Dist_60_Map@data$NAME_2[47] = "Bulilima"
+Dist_60_Map@data$NAME_2[50] = "Mangwe"
+Dist_60_Map@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
+Dist_60_Map@data$NAME_2[25] = "Hwedza"
+
+# Renames the columns in the data to merge
+colnames(Dist_60_Total_2017)[2] <- "NAME_2"
+colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+colnames(Dist_60_Rural_2017)[2] <- "NAME_2"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Dist_60_Total_Map = Dist_60_Map
+Dist_60_Urban_Map = Dist_60_Map
+Dist_60_Rural_Map = Dist_60_Map
+
+# Merges the shapefiles with the data csv files 
+Dist_60_Total_Map@data = merge(Dist_60_Total_Map@data, Dist_60_Total_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Urban_Map@data = merge(Dist_60_Urban_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Rural_2017, by = c("NAME_2"), sort = FALSE)
+
+## 91 District Data
+
+# Loading the shapefile
 Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
-## Loading the MPI data at the district level
-Dist_91_MPI = read.csv(file = 'MappingData/2017_91_District.csv')
-National_2017 = read.csv(file = 'MappingData/2017_National.csv')
+# Loading the MPI data at the district level
+Dist_91_Total_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District.csv')
+Dist_91_Urban_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
+Dist_91_Rural_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
 
-## NAME FIXING------------------------------------------------------------------
 # This is to fix naming discrepancies between the shapefile
 # and the MPI file. We renamed the shapefile districts to the 
 # districts used in the PICES Survey
@@ -136,127 +246,30 @@ Dist_91_Map@data[["ADM2_EN"]] <- names
 
 ## MERGING DATA-----------------------------------------------------------------
 
-# Rename the district to match the shapefile
-colnames(Dist_91_MPI)[1] <- "ADM2_EN"
-
-# Merges the MPI data with the shapefile data while preserving the order of 
-# the shapefile names to match up with the polygons
-Dist_91_Map@data = merge(Dist_91_Map@data, Dist_91_MPI, by = c("ADM2_EN"), sort = FALSE)
-
-
-prettyblue <- "#232D4B"
-navBarBlue <- '#427EDC'
-options(spinner.color = prettyblue, spinner.color.background = '#ffffff', spinner.size = 3, spinner.type = 7)
-
-colors <- c("#232d4b","#2c4f6b","#0e879c","#60999a","#d1e0bf","#d9e12b","#e6ce3a","#e6a01d","#e57200","#fdfdfd")
-
-# CODE TO DETECT ORIGIN OF LINK AND CHANGE LOGO ACCORDINGLY
-jscode <- "function getUrlVars() {
-                var vars = {};
-                var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-                    vars[key] = value;
-                });
-                return vars;
-            }
-           function getUrlParam(parameter, defaultvalue){
-                var urlparameter = defaultvalue;
-                if(window.location.href.indexOf(parameter) > -1){
-                    urlparameter = getUrlVars()[parameter];
-                    }
-                return urlparameter;
-            }
-            var mytype = getUrlParam('type','Empty');
-            function changeLinks(parameter) {
-                links = document.getElementsByTagName(\"a\");
-                for(var i = 0; i < links.length; i++) {
-                   var link = links[i];
-                   var newurl = link.href + '?type=' + parameter;
-                   link.setAttribute('href', newurl);
-                 }
-            }
-           var x = document.getElementsByClassName('navbar-brand');
-           if (mytype != 'economic') {
-             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://aaec.vt.edu/academics/undergraduate/beyond-classroom/dspg.html\">' +
-                              '<img src=\"VTDSPG Logo.png\", alt=\"DSPG 2021 Symposium Proceedings\", style=\"height:42px;\">' +
-                              '</a></div>';
-             //changeLinks('dspg');
-           } else {
-             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies\">' +
-                              '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
-                              '</a></div>';
-             //changeLinks('economic');
-           }
-           "
-
-
-
-## 60 District LOADING DATA ----------------------------------------------------------------
-
-# Loads the shapefile
-Dist_60_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/60DistrictShapefiles"), layer="gadm36_ZWE_2")
-
-# Loads the district data
-Dist_60_Total_2017 = read.csv("MappingData/2017_District.csv")
-Dist_60_Urban_2017 = read.csv("MappingData/2017_District_Urban.csv")
-Dist_60_Rural_2017 = read.csv("MappingData/2017_District_Rural.csv")
-
-# Loads the national data
-National_Urban_2017 = read.csv(file = "MappingData/2017_National_Urban.csv")
-National_Rural_2017 = read.csv(file = "MappingData/2017_National_Rural.csv")
-
-
-
-## CLEANING DISTRICT DATA-------------------------------------------------------
-
-# Fixes four spelling changes in the shapefile
-Dist_60_Map@data$NAME_2[47] = "Bulilima"
-Dist_60_Map@data$NAME_2[50] = "Mangwe"
-Dist_60_Map@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
-Dist_60_Map@data$NAME_2[25] = "Hwedza"
-
 # Renames the columns in the data to merge
-colnames(Dist_60_Total_2017)[2] <- "NAME_2"
-colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
-colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+colnames(Dist_91_Total_2017)[2] <- "ADM2_EN"
+colnames(Dist_91_Urban_2017)[2] <- "ADM2_EN"
+colnames(Dist_91_Rural_2017)[2] <- "ADM2_EN"
 
 # To avoid overlap in data, three different maps are created to host the rural, 
 # urban and total MPI Data and decompositions 
-Dist_60_Total_Map = Dist_60_Map
-Dist_60_Urban_Map = Dist_60_Map
-Dist_60_Rural_Map = Dist_60_Map
+Dist_91_Total_Map = Dist_91_Map
+Dist_91_Urban_Map = Dist_91_Map
+Dist_91_Rural_Map = Dist_91_Map
 
 # Merges the shapefiles with the data csv files 
-Dist_60_Total_Map@data = merge(Dist_60_Total_Map@data, Dist_60_Total_2017, by = c("NAME_2"), sort = FALSE)
-Dist_60_Urban_Map@data = merge(Dist_60_Urban_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
-Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+Dist_91_Total_Map@data = merge(Dist_91_Total_Map@data, Dist_91_Total_2017, by = c("ADM2_EN"), sort = FALSE)
+Dist_91_Urban_Map@data = merge(Dist_91_Urban_Map@data, Dist_91_Urban_2017, by = c("ADM2_EN"), sort = FALSE)
+Dist_91_Rural_Map@data = merge(Dist_91_Rural_Map@data, Dist_91_Rural_2017, by = c("ADM2_EN"), sort = FALSE)
 
-## Province LOADING DATA ----------------------------------------------------------------
 
-# Loads the shapefile
-Prov_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/ProvinceShapefiles"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+## CAPTIONS---------------------------------------------------------------------
 
-# Loads the district data
-Prov_Total_2017 = read.csv("MappingData/2017_Province.csv")
-Prov_Urban_2017 = read.csv("MappingData/2017_Province_Urban.csv")
-Prov_Rural_2017 = read.csv("MappingData/2017_Province_Rural.csv")
-
-## CLEANING Province DATA-------------------------------------------------------
-
-# Renames the columns in the data to merge
-colnames(Prov_Total_2017)[2] <- "ADM1_EN"
-colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
-colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
-
-# To avoid overlap in data, three different maps are created to host the rural, 
-# urban and total MPI Data and decompositions 
-Prov_Total_Map = Prov_Map
-Prov_Urban_Map = Prov_Map
-Prov_Rural_Map = Prov_Map
-
-# Merges the shapefiles with the data csv files 
-Prov_Total_Map@data = merge(Prov_Total_Map@data, Prov_Total_2017, by = c("ADM1_EN"), sort = FALSE)
-Prov_Urban_Map@data = merge(Prov_Urban_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
-Prov_Rural_Map@data = merge(Prov_Rural_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
+slider_caption = "Adjust the poverty line or cutoff threshold for an individual to be considered poor."
+urban_rural_caption = "Choose between displaying data from all households, only urban households or only rural households"
+level_caption = "Choose which poverty index to display the relevant data for"
+c_g_caption = "Choose whether to display the percentage contribution to the specified poverty index or the raw calculation
+of the gap for each component of the multidimensional poverty index."
 
 
 ## MAPPING FUNCTIONs------------------------------------------------------------
@@ -290,10 +303,13 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
     <strong>" , metric_name , ":</strong> %g<br/>
     <strong>National " , metric_name , ":</strong> %g"),
     name_data, metric, national_metric) %>% lapply(htmltools::HTML)
+  print(label)
   return(label)
 }
 
+
 # UI -------------------------------------------------------------
+
 ui <- navbarPage(title = "Zimbabwe",
                  selected = "overview",
                  theme = shinytheme("lumen"),
@@ -360,7 +376,84 @@ ui <- navbarPage(title = "Zimbabwe",
                  tabPanel("Data & Methodology", value = "dm",
                              tabsetPanel(
                                tabPanel("Data", value = "data"),
-                               tabPanel("Methodology", value = "methodology")
+                               tabPanel("Methodology", value = "methodology",
+                                        fluidPage(
+                                          box(
+                                            withMathJax(),
+                                            title = h3(strong("MPI Methodology")),
+                                            width = 12,
+                                            em(h4("A brief overview of the Mathematics behind the Multidimensional Poverty Index")), tags$br(),
+                                            h5("The aggregate methodology for determining the multidimensional poverty 
+       indices proposed by Alkine and Foster in 2011 involve a matrix with \\(n\\) 
+       rows and \\(d\\) columns, where \\(n\\) is the number of people within the 
+       state and \\(d\\) is the number of dimensions for assessing poverty. There 
+       are three main measurements denoted on the \\(M\\) scale: \\(M_{0}, M_{1}\\) and \\(M_{2}\\).
+       The A-F method employed in this study contains eight dimensions of poverty. 
+       Within each dimension, there are one or two variables that indicate whether 
+       or not an individual is deprived in that area. Each variable has a specific
+       weight associated with it depending on its contribution to overall poverty
+       and how it pertains to rural and urban communities differently. For a given 
+       individual, the total number of deprivations are added up and if he or she falls
+       above a given threshold, \\(k\\), then that individual is considered poor. 
+       Having multiple dimensions of poverty allows us to decompose the original 
+       measure into its individual variables to identify which are contributing 
+       most to the overal index of poverty."),
+                                            tags$br(),
+                                            h5("The \\(M_{0}\\) index is known as the Adjusted Headcount Ratio. The simple headcount
+       ratio is simply the number of individuals considered to be poor divided by
+       the entire population. The \\(M_{0}\\) index adjusts for the multidimensionality
+       of the algorithm by multiplying the simple headcount ratio, \\(H\\), by the 
+       average deprivation share, \\(A\\). This metric can be thought of as a more
+       accurate measure of the simple headcount ratio."),
+                                            tags$br(),
+                                            h5("The \\(M_{1}\\) index is known as the Adjusted Poverty Gap. This examines the distance
+       between the prescribed threshold, \\(k\\), and an individual's true number of 
+       deprivations. This helps examine the subset of poor individuals to efficiently
+       assess which individuals are the 'poorest' in the country."),
+                                            tags$br(),
+                                            h5("The \\(M_{2}\\) index is known as the Adjusted Poverty Severity. This is
+       simply the square of the distance between a poor individual and the poverty
+       threshold, \\(k\\). The advantage of using this metric is that it weights
+       poorer individuals who fall farther from the poverty line more heavily to 
+       provide a more obvious descriptor for the poorest people in a given area."),
+                                            tags$br()
+                                          ),
+                                          box(
+                                            width = 6,
+                                            h5(strong("Headcount Ratio")),
+                                            h3("\\(H = \\frac{n_{poor}}{n_{pop}}\\)"),
+                                            tags$br(),
+                                            h5(strong("Average Deprivation Share")),
+                                            h3("\\(A = \\frac{n_{deprivations}}{n_{potential}}\\)"),
+                                            tags$br(),
+                                            h5(strong("Deprivation Threshold")),
+                                            h5(em("\\(k\\) = Threshold (If an index is above threshold, k, then the individual is considered poor)")),
+                                            tags$br(),
+                                            h5(strong("Dimensional Aggregation")),
+                                            h4("\\(D_{total} = \\sum_{i=1}^{d}\\sum_{j=1}^{v_{d}} w_{i, j}\\)"),
+                                            em(h5("\\(d = \\) Number of Dimensions")),
+                                            em(h5("\\(v_{d} = \\) Number of variables for a Specific Dimension")),
+                                            em(h5("\\(w_{i,j} = \\) Weight of a Specific Variable for a Specific Dimension"))
+                                            
+                                            
+                                          ),
+                                          box(
+                                            width = 6,
+                                            h5(strong("Poverty Index")),
+                                            h4("\\(M_{0}= H * A\\)"),
+                                            tags$br(),
+                                            h5(strong("Adjusted Poverty Gap")),
+                                            h4("\\(M_{1} = μ(g^{1}(k))\\)"),
+                                            h4("\\(g^{1}_{i} = k - \\frac{\\sum deprivations}{\\sum possible\\ deprivations}\\)   if   \\(g^{1}_{i} > 0\\)"),
+                                            h4("Else \\(g^{1}_{i} = 0\\)"),
+                                            tags$br(),
+                                            h5(strong("Adjusted Poverty Severity")),
+                                            h4("\\(M_{2} = μ(g^{2}(k))\\)"),
+                                            h4("\\(g^{2}_{i} = [k - \\frac{\\sum deprivations}{\\sum possible\\ deprivations}]^{2}\\) if \\(g^{2}_{i} > 0\\)"),
+                                            h4("Else \\(g^{2}_{i} = 0\\)")
+                                            
+                                          )
+                                        ))
                              )),
 
                  ## Tab maps --------------------------------------------------------------------
@@ -375,15 +468,15 @@ ui <- navbarPage(title = "Zimbabwe",
                             dashboardSidebar(
                               sidebarMenu(
                                 menuItem(
-                                  "91 District Map",
+                                  "91 District MPI Map",
                                   tabName = '91_Dist'
                                 ),
                                 menuItem(
-                                  "Detailed District Map",
+                                  "60 District MPI Map",
                                   tabName = '60_Dist'
                                 ),
                                 menuItem(
-                                  "Detailed Province Map",
+                                  "Province MPI Map",
                                   tabName = "Prov"
                                 )
                               )
@@ -396,7 +489,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "91 District MPI Map of Zimbabwe",
-                                    leafletOutput("Dist_91_Map"),
+                                    leafletOutput("Dist_91_MPI_Map"),
                                     width = 8,
                                     height = 500
                                   ),
@@ -417,51 +510,55 @@ ui <- navbarPage(title = "Zimbabwe",
                                     width = 4
                                   ),
                                   box(
-                                    sliderInput("slider_91", "K-Threshold Value", 1, 9, 3),
-                                    width = 12
+                                    sliderInput("slider_91_MPI", "K-Threshold Value", 1, 9, 3),
+                                    width = 6,
+                                    footer = slider_caption
+                                  ),
+                                  box(
+                                    radioButtons("UrbRurSelection_MPI_91", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
+                                                                 "Urban",
+                                                                 "Rural"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
                                   ))),
                               tabItem(
                                 tabName = "60_Dist",
                                 fluidPage(
                                   box(
-                                    title = "60 District MPI and Decomposition Map of Zimbabwe",
-                                    leafletOutput("Dist_60_Map"),
+                                    title = "60 District MPI Map of Zimbabwe",
+                                    leafletOutput("Dist_60_MPI_Map"),
                                     width = 8,
                                     height = 500
                                   ),
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows the poverty indices at the more general 60-District level,
-                                      as well as a decomposition of the variables used to make the poverty indices. 
-                                      To adjust which index to examine, adjust the 'Select Index to Display' choices. 
-                                      This graphic also includes data on the urban and rural populations within each district. 
-                                      To adjust the graphic to display the urban, rural or total populations, adjust the 
-                                      'Select Urban/Rural Filter' choices. To examine the breakdown of each variables' contribution
-                                      to a particular index, hover over the dropdown menu in the top right corner of the map
-                                      and select the particular variable of interest. By hovering over each district, the 
-                                      measure for that district compared with the national metrics is displayed. And as always,
-                                      to adjust the k-constant for the poverty threshold, use the slider at the bottom of the page."),
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
                                     width = 4
                                   ),
                                   box(
-                                    withMathJax(),
-                                    radioButtons("MPI_Buttons_60", "Select Index to Display:", 
-                                                 choiceNames = c("Adj. Headcount Ratio \\((M_{0})\\)",
-                                                                 "Adj. Poverty Gap \\((M_{1})\\)",
-                                                                 "Adj. Poverty Severity \\((M_{2})\\)"),
-                                                 choiceValues = c(1, 2, 3))
+                                    sliderInput("slider_60_MPI", "K-Threshold Value", 1, 9, 3),
+                                    width = 6,
+                                    footer = slider_caption
                                   ),
                                   box(
-                                    radioButtons("UrbRur_Buttons_60", "Select Urban/Rural Filter", 
+                                    radioButtons("UrbRurSelection_MPI_60", "Select Urban/Rural Filter", 
                                                  choiceNames = c("All",
                                                                  "Urban",
                                                                  "Rural"),
-                                                 choiceValues = c(1, 2, 3))
-                                  ),
-                                  box(
-                                    sliderInput("slider_60", "K-Threshold Value", 1, 9, 3),
-                                    width = 12
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
                                   )
                                 )
                               ),
@@ -469,49 +566,245 @@ ui <- navbarPage(title = "Zimbabwe",
                                 tabName = "Prov",
                                 fluidPage(
                                   box(
-                                    title = "Province MPI and Decomposition Map of Zimbabwe",
-                                    leafletOutput("Prov_Map"),
+                                    title = "Province-Level MPI Map of Zimbabwe",
+                                    leafletOutput("Prov_MPI_Map"),
                                     width = 8,
                                     height = 500
                                   ),
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows the poverty indices at the Province level,
-                                      as well as a decomposition of the variables used to make the poverty indices. 
-                                      To adjust which index to examine, adjust the 'Select Index to Display' choices. 
-                                      This graphic also includes data on the urban and rural populations within each province. 
-                                      To adjust the graphic to display the urban, rural or total populations, adjust the 
-                                      'Select Urban/Rural Filter' choices. To examine the breakdown of each variables' contribution
-                                      to a particular index, hover over the dropdown menu in the top right corner of the map
-                                      and select the particular variable of interest. By hovering over each province, the 
-                                      measure for that district compared with the national metrics is displayed. And as always,
-                                      to adjust the k-constant for the poverty threshold, use the slider at the bottom of the page."),
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
                                     width = 4
                                   ),
                                   box(
-                                    withMathJax(),
-                                    radioButtons("MPI_Buttons_Prov", "Select Index to Display:", 
-                                                 choiceNames = c("Adj. Headcount Ratio \\((M_{0})\\)",
-                                                                 "Adj. Poverty Gap \\((M_{1})\\)",
-                                                                 "Adj. Poverty Severity \\((M_{2})\\)"),
-                                                 choiceValues = c(1, 2, 3))
+                                    sliderInput("slider_Prov_MPI", "K-Threshold Value", 1, 9, 3),
+                                    width = 6,
+                                    footer = slider_caption
                                   ),
                                   box(
-                                    radioButtons("UrbRur_Buttons_Prov", "", 
-                                                 choiceNames = c("Total",
+                                    radioButtons("UrbRurSelection_MPI_Prov", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
                                                                  "Urban",
                                                                  "Rural"),
-                                                 choiceValues = c(1, 2, 3))
-                                  ),
-                                  box(
-                                    sliderInput("slider_Prov", "K-Threshold Value", 1, 9, 3),
-                                    width = 12
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
                                   )
-                                ))
+                                )
+                              )
                             )))),
                  
-                          ## Tab team -----------------------------------------------------------
+                 tabPanel("MPI Decomposition", value = "decomposition",
+                          dashboardPage(
+                            skin = 'blue',
+                            dashboardHeader(
+                              title = 'MPI Decomposition'
+                            ),
+                            
+                            
+                            dashboardSidebar(
+                              sidebarMenu(
+                                menuItem(
+                                  "91 District MPI Map",
+                                  tabName = '91_Decomp'
+                                ),
+                                menuItem(
+                                  "60 District MPI Map",
+                                  tabName = '60_Decomp'
+                                ),
+                                menuItem(
+                                  "Province MPI Map",
+                                  tabName = "Prov_Decomp"
+                                )
+                              )
+                            ),
+                            
+                            dashboardBody(tabItems(
+                              tabItem(
+                                tabName = "91_Decomp",
+                                # Everything has to be put in a row or column
+                                fluidPage(
+                                  box(
+                                    title = "91 District Decomposition Map of Zimbabwe",
+                                    leafletOutput("Dist_91_Decomp_Map"),
+                                    width = 8,
+                                    height = 500
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
+                                    width = 4,
+                                    height = 500
+                                  ),
+                                  box(
+                                    sliderInput("slider_91_Decomp", "K-Threshold Value", 1, 9, 3),
+                                    footer = slider_caption
+                                  ),
+                                  box(
+                                    radioButtons("UrbRurSelection_Decomp_91", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
+                                                                 "Urban",
+                                                                 "Rural"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("LevelSelection_Decomp_91", "Select Level to Examine", 
+                                                 choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
+                                                                 "Adj. Poverty Gap \\(M_{1}\\)",
+                                                                 "Adj. Poverty Severity \\(M_{2}\\)"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = level_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("c_g_Decomp_91", "Select Measure to Examine", 
+                                                 choiceNames = c("Percent Contribution to MPI",
+                                                                 "Raw Poverty Gap in Variable"),
+                                                 choiceValues = c(1, 2)),
+                                    footer = c_g_caption
+                                  )
+                                  )),
+                              tabItem(
+                                tabName = "60_Decomp",
+                                # Everything has to be put in a row or column
+                                fluidPage(
+                                  box(
+                                    title = "60 District Decomposition Map of Zimbabwe",
+                                    leafletOutput("Dist_60_Decomp_Map"),
+                                    width = 8,
+                                    height = 500
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
+                                    width = 4,
+                                    height = 500
+                                  ),
+                                  box(
+                                    sliderInput("slider_60_Decomp", "K-Threshold Value", 1, 9, 3),
+                                    footer = slider_caption
+                                  ),
+                                  box(
+                                    radioButtons("UrbRurSelection_Decomp_60", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
+                                                                 "Urban",
+                                                                 "Rural"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("LevelSelection_Decomp_60", "Select Level to Examine", 
+                                                 choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
+                                                                 "Adj. Poverty Gap \\(M_{1}\\)",
+                                                                 "Adj. Poverty Severity \\(M_{2}\\)"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = level_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("c_g_Decomp_60", "Select Measure to Examine", 
+                                                 choiceNames = c("Percent Contribution to MPI",
+                                                                 "Raw Poverty Gap in Variable"),
+                                                 choiceValues = c(1, 2)),
+                                    footer = c_g_caption
+                                  )
+                                )),
+                              tabItem(
+                                tabName = "Prov_Decomp",
+                                # Everything has to be put in a row or column
+                                fluidPage(
+                                  box(
+                                    title = "Province Decomposition Map of Zimbabwe",
+                                    leafletOutput("Prov_Decomp_Map"),
+                                    width = 8,
+                                    height = 500
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = "Description",
+                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
+                                      but the 2017 pices data designed specific urban areas within districts. There are 
+                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
+                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
+                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
+                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
+                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
+                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                      adjust the slider below the graph."),
+                                    width = 4,
+                                    height = 500
+                                  ),
+                                  box(
+                                    sliderInput("slider_Prov_Decomp", "K-Threshold Value", 1, 9, 3),
+                                    footer = slider_caption
+                                  ),
+                                  box(
+                                    radioButtons("UrbRurSelection_Decomp_Prov", "Select Urban/Rural Filter", 
+                                                 choiceNames = c("All",
+                                                                 "Urban",
+                                                                 "Rural"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = urban_rural_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("LevelSelection_Decomp_Prov", "Select Level to Examine", 
+                                                 choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
+                                                                 "Adj. Poverty Gap \\(M_{1}\\)",
+                                                                 "Adj. Poverty Severity \\(M_{2}\\)"),
+                                                 choiceValues = c(1, 2, 3)),
+                                    footer = level_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    radioButtons("c_g_Decomp_Prov", "Select Measure to Examine", 
+                                                 choiceNames = c("Percent Contribution to MPI",
+                                                                 "Raw Poverty Gap in Variable"),
+                                                 choiceValues = c(1, 2)),
+                                    footer = c_g_caption
+                                  )
+                                ))
+                              
+                            ))
+                            )
+                          ),
                           tabPanel("DSPG Team", value = "team",
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                                             h1(strong("Zimbabwe Team"), align = "center"),
@@ -575,67 +868,140 @@ server <- function(input, output, session) {
   }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
   
   
-  output$Dist_91_Map <- renderLeaflet({
+  output$Dist_91_MPI_Map <- renderLeaflet({
     # Creating variables for M0, M1 and M2
-    M0 <- switch(input$slider_91,
-                 Dist_91_Map@data$M0_k1,
-                 Dist_91_Map@data$M0_k2,
-                 Dist_91_Map@data$M0_k3,
-                 Dist_91_Map@data$M0_k4,
-                 Dist_91_Map@data$M0_k5,
-                 Dist_91_Map@data$M0_k6,
-                 Dist_91_Map@data$M0_k7,
-                 Dist_91_Map@data$M0_k8,
-                 Dist_91_Map@data$M0_k9
+    M0_Total <- switch(input$slider_91_MPI,
+                       Dist_91_Total_Map@data$M0_k1,
+                       Dist_91_Total_Map@data$M0_k2,
+                       Dist_91_Total_Map@data$M0_k3,
+                       Dist_91_Total_Map@data$M0_k4,
+                       Dist_91_Total_Map@data$M0_k5,
+                       Dist_91_Total_Map@data$M0_k6,
+                       Dist_91_Total_Map@data$M0_k7,
+                       Dist_91_Total_Map@data$M0_k8,
+                       Dist_91_Total_Map@data$M0_k9
     )
     
-    M1 = switch(input$slider_91,
-                Dist_91_Map@data$M1_k1,
-                Dist_91_Map@data$M1_k2,
-                Dist_91_Map@data$M1_k3,
-                Dist_91_Map@data$M1_k4,
-                Dist_91_Map@data$M1_k5,
-                Dist_91_Map@data$M1_k6,
-                Dist_91_Map@data$M1_k7,
-                Dist_91_Map@data$M1_k8,
-                Dist_91_Map@data$M1_k9)
+    M1_Total = switch(input$slider_91_MPI,
+                      Dist_91_Total_Map@data$M1_k1,
+                      Dist_91_Total_Map@data$M1_k2,
+                      Dist_91_Total_Map@data$M1_k3,
+                      Dist_91_Total_Map@data$M1_k4,
+                      Dist_91_Total_Map@data$M1_k5,
+                      Dist_91_Total_Map@data$M1_k6,
+                      Dist_91_Total_Map@data$M1_k7,
+                      Dist_91_Total_Map@data$M1_k8,
+                      Dist_91_Total_Map@data$M1_k9)
     
-    M2 = switch(input$slider_91,
-                Dist_91_Map@data$M2_k1,
-                Dist_91_Map@data$M2_k2,
-                Dist_91_Map@data$M2_k3,
-                Dist_91_Map@data$M2_k4,
-                Dist_91_Map@data$M2_k5,
-                Dist_91_Map@data$M2_k6,
-                Dist_91_Map@data$M2_k7,
-                Dist_91_Map@data$M2_k8,
-                Dist_91_Map@data$M2_k9)
+    M2_Total = switch(input$slider_91_MPI,
+                      Dist_91_Total_Map@data$M2_k1,
+                      Dist_91_Total_Map@data$M2_k2,
+                      Dist_91_Total_Map@data$M2_k3,
+                      Dist_91_Total_Map@data$M2_k4,
+                      Dist_91_Total_Map@data$M2_k5,
+                      Dist_91_Total_Map@data$M2_k6,
+                      Dist_91_Total_Map@data$M2_k7,
+                      Dist_91_Total_Map@data$M2_k8,
+                      Dist_91_Total_Map@data$M2_k9)
     
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_91_MPI,
+                       Dist_91_Urban_Map@data$M0_k1,
+                       Dist_91_Urban_Map@data$M0_k2,
+                       Dist_91_Urban_Map@data$M0_k3,
+                       Dist_91_Urban_Map@data$M0_k4,
+                       Dist_91_Urban_Map@data$M0_k5,
+                       Dist_91_Urban_Map@data$M0_k6,
+                       Dist_91_Urban_Map@data$M0_k7,
+                       Dist_91_Urban_Map@data$M0_k8,
+                       Dist_91_Urban_Map@data$M0_k9
+    )
+    
+    M1_Urban = switch(input$slider_91_MPI,
+                      Dist_91_Urban_Map@data$M1_k1,
+                      Dist_91_Urban_Map@data$M1_k2,
+                      Dist_91_Urban_Map@data$M1_k3,
+                      Dist_91_Urban_Map@data$M1_k4,
+                      Dist_91_Urban_Map@data$M1_k5,
+                      Dist_91_Urban_Map@data$M1_k6,
+                      Dist_91_Urban_Map@data$M1_k7,
+                      Dist_91_Urban_Map@data$M1_k8,
+                      Dist_91_Urban_Map@data$M1_k9)
+    
+    M2_Urban = switch(input$slider_91_MPI,
+                      Dist_91_Urban_Map@data$M2_k1,
+                      Dist_91_Urban_Map@data$M2_k2,
+                      Dist_91_Urban_Map@data$M2_k3,
+                      Dist_91_Urban_Map@data$M2_k4,
+                      Dist_91_Urban_Map@data$M2_k5,
+                      Dist_91_Urban_Map@data$M2_k6,
+                      Dist_91_Urban_Map@data$M2_k7,
+                      Dist_91_Urban_Map@data$M2_k8,
+                      Dist_91_Urban_Map@data$M2_k9)
+    
+    # Rural MPI Variables
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_91_MPI,
+                       Dist_91_Rural_Map@data$M0_k1,
+                       Dist_91_Rural_Map@data$M0_k2,
+                       Dist_91_Rural_Map@data$M0_k3,
+                       Dist_91_Rural_Map@data$M0_k4,
+                       Dist_91_Rural_Map@data$M0_k5,
+                       Dist_91_Rural_Map@data$M0_k6,
+                       Dist_91_Rural_Map@data$M0_k7,
+                       Dist_91_Rural_Map@data$M0_k8,
+                       Dist_91_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_91_MPI,
+                      Dist_91_Rural_Map@data$M1_k1,
+                      Dist_91_Rural_Map@data$M1_k2,
+                      Dist_91_Rural_Map@data$M1_k3,
+                      Dist_91_Rural_Map@data$M1_k4,
+                      Dist_91_Rural_Map@data$M1_k5,
+                      Dist_91_Rural_Map@data$M1_k6,
+                      Dist_91_Rural_Map@data$M1_k7,
+                      Dist_91_Rural_Map@data$M1_k8,
+                      Dist_91_Rural_Map@data$M1_k9)
+    
+    M2_Rural = switch(input$slider_91_MPI,
+                      Dist_91_Rural_Map@data$M2_k1,
+                      Dist_91_Rural_Map@data$M2_k2,
+                      Dist_91_Rural_Map@data$M2_k3,
+                      Dist_91_Rural_Map@data$M2_k4,
+                      Dist_91_Rural_Map@data$M2_k5,
+                      Dist_91_Rural_Map@data$M2_k6,
+                      Dist_91_Rural_Map@data$M2_k7,
+                      Dist_91_Rural_Map@data$M2_k8,
+                      Dist_91_Rural_Map@data$M2_k9)
+    
+    UrbRurSelection = strtoi(input$UrbRurSelection_MPI_91)
+    
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
+    
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
+    
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
-      palette = c(
-        "#ffffff",
-        "#fffe88",
-        "#fffd38",
-        "#ed7e00",
-        "#f66324",
-        "#fe4747",
-        "#df326e",
-        "#c5208e",
-        "#b112a8",
-        "#9214b2",
-        "#6d17bd",
-        "#4f19c7",
-        "#301bd0",
-        "#2d15a3",
-        "#290c57"
-      ),
-      domain = M0,
-      reverse = FALSE)
+      palette = "viridis",
+      domain = c(0, max(M0, na.rm = TRUE)),
+      reverse = TRUE)
     
     # This creates labels for M0, M1 and M2 
-    M0_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>0</sub>", M0, switch(input$slider_91,
+    M0_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>0</sub>", M0, switch(input$slider_91_MPI,
                                                                                  National_2017$M0_k1[1],
                                                                                  National_2017$M0_k2[1],
                                                                                  National_2017$M0_k3[1],
@@ -646,7 +1012,7 @@ server <- function(input, output, session) {
                                                                                  National_2017$M0_k8[1],
                                                                                  National_2017$M0_k9[1]))
     
-    M1_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>1</sub>", M1, switch(input$slider_91,
+    M1_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>1</sub>", M1, switch(input$slider_91_MPI,
                                                                                  National_2017$M1_k1[1],
                                                                                  National_2017$M1_k2[1],
                                                                                  National_2017$M1_k3[1],
@@ -657,7 +1023,7 @@ server <- function(input, output, session) {
                                                                                  National_2017$M1_k8[1],
                                                                                  National_2017$M1_k9[1]))
     
-    M2_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>2</sub>", M2, switch(input$slider_91,
+    M2_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>2</sub>", M2, switch(input$slider_91_MPI,
                                                                                  National_2017$M2_k1[1],
                                                                                  National_2017$M2_k2[1],
                                                                                  National_2017$M2_k3[1],
@@ -669,6 +1035,12 @@ server <- function(input, output, session) {
                                                                                  National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
+    # These lines of code fix the positioning of the "No Data" label. Previously, it
+    # was appearing to the right of the data instead of at the bottom where it was 
+    # supposed to. 
+    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
+    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
+    
     # This is where the map gets plotted 
     leaflet(
       options = leafletOptions(
@@ -683,33 +1055,26 @@ server <- function(input, output, session) {
         baseGroups = c("M0", "M1", "M2"),
         options = layersControlOptions(collapsed = FALSE)
       ) %>% 
-      addLegend(pal = pal, values = M0, opacity = 0.7, title = switch(input$slider_91,
-                                                                      "Index with K=1",
-                                                                      "Index with K=2",
-                                                                      "Index with K=3",
-                                                                      "Index with K=4",
-                                                                      "Index with K=5",
-                                                                      "Index with K=6",
-                                                                      "Index with K=7",
-                                                                      "Index with K=8",
-                                                                      "Index with K=9"),
-                position = "bottomright")
+      addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_91_MPI),
+                position = "bottomright") %>%
+      htmlwidgets::prependContent(html_fix)
   })
   
-  output$Dist_60_Map <- renderLeaflet({
-    # Variables for total data are created 
-    M0_Total = switch(input$slider_60,
-                      Dist_60_Total_Map@data$M0_k1,
-                      Dist_60_Total_Map@data$M0_k2,
-                      Dist_60_Total_Map@data$M0_k3,
-                      Dist_60_Total_Map@data$M0_k4,
-                      Dist_60_Total_Map@data$M0_k5,
-                      Dist_60_Total_Map@data$M0_k6,
-                      Dist_60_Total_Map@data$M0_k7,
-                      Dist_60_Total_Map@data$M0_k8,
-                      Dist_60_Total_Map@data$M0_k9)
+  output$Dist_60_MPI_Map <- renderLeaflet({
+    # Creating variables for M0, M1 and M2
+    M0_Total <- switch(input$slider_60_MPI,
+                       Dist_60_Total_Map@data$M0_k1,
+                       Dist_60_Total_Map@data$M0_k2,
+                       Dist_60_Total_Map@data$M0_k3,
+                       Dist_60_Total_Map@data$M0_k4,
+                       Dist_60_Total_Map@data$M0_k5,
+                       Dist_60_Total_Map@data$M0_k6,
+                       Dist_60_Total_Map@data$M0_k7,
+                       Dist_60_Total_Map@data$M0_k8,
+                       Dist_60_Total_Map@data$M0_k9
+    )
     
-    M1_Total = switch(input$slider_60,
+    M1_Total = switch(input$slider_60_MPI,
                       Dist_60_Total_Map@data$M1_k1,
                       Dist_60_Total_Map@data$M1_k2,
                       Dist_60_Total_Map@data$M1_k3,
@@ -720,7 +1085,7 @@ server <- function(input, output, session) {
                       Dist_60_Total_Map@data$M1_k8,
                       Dist_60_Total_Map@data$M1_k9)
     
-    M2_Total = switch(input$slider_60,
+    M2_Total = switch(input$slider_60_MPI,
                       Dist_60_Total_Map@data$M2_k1,
                       Dist_60_Total_Map@data$M2_k2,
                       Dist_60_Total_Map@data$M2_k3,
@@ -731,19 +1096,21 @@ server <- function(input, output, session) {
                       Dist_60_Total_Map@data$M2_k8,
                       Dist_60_Total_Map@data$M2_k9)
     
-    # Variables for Urban data are created 
-    M0_Urban = switch(input$slider_60,
-                      Dist_60_Urban_Map@data$M0_k1,
-                      Dist_60_Urban_Map@data$M0_k2,
-                      Dist_60_Urban_Map@data$M0_k3,
-                      Dist_60_Urban_Map@data$M0_k4,
-                      Dist_60_Urban_Map@data$M0_k5,
-                      Dist_60_Urban_Map@data$M0_k6,
-                      Dist_60_Urban_Map@data$M0_k7,
-                      Dist_60_Urban_Map@data$M0_k8,
-                      Dist_60_Urban_Map@data$M0_k9)
     
-    M1_Urban = switch(input$slider_60,
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_60_MPI,
+                       Dist_60_Urban_Map@data$M0_k1,
+                       Dist_60_Urban_Map@data$M0_k2,
+                       Dist_60_Urban_Map@data$M0_k3,
+                       Dist_60_Urban_Map@data$M0_k4,
+                       Dist_60_Urban_Map@data$M0_k5,
+                       Dist_60_Urban_Map@data$M0_k6,
+                       Dist_60_Urban_Map@data$M0_k7,
+                       Dist_60_Urban_Map@data$M0_k8,
+                       Dist_60_Urban_Map@data$M0_k9
+    )
+    
+    M1_Urban = switch(input$slider_60_MPI,
                       Dist_60_Urban_Map@data$M1_k1,
                       Dist_60_Urban_Map@data$M1_k2,
                       Dist_60_Urban_Map@data$M1_k3,
@@ -754,7 +1121,7 @@ server <- function(input, output, session) {
                       Dist_60_Urban_Map@data$M1_k8,
                       Dist_60_Urban_Map@data$M1_k9)
     
-    M2_Urban = switch(input$slider_60,
+    M2_Urban = switch(input$slider_60_MPI,
                       Dist_60_Urban_Map@data$M2_k1,
                       Dist_60_Urban_Map@data$M2_k2,
                       Dist_60_Urban_Map@data$M2_k3,
@@ -765,19 +1132,22 @@ server <- function(input, output, session) {
                       Dist_60_Urban_Map@data$M2_k8,
                       Dist_60_Urban_Map@data$M2_k9)
     
-    # Variables for total data are created 
-    M0_Rural = switch(input$slider_60,
-                      Dist_60_Rural_Map@data$M0_k1,
-                      Dist_60_Rural_Map@data$M0_k2,
-                      Dist_60_Rural_Map@data$M0_k3,
-                      Dist_60_Rural_Map@data$M0_k4,
-                      Dist_60_Rural_Map@data$M0_k5,
-                      Dist_60_Rural_Map@data$M0_k6,
-                      Dist_60_Rural_Map@data$M0_k7,
-                      Dist_60_Rural_Map@data$M0_k8,
-                      Dist_60_Rural_Map@data$M0_k9)
+    # Rural MPI Variables
     
-    M1_Rural = switch(input$slider_60,
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_60_MPI,
+                       Dist_60_Rural_Map@data$M0_k1,
+                       Dist_60_Rural_Map@data$M0_k2,
+                       Dist_60_Rural_Map@data$M0_k3,
+                       Dist_60_Rural_Map@data$M0_k4,
+                       Dist_60_Rural_Map@data$M0_k5,
+                       Dist_60_Rural_Map@data$M0_k6,
+                       Dist_60_Rural_Map@data$M0_k7,
+                       Dist_60_Rural_Map@data$M0_k8,
+                       Dist_60_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_60_MPI,
                       Dist_60_Rural_Map@data$M1_k1,
                       Dist_60_Rural_Map@data$M1_k2,
                       Dist_60_Rural_Map@data$M1_k3,
@@ -788,7 +1158,7 @@ server <- function(input, output, session) {
                       Dist_60_Rural_Map@data$M1_k8,
                       Dist_60_Rural_Map@data$M1_k9)
     
-    M2_Rural = switch(input$slider_60,
+    M2_Rural = switch(input$slider_60_MPI,
                       Dist_60_Rural_Map@data$M2_k1,
                       Dist_60_Rural_Map@data$M2_k2,
                       Dist_60_Rural_Map@data$M2_k3,
@@ -799,174 +1169,65 @@ server <- function(input, output, session) {
                       Dist_60_Rural_Map@data$M2_k8,
                       Dist_60_Rural_Map@data$M2_k9)
     
-    # We need to select how these variables affect M0, M1 and M2 by selecting
-    # which index to look at 1 = M0, 2 = M1, 3 = M2
-    mpi_selection = strtoi(input$MPI_Buttons_60)
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_MPI_60)
     
-    # This allocates the total MPI Variables
-    education_max_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_education_max, Dist_60_Total_Map@data$M1_education_max,Dist_60_Total_Map@data$M2_education_max)
-    education_dropout_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_education_dropout, Dist_60_Total_Map@data$M1_education_dropout,Dist_60_Total_Map@data$M2_education_dropout)
-    health_chronic_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_health_chronic, Dist_60_Total_Map@data$M1_health_chronic,Dist_60_Total_Map@data$M2_health_chronic)
-    health_visit_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_health_visit, Dist_60_Total_Map@data$M1_health_visit,Dist_60_Total_Map@data$M2_health_visit)
-    employment_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_employment, Dist_60_Total_Map@data$M1_employment,Dist_60_Total_Map@data$M2_employment)
-    assets_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_assets, Dist_60_Total_Map@data$M1_assets,Dist_60_Total_Map@data$M2_assets)
-    services_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_services, Dist_60_Total_Map@data$M1_services,Dist_60_Total_Map@data$M2_services)
-    electricity_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_electricity, Dist_60_Total_Map@data$M1_electricity,Dist_60_Total_Map@data$M2_electricity)
-    cooking_fuel_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_cooking_fuel, Dist_60_Total_Map@data$M1_cooking_fuel,Dist_60_Total_Map@data$M2_cooking_fuel)
-    water_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_water, Dist_60_Total_Map@data$M1_water,Dist_60_Total_Map@data$M2_water)
-    toilet_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_toilet, Dist_60_Total_Map@data$M1_toilet,Dist_60_Total_Map@data$M2_toilet)
-    land_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_land, Dist_60_Total_Map@data$M1_land,Dist_60_Total_Map@data$M2_land)
-    livestock_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_livestock, Dist_60_Total_Map@data$M1_livestock,Dist_60_Total_Map@data$M2_livestock)
-    rural_equip_Total = switch(mpi_selection, Dist_60_Total_Map@data$M0_rural_equip, Dist_60_Total_Map@data$M1_rural_equip,Dist_60_Total_Map@data$M2_rural_equip)
+    print(UrbRurSelection)
     
-    # This allocates the urban MPI Variables
-    education_max_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_education_max, Dist_60_Urban_Map@data$M1_education_max,Dist_60_Urban_Map@data$M2_education_max)
-    education_dropout_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_education_dropout, Dist_60_Urban_Map@data$M1_education_dropout,Dist_60_Urban_Map@data$M2_education_dropout)
-    health_chronic_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_health_chronic, Dist_60_Urban_Map@data$M1_health_chronic,Dist_60_Urban_Map@data$M2_health_chronic)
-    health_visit_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_health_visit, Dist_60_Urban_Map@data$M1_health_visit,Dist_60_Urban_Map@data$M2_health_visit)
-    employment_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_employment, Dist_60_Urban_Map@data$M1_employment,Dist_60_Urban_Map@data$M2_employment)
-    assets_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_assets, Dist_60_Urban_Map@data$M1_assets,Dist_60_Urban_Map@data$M2_assets)
-    services_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_services, Dist_60_Urban_Map@data$M1_services,Dist_60_Urban_Map@data$M2_services)
-    electricity_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_electricity, Dist_60_Urban_Map@data$M1_electricity,Dist_60_Urban_Map@data$M2_electricity)
-    cooking_fuel_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_cooking_fuel, Dist_60_Urban_Map@data$M1_cooking_fuel,Dist_60_Urban_Map@data$M2_cooking_fuel)
-    water_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_water, Dist_60_Urban_Map@data$M1_water,Dist_60_Urban_Map@data$M2_water)
-    toilet_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_toilet, Dist_60_Urban_Map@data$M1_toilet,Dist_60_Urban_Map@data$M2_toilet)
-    land_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_land, Dist_60_Urban_Map@data$M1_land,Dist_60_Urban_Map@data$M2_land)
-    livestock_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_livestock, Dist_60_Urban_Map@data$M1_livestock,Dist_60_Urban_Map@data$M2_livestock)
-    rural_equip_Urban = switch(mpi_selection, Dist_60_Urban_Map@data$M0_rural_equip, Dist_60_Urban_Map@data$M1_rural_equip,Dist_60_Urban_Map@data$M2_rural_equip)
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
     
-    # This allocates the rural MPI variables
-    education_max_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_education_max, Dist_60_Rural_Map@data$M1_education_max,Dist_60_Rural_Map@data$M2_education_max)
-    education_dropout_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_education_dropout, Dist_60_Rural_Map@data$M1_education_dropout,Dist_60_Rural_Map@data$M2_education_dropout)
-    health_chronic_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_health_chronic, Dist_60_Rural_Map@data$M1_health_chronic,Dist_60_Rural_Map@data$M2_health_chronic)
-    health_visit_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_health_visit, Dist_60_Rural_Map@data$M1_health_visit,Dist_60_Rural_Map@data$M2_health_visit)
-    employment_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_employment, Dist_60_Rural_Map@data$M1_employment,Dist_60_Rural_Map@data$M2_employment)
-    assets_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_assets, Dist_60_Rural_Map@data$M1_assets,Dist_60_Rural_Map@data$M2_assets)
-    services_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_services, Dist_60_Rural_Map@data$M1_services,Dist_60_Rural_Map@data$M2_services)
-    electricity_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_electricity, Dist_60_Rural_Map@data$M1_electricity,Dist_60_Rural_Map@data$M2_electricity)
-    cooking_fuel_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_cooking_fuel, Dist_60_Rural_Map@data$M1_cooking_fuel,Dist_60_Rural_Map@data$M2_cooking_fuel)
-    water_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_water, Dist_60_Rural_Map@data$M1_water,Dist_60_Rural_Map@data$M2_water)
-    toilet_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_toilet, Dist_60_Rural_Map@data$M1_toilet,Dist_60_Rural_Map@data$M2_toilet)
-    land_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_land, Dist_60_Rural_Map@data$M1_land,Dist_60_Rural_Map@data$M2_land)
-    livestock_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_livestock, Dist_60_Rural_Map@data$M1_livestock,Dist_60_Rural_Map@data$M2_livestock)
-    rural_equip_Rural = switch(mpi_selection, Dist_60_Rural_Map@data$M0_rural_equip, Dist_60_Rural_Map@data$M1_rural_equip,Dist_60_Rural_Map@data$M2_rural_equip)
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
     
-    
-    # We need to select how these variables affect M0, M1 and M2 by selecting
-    # which index to look at 1 = Total, 2 = Urban, 3 = Rural
-    urban_rural_selection = strtoi(input$UrbRur_Buttons_60)
-    
-    M0 = switch(urban_rural_selection, M0_Total, M0_Urban, M0_Rural)
-    M1 = switch(urban_rural_selection, M1_Total, M1_Urban, M1_Rural)
-    M2 = switch(urban_rural_selection, M2_Total, M2_Urban, M2_Rural)
-    
-    
-    
-    index = switch(mpi_selection, M0, M1, M2)
-    education_max = switch(urban_rural_selection, education_max_Total, education_max_Urban, education_max_Rural)
-    education_dropout = switch(urban_rural_selection, education_dropout_Total, education_dropout_Urban, education_dropout_Rural)
-    health_chronic = switch(urban_rural_selection, health_chronic_Total, health_chronic_Urban, health_chronic_Rural)
-    health_visit = switch(urban_rural_selection, health_visit_Total, health_visit_Urban, health_visit_Rural)
-    employment = switch(urban_rural_selection, employment_Total, employment_Urban, employment_Rural)
-    assets = switch(urban_rural_selection, assets_Total, assets_Urban, assets_Rural)
-    services = switch(urban_rural_selection, services_Total, services_Urban, services_Rural)
-    electricity = switch(urban_rural_selection, electricity_Total, electricity_Urban, electricity_Rural)
-    cooking_fuel = switch(urban_rural_selection, cooking_fuel_Total, cooking_fuel_Urban, cooking_fuel_Rural)
-    water = switch(urban_rural_selection, water_Total, water_Urban, water_Rural)
-    toilet = switch(urban_rural_selection, toilet_Total, toilet_Urban, toilet_Rural)
-    land = switch(urban_rural_selection, land_Total, land_Urban, land_Rural)
-    livestock = switch(urban_rural_selection, livestock_Total, livestock_Urban, livestock_Rural)
-    rural_equip = switch(urban_rural_selection, rural_equip_Total, rural_equip_Urban, rural_equip_Rural)
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
-      palette = c(
-        "#ffffff",
-        "#fffe88",
-        "#fffd38",
-        "#ed7e00",
-        "#f66324",
-        "#fe4747",
-        "#df326e",
-        "#c5208e",
-        "#b112a8",
-        "#9214b2",
-        "#6d17bd",
-        "#4f19c7",
-        "#301bd0",
-        "#2d15a3",
-        "#290c57"
-      ),
-      domain = c(0, 1),
-      reverse = FALSE)
+      palette = "viridis",
+      domain = c(0, max(M0, na.rm = TRUE)),
+      reverse = TRUE)
     
+    # This creates labels for M0, M1 and M2 
+    M0_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>0</sub>", M0, switch(input$slider_60_MPI,
+                                                                                National_2017$M0_k1[1],
+                                                                                National_2017$M0_k2[1],
+                                                                                National_2017$M0_k3[1],
+                                                                                National_2017$M0_k4[1],
+                                                                                National_2017$M0_k5[1],
+                                                                                National_2017$M0_k6[1],
+                                                                                National_2017$M0_k7[1],
+                                                                                National_2017$M0_k8[1],
+                                                                                National_2017$M0_k9[1]))
     
-    index_labels <- get_label(Dist_60_Total_Map@data$NAME_2, paste0("M<sub>", mpi_selection - 1, "</sub>"), index, switch(input$slider_60,
-                                                                                                                          National_2017$M0_k1[1],
-                                                                                                                          National_2017$M0_k2[1],
-                                                                                                                          National_2017$M0_k3[1],
-                                                                                                                          National_2017$M0_k4[1],
-                                                                                                                          National_2017$M0_k5[1],
-                                                                                                                          National_2017$M0_k6[1],
-                                                                                                                          National_2017$M0_k7[1],
-                                                                                                                          National_2017$M0_k8[1],
-                                                                                                                          National_2017$M0_k9[1]))
-    education_max_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Max. Education", education_max, switch(mpi_selection,
-                                                                                                             National_2017$M0_education_max[1],
-                                                                                                             National_2017$M1_education_max[1],
-                                                                                                             National_2017$M2_education_max[1]))
-    education_dropout_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Education Dropout", education_dropout, switch(mpi_selection,
-                                                                                                                        National_2017$M0_education_dropout[1],
-                                                                                                                        National_2017$M1_education_dropout[1],
-                                                                                                                        National_2017$M2_education_dropout[1]))
-    health_chronic_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Chronic Illness", health_chronic, switch(mpi_selection,
-                                                                                                                National_2017$M0_health_chronic[1],
-                                                                                                                National_2017$M1_health_chronic[1],
-                                                                                                                National_2017$M2_health_chronic[1]))
-    health_visit_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Health Visit", health_visit, switch(mpi_selection,
-                                                                                                                 National_2017$M0_health_visit[1],
-                                                                                                                 National_2017$M1_health_visit[1],
-                                                                                                                 National_2017$M2_health_visit[1]))
-    employment_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Unemployment", employment, switch(mpi_selection,
-                                                                                                     National_2017$M0_employment[1],
-                                                                                                     National_2017$M1_employment[1],
-                                                                                                     National_2017$M2_employment[1]))
-    assets_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Household Assets", assets, switch(mpi_selection,
-                                                                                                 National_2017$M0_assets[1],
-                                                                                                 National_2017$M1_assets[1],
-                                                                                                 National_2017$M2_assets[1]))
-    services_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Access to Services", services, switch(mpi_selection,
-                                                                                                       National_2017$M0_services[1],
-                                                                                                       National_2017$M1_services[1],
-                                                                                                       National_2017$M2_services[1]))
-    electricity_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Electricity", electricity, switch(mpi_selection,
-                                                                                                              National_2017$M0_electricity[1],
-                                                                                                              National_2017$M1_electricity[1],
-                                                                                                              National_2017$M2_electricity[1]))
-    cooking_fuel_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Poor Cooking Fuel", cooking_fuel, switch(mpi_selection,
-                                                                                                              National_2017$M0_cooking_fuel[1],
-                                                                                                              National_2017$M1_cooking_fuel[1],
-                                                                                                              National_2017$M2_cooking_fuel[1]))
-    water_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Poor Water Source", water, switch(mpi_selection,
-                                                                                                National_2017$M0_water[1],
-                                                                                                National_2017$M1_water[1],
-                                                                                                National_2017$M2_water[1]))
-    toilet_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Toilet", toilet, switch(mpi_selection,
-                                                                                               National_2017$M0_toilet[1],
-                                                                                               National_2017$M1_toilet[1],
-                                                                                               National_2017$M2_toilet[1]))
-    land_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Land", land, switch(mpi_selection,
-                                                                                         National_2017$M0_land[1],
-                                                                                         National_2017$M1_land[1],
-                                                                                         National_2017$M2_land[1]))
-    livestock_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Livestock", livestock, switch(mpi_selection,
-                                                                                                        National_2017$M0_livestock[1],
-                                                                                                        National_2017$M1_livestock[1],
-                                                                                                        National_2017$M2_livestock[1]))
-    rural_equip_labels <- get_label(Dist_60_Total_Map@data$NAME_2, "Lack of Rural Equipment", rural_equip, switch(mpi_selection,
-                                                                                                                  National_2017$M0_rural_equip[1],
-                                                                                                                  National_2017$M1_rural_equip[1],
-                                                                                                                  National_2017$M2_rural_equip[1]))
+    M1_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>1</sub>", M1, switch(input$slider_60_MPI,
+                                                                                National_2017$M1_k1[1],
+                                                                                National_2017$M1_k2[1],
+                                                                                National_2017$M1_k3[1],
+                                                                                National_2017$M1_k4[1],
+                                                                                National_2017$M1_k5[1],
+                                                                                National_2017$M1_k6[1],
+                                                                                National_2017$M1_k7[1],
+                                                                                National_2017$M1_k8[1],
+                                                                                National_2017$M1_k9[1]))
+    
+    M2_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>2</sub>", M2, switch(input$slider_60_MPI,
+                                                                                National_2017$M2_k1[1],
+                                                                                National_2017$M2_k2[1],
+                                                                                National_2017$M2_k3[1],
+                                                                                National_2017$M2_k4[1],
+                                                                                National_2017$M2_k5[1],
+                                                                                National_2017$M2_k6[1],
+                                                                                National_2017$M2_k7[1],
+                                                                                National_2017$M2_k8[1],
+                                                                                National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -980,62 +1241,36 @@ server <- function(input, output, session) {
       options = leafletOptions(
         minZoom = 0, maxZoom= 18,
         drag = FALSE)) %>% addTiles() %>%
-      setView(lng = 30, lat=-19, zoom=6) %>%
-      get_polygon(Dist_60_Total_Map, pal, index, index_labels, "Poverty Index") %>%
-      get_polygon(Dist_60_Total_Map, pal, education_max, education_max_labels, "Max. Education") %>%
-      get_polygon(Dist_60_Total_Map, pal, education_dropout, education_dropout_labels, "Education Dropout") %>%
-      get_polygon(Dist_60_Total_Map, pal, health_chronic, health_chronic_labels, "Chronic Illness") %>%
-      get_polygon(Dist_60_Total_Map, pal, health_visit, health_visit_labels, "Lack of Health Visit") %>%
-      get_polygon(Dist_60_Total_Map, pal, employment, employment_labels, "Unemployment") %>%
-      get_polygon(Dist_60_Total_Map, pal, assets, assets_labels, "Lack of Household Assets") %>%
-      get_polygon(Dist_60_Total_Map, pal, services, services_labels, "Lack of Access to Services") %>%
-      get_polygon(Dist_60_Total_Map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
-      get_polygon(Dist_60_Total_Map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
-      get_polygon(Dist_60_Total_Map, pal, water, water_labels, "Poor Water Source") %>%
-      get_polygon(Dist_60_Total_Map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
-      get_polygon(Dist_60_Total_Map, pal, land, land_labels, "Lack of Land") %>%
-      get_polygon(Dist_60_Total_Map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
-      get_polygon(Dist_60_Total_Map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      setView(lng = 30, lat=-19, zoom=6) %>% 
+      get_polygon(Dist_60_Map, pal, M0, M0_labels, "M0") %>%
+      get_polygon(Dist_60_Map, pal, M1, M1_labels, "M1") %>%
+      get_polygon(Dist_60_Map, pal, M2, M2_labels, "M2") %>%
       clearControls() %>%
       addLayersControl(
-        baseGroups = c("Poverty Index", 
-                       "Max. Education", 
-                       "Education Dropout", 
-                       "Chronic Illness", 
-                       "Lack of Health Visit", 
-                       "Unemployment", 
-                       "Lack of Household Assets", 
-                       "Lack of Access to Services", 
-                       "Lack of Electricity", 
-                       "Poor Cooking Fuel",
-                       "Poor Water Source",
-                       "Lack of Toilet",
-                       "Lack of Land",
-                       "Lack of Livestock",
-                       "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = TRUE)) %>%
-      addLegend(pal = pal, values = c(0, 1), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_60, ")"),
-                na.label = "No Data",
-                group = c("Poverty Index", "Max. Education"),
-                position = "bottomleft") %>%
+        baseGroups = c("M0", "M1", "M2"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) %>% 
+      addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_60_MPI),
+                position = "bottomright") %>%
       htmlwidgets::prependContent(html_fix)
   })
   
-  output$Prov_Map <- renderLeaflet({
+  output$Prov_MPI_Map <- renderLeaflet({
     
-    # Variables for total data are created 
-    M0_Total = switch(input$slider_Prov,
-                      Prov_Total_Map@data$M0_k1,
-                      Prov_Total_Map@data$M0_k2,
-                      Prov_Total_Map@data$M0_k3,
-                      Prov_Total_Map@data$M0_k4,
-                      Prov_Total_Map@data$M0_k5,
-                      Prov_Total_Map@data$M0_k6,
-                      Prov_Total_Map@data$M0_k7,
-                      Prov_Total_Map@data$M0_k8,
-                      Prov_Total_Map@data$M0_k9)
+    # Creating variables for M0, M1 and M2
+    M0_Total <- switch(input$slider_Prov_MPI,
+                       Prov_Total_Map@data$M0_k1,
+                       Prov_Total_Map@data$M0_k2,
+                       Prov_Total_Map@data$M0_k3,
+                       Prov_Total_Map@data$M0_k4,
+                       Prov_Total_Map@data$M0_k5,
+                       Prov_Total_Map@data$M0_k6,
+                       Prov_Total_Map@data$M0_k7,
+                       Prov_Total_Map@data$M0_k8,
+                       Prov_Total_Map@data$M0_k9
+    )
     
-    M1_Total = switch(input$slider_Prov,
+    M1_Total = switch(input$slider_Prov_MPI,
                       Prov_Total_Map@data$M1_k1,
                       Prov_Total_Map@data$M1_k2,
                       Prov_Total_Map@data$M1_k3,
@@ -1046,7 +1281,7 @@ server <- function(input, output, session) {
                       Prov_Total_Map@data$M1_k8,
                       Prov_Total_Map@data$M1_k9)
     
-    M2_Total = switch(input$slider_Prov,
+    M2_Total = switch(input$slider_Prov_MPI,
                       Prov_Total_Map@data$M2_k1,
                       Prov_Total_Map@data$M2_k2,
                       Prov_Total_Map@data$M2_k3,
@@ -1057,19 +1292,21 @@ server <- function(input, output, session) {
                       Prov_Total_Map@data$M2_k8,
                       Prov_Total_Map@data$M2_k9)
     
-    # Variables for Urban data are created 
-    M0_Urban = switch(input$slider_Prov,
-                      Prov_Urban_Map@data$M0_k1,
-                      Prov_Urban_Map@data$M0_k2,
-                      Prov_Urban_Map@data$M0_k3,
-                      Prov_Urban_Map@data$M0_k4,
-                      Prov_Urban_Map@data$M0_k5,
-                      Prov_Urban_Map@data$M0_k6,
-                      Prov_Urban_Map@data$M0_k7,
-                      Prov_Urban_Map@data$M0_k8,
-                      Prov_Urban_Map@data$M0_k9)
     
-    M1_Urban = switch(input$slider_Prov,
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_Prov_MPI,
+                       Prov_Urban_Map@data$M0_k1,
+                       Prov_Urban_Map@data$M0_k2,
+                       Prov_Urban_Map@data$M0_k3,
+                       Prov_Urban_Map@data$M0_k4,
+                       Prov_Urban_Map@data$M0_k5,
+                       Prov_Urban_Map@data$M0_k6,
+                       Prov_Urban_Map@data$M0_k7,
+                       Prov_Urban_Map@data$M0_k8,
+                       Prov_Urban_Map@data$M0_k9
+    )
+    
+    M1_Urban = switch(input$slider_Prov_MPI,
                       Prov_Urban_Map@data$M1_k1,
                       Prov_Urban_Map@data$M1_k2,
                       Prov_Urban_Map@data$M1_k3,
@@ -1080,7 +1317,7 @@ server <- function(input, output, session) {
                       Prov_Urban_Map@data$M1_k8,
                       Prov_Urban_Map@data$M1_k9)
     
-    M2_Urban = switch(input$slider_Prov,
+    M2_Urban = switch(input$slider_Prov_MPI,
                       Prov_Urban_Map@data$M2_k1,
                       Prov_Urban_Map@data$M2_k2,
                       Prov_Urban_Map@data$M2_k3,
@@ -1091,19 +1328,22 @@ server <- function(input, output, session) {
                       Prov_Urban_Map@data$M2_k8,
                       Prov_Urban_Map@data$M2_k9)
     
-    # Variables for total data are created 
-    M0_Rural = switch(input$slider_Prov,
-                      Prov_Rural_Map@data$M0_k1,
-                      Prov_Rural_Map@data$M0_k2,
-                      Prov_Rural_Map@data$M0_k3,
-                      Prov_Rural_Map@data$M0_k4,
-                      Prov_Rural_Map@data$M0_k5,
-                      Prov_Rural_Map@data$M0_k6,
-                      Prov_Rural_Map@data$M0_k7,
-                      Prov_Rural_Map@data$M0_k8,
-                      Prov_Rural_Map@data$M0_k9)
+    # Rural MPI Variables
     
-    M1_Rural = switch(input$slider_Prov,
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_Prov_MPI,
+                       Prov_Rural_Map@data$M0_k1,
+                       Prov_Rural_Map@data$M0_k2,
+                       Prov_Rural_Map@data$M0_k3,
+                       Prov_Rural_Map@data$M0_k4,
+                       Prov_Rural_Map@data$M0_k5,
+                       Prov_Rural_Map@data$M0_k6,
+                       Prov_Rural_Map@data$M0_k7,
+                       Prov_Rural_Map@data$M0_k8,
+                       Prov_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_Prov_MPI,
                       Prov_Rural_Map@data$M1_k1,
                       Prov_Rural_Map@data$M1_k2,
                       Prov_Rural_Map@data$M1_k3,
@@ -1114,7 +1354,7 @@ server <- function(input, output, session) {
                       Prov_Rural_Map@data$M1_k8,
                       Prov_Rural_Map@data$M1_k9)
     
-    M2_Rural = switch(input$slider_Prov,
+    M2_Rural = switch(input$slider_Prov_MPI,
                       Prov_Rural_Map@data$M2_k1,
                       Prov_Rural_Map@data$M2_k2,
                       Prov_Rural_Map@data$M2_k3,
@@ -1125,174 +1365,63 @@ server <- function(input, output, session) {
                       Prov_Rural_Map@data$M2_k8,
                       Prov_Rural_Map@data$M2_k9)
     
-    # We need to select how these variables affect M0, M1 and M2 by selecting
-    # which index to look at 1 = M0, 2 = M1, 3 = M2
-    mpi_selection = strtoi(input$MPI_Buttons_Prov)
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_MPI_Prov)
     
-    # This allocates the total MPI Variables
-    education_max_Total = switch(mpi_selection, Prov_Total_Map@data$M0_education_max, Prov_Total_Map@data$M1_education_max,Prov_Total_Map@data$M2_education_max)
-    education_dropout_Total = switch(mpi_selection, Prov_Total_Map@data$M0_education_dropout, Prov_Total_Map@data$M1_education_dropout,Prov_Total_Map@data$M2_education_dropout)
-    health_chronic_Total = switch(mpi_selection, Prov_Total_Map@data$M0_health_chronic, Prov_Total_Map@data$M1_health_chronic,Prov_Total_Map@data$M2_health_chronic)
-    health_visit_Total = switch(mpi_selection, Prov_Total_Map@data$M0_health_visit, Prov_Total_Map@data$M1_health_visit,Prov_Total_Map@data$M2_health_visit)
-    employment_Total = switch(mpi_selection, Prov_Total_Map@data$M0_employment, Prov_Total_Map@data$M1_employment,Prov_Total_Map@data$M2_employment)
-    assets_Total = switch(mpi_selection, Prov_Total_Map@data$M0_assets, Prov_Total_Map@data$M1_assets,Prov_Total_Map@data$M2_assets)
-    services_Total = switch(mpi_selection, Prov_Total_Map@data$M0_services, Prov_Total_Map@data$M1_services,Prov_Total_Map@data$M2_services)
-    electricity_Total = switch(mpi_selection, Prov_Total_Map@data$M0_electricity, Prov_Total_Map@data$M1_electricity,Prov_Total_Map@data$M2_electricity)
-    cooking_fuel_Total = switch(mpi_selection, Prov_Total_Map@data$M0_cooking_fuel, Prov_Total_Map@data$M1_cooking_fuel,Prov_Total_Map@data$M2_cooking_fuel)
-    water_Total = switch(mpi_selection, Prov_Total_Map@data$M0_water, Prov_Total_Map@data$M1_water,Prov_Total_Map@data$M2_water)
-    toilet_Total = switch(mpi_selection, Prov_Total_Map@data$M0_toilet, Prov_Total_Map@data$M1_toilet,Prov_Total_Map@data$M2_toilet)
-    land_Total = switch(mpi_selection, Prov_Total_Map@data$M0_land, Prov_Total_Map@data$M1_land,Prov_Total_Map@data$M2_land)
-    livestock_Total = switch(mpi_selection, Prov_Total_Map@data$M0_livestock, Prov_Total_Map@data$M1_livestock,Prov_Total_Map@data$M2_livestock)
-    rural_equip_Total = switch(mpi_selection, Prov_Total_Map@data$M0_rural_equip, Prov_Total_Map@data$M1_rural_equip,Prov_Total_Map@data$M2_rural_equip)
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
     
-    # This allocates the urban MPI Variables
-    education_max_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_education_max, Prov_Urban_Map@data$M1_education_max,Prov_Urban_Map@data$M2_education_max)
-    education_dropout_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_education_dropout, Prov_Urban_Map@data$M1_education_dropout,Prov_Urban_Map@data$M2_education_dropout)
-    health_chronic_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_health_chronic, Prov_Urban_Map@data$M1_health_chronic,Prov_Urban_Map@data$M2_health_chronic)
-    health_visit_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_health_visit, Prov_Urban_Map@data$M1_health_visit,Prov_Urban_Map@data$M2_health_visit)
-    employment_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_employment, Prov_Urban_Map@data$M1_employment,Prov_Urban_Map@data$M2_employment)
-    assets_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_assets, Prov_Urban_Map@data$M1_assets,Prov_Urban_Map@data$M2_assets)
-    services_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_services, Prov_Urban_Map@data$M1_services,Prov_Urban_Map@data$M2_services)
-    electricity_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_electricity, Prov_Urban_Map@data$M1_electricity,Prov_Urban_Map@data$M2_electricity)
-    cooking_fuel_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_cooking_fuel, Prov_Urban_Map@data$M1_cooking_fuel,Prov_Urban_Map@data$M2_cooking_fuel)
-    water_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_water, Prov_Urban_Map@data$M1_water,Prov_Urban_Map@data$M2_water)
-    toilet_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_toilet, Prov_Urban_Map@data$M1_toilet,Prov_Urban_Map@data$M2_toilet)
-    land_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_land, Prov_Urban_Map@data$M1_land,Prov_Urban_Map@data$M2_land)
-    livestock_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_livestock, Prov_Urban_Map@data$M1_livestock,Prov_Urban_Map@data$M2_livestock)
-    rural_equip_Urban = switch(mpi_selection, Prov_Urban_Map@data$M0_rural_equip, Prov_Urban_Map@data$M1_rural_equip,Prov_Urban_Map@data$M2_rural_equip)
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
     
-    # This allocates the rural MPI variables
-    education_max_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_education_max, Prov_Rural_Map@data$M1_education_max,Prov_Rural_Map@data$M2_education_max)
-    education_dropout_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_education_dropout, Prov_Rural_Map@data$M1_education_dropout,Prov_Rural_Map@data$M2_education_dropout)
-    health_chronic_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_health_chronic, Prov_Rural_Map@data$M1_health_chronic,Prov_Rural_Map@data$M2_health_chronic)
-    health_visit_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_health_visit, Prov_Rural_Map@data$M1_health_visit,Prov_Rural_Map@data$M2_health_visit)
-    employment_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_employment, Prov_Rural_Map@data$M1_employment,Prov_Rural_Map@data$M2_employment)
-    assets_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_assets, Prov_Rural_Map@data$M1_assets,Prov_Rural_Map@data$M2_assets)
-    services_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_services, Prov_Rural_Map@data$M1_services,Prov_Rural_Map@data$M2_services)
-    electricity_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_electricity, Prov_Rural_Map@data$M1_electricity,Prov_Rural_Map@data$M2_electricity)
-    cooking_fuel_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_cooking_fuel, Prov_Rural_Map@data$M1_cooking_fuel,Prov_Rural_Map@data$M2_cooking_fuel)
-    water_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_water, Prov_Rural_Map@data$M1_water,Prov_Rural_Map@data$M2_water)
-    toilet_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_toilet, Prov_Rural_Map@data$M1_toilet,Prov_Rural_Map@data$M2_toilet)
-    land_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_land, Prov_Rural_Map@data$M1_land,Prov_Rural_Map@data$M2_land)
-    livestock_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_livestock, Prov_Rural_Map@data$M1_livestock,Prov_Rural_Map@data$M2_livestock)
-    rural_equip_Rural = switch(mpi_selection, Prov_Rural_Map@data$M0_rural_equip, Prov_Rural_Map@data$M1_rural_equip,Prov_Rural_Map@data$M2_rural_equip)
-    
-    
-    # We need to select how these variables affect M0, M1 and M2 by selecting
-    # which index to look at 1 = Total, 2 = Urban, 3 = Rural
-    urban_rural_selection = strtoi(input$UrbRur_Buttons_Prov)
-    
-    M0 = switch(urban_rural_selection, M0_Total, M0_Urban, M0_Rural)
-    M1 = switch(urban_rural_selection, M1_Total, M1_Urban, M1_Rural)
-    M2 = switch(urban_rural_selection, M2_Total, M2_Urban, M2_Rural)
-    
-    
-    
-    index = switch(mpi_selection, M0, M1, M2)
-    education_max = switch(urban_rural_selection, education_max_Total, education_max_Urban, education_max_Rural)
-    education_dropout = switch(urban_rural_selection, education_dropout_Total, education_dropout_Urban, education_dropout_Rural)
-    health_chronic = switch(urban_rural_selection, health_chronic_Total, health_chronic_Urban, health_chronic_Rural)
-    health_visit = switch(urban_rural_selection, health_visit_Total, health_visit_Urban, health_visit_Rural)
-    employment = switch(urban_rural_selection, employment_Total, employment_Urban, employment_Rural)
-    assets = switch(urban_rural_selection, assets_Total, assets_Urban, assets_Rural)
-    services = switch(urban_rural_selection, services_Total, services_Urban, services_Rural)
-    electricity = switch(urban_rural_selection, electricity_Total, electricity_Urban, electricity_Rural)
-    cooking_fuel = switch(urban_rural_selection, cooking_fuel_Total, cooking_fuel_Urban, cooking_fuel_Rural)
-    water = switch(urban_rural_selection, water_Total, water_Urban, water_Rural)
-    toilet = switch(urban_rural_selection, toilet_Total, toilet_Urban, toilet_Rural)
-    land = switch(urban_rural_selection, land_Total, land_Urban, land_Rural)
-    livestock = switch(urban_rural_selection, livestock_Total, livestock_Urban, livestock_Rural)
-    rural_equip = switch(urban_rural_selection, rural_equip_Total, rural_equip_Urban, rural_equip_Rural)
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
-      palette = c(
-        "#ffffff",
-        "#fffe88",
-        "#fffd38",
-        "#ed7e00",
-        "#f66324",
-        "#fe4747",
-        "#df326e",
-        "#c5208e",
-        "#b112a8",
-        "#9214b2",
-        "#6d17bd",
-        "#4f19c7",
-        "#301bd0",
-        "#2d15a3",
-        "#290c57"
-      ),
-      domain = c(0, 1),
-      reverse = FALSE)
+      palette = "viridis",
+      domain = c(0, max(M0, na.rm = TRUE)),
+      reverse = TRUE)
     
+    # This creates labels for M0, M1 and M2 
+    M0_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>0</sub>", M0, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M0_k1[1],
+                                                                              National_2017$M0_k2[1],
+                                                                              National_2017$M0_k3[1],
+                                                                              National_2017$M0_k4[1],
+                                                                              National_2017$M0_k5[1],
+                                                                              National_2017$M0_k6[1],
+                                                                              National_2017$M0_k7[1],
+                                                                              National_2017$M0_k8[1],
+                                                                              National_2017$M0_k9[1]))
     
-    index_labels <- get_label(Prov_Total_Map@data$ADM1_EN, paste0("M<sub>", mpi_selection - 1, "</sub>"), index, switch(input$slider_Prov,
-                                                                                                                        National_2017$M0_k1[1],
-                                                                                                                        National_2017$M0_k2[1],
-                                                                                                                        National_2017$M0_k3[1],
-                                                                                                                        National_2017$M0_k4[1],
-                                                                                                                        National_2017$M0_k5[1],
-                                                                                                                        National_2017$M0_k6[1],
-                                                                                                                        National_2017$M0_k7[1],
-                                                                                                                        National_2017$M0_k8[1],
-                                                                                                                        National_2017$M0_k9[1]))
-    education_max_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Max. Education", education_max, switch(mpi_selection,
-                                                                                                           National_2017$M0_education_max[1],
-                                                                                                           National_2017$M1_education_max[1],
-                                                                                                           National_2017$M2_education_max[1]))
-    education_dropout_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Education Dropout", education_dropout, switch(mpi_selection,
-                                                                                                                      National_2017$M0_education_dropout[1],
-                                                                                                                      National_2017$M1_education_dropout[1],
-                                                                                                                      National_2017$M2_education_dropout[1]))
-    health_chronic_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Chronic Illness", health_chronic, switch(mpi_selection,
-                                                                                                              National_2017$M0_health_chronic[1],
-                                                                                                              National_2017$M1_health_chronic[1],
-                                                                                                              National_2017$M2_health_chronic[1]))
-    health_visit_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Health Visit", health_visit, switch(mpi_selection,
-                                                                                                               National_2017$M0_health_visit[1],
-                                                                                                               National_2017$M1_health_visit[1],
-                                                                                                               National_2017$M2_health_visit[1]))
-    employment_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Unemployment", employment, switch(mpi_selection,
-                                                                                                   National_2017$M0_employment[1],
-                                                                                                   National_2017$M1_employment[1],
-                                                                                                   National_2017$M2_employment[1]))
-    assets_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Household Assets", assets, switch(mpi_selection,
-                                                                                               National_2017$M0_assets[1],
-                                                                                               National_2017$M1_assets[1],
-                                                                                               National_2017$M2_assets[1]))
-    services_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Access to Services", services, switch(mpi_selection,
-                                                                                                     National_2017$M0_services[1],
-                                                                                                     National_2017$M1_services[1],
-                                                                                                     National_2017$M2_services[1]))
-    electricity_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Electricity", electricity, switch(mpi_selection,
-                                                                                                            National_2017$M0_electricity[1],
-                                                                                                            National_2017$M1_electricity[1],
-                                                                                                            National_2017$M2_electricity[1]))
-    cooking_fuel_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Poor Cooking Fuel", cooking_fuel, switch(mpi_selection,
-                                                                                                            National_2017$M0_cooking_fuel[1],
-                                                                                                            National_2017$M1_cooking_fuel[1],
-                                                                                                            National_2017$M2_cooking_fuel[1]))
-    water_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Poor Water Source", water, switch(mpi_selection,
-                                                                                              National_2017$M0_water[1],
-                                                                                              National_2017$M1_water[1],
-                                                                                              National_2017$M2_water[1]))
-    toilet_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Toilet", toilet, switch(mpi_selection,
-                                                                                             National_2017$M0_toilet[1],
-                                                                                             National_2017$M1_toilet[1],
-                                                                                             National_2017$M2_toilet[1]))
-    land_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Land", land, switch(mpi_selection,
-                                                                                       National_2017$M0_land[1],
-                                                                                       National_2017$M1_land[1],
-                                                                                       National_2017$M2_land[1]))
-    livestock_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Livestock", livestock, switch(mpi_selection,
-                                                                                                      National_2017$M0_livestock[1],
-                                                                                                      National_2017$M1_livestock[1],
-                                                                                                      National_2017$M2_livestock[1]))
-    rural_equip_labels <- get_label(Prov_Total_Map@data$ADM1_EN, "Lack of Rural Equipment", rural_equip, switch(mpi_selection,
-                                                                                                                National_2017$M0_rural_equip[1],
-                                                                                                                National_2017$M1_rural_equip[1],
-                                                                                                                National_2017$M2_rural_equip[1]))
+    M1_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>1</sub>", M1, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M1_k1[1],
+                                                                              National_2017$M1_k2[1],
+                                                                              National_2017$M1_k3[1],
+                                                                              National_2017$M1_k4[1],
+                                                                              National_2017$M1_k5[1],
+                                                                              National_2017$M1_k6[1],
+                                                                              National_2017$M1_k7[1],
+                                                                              National_2017$M1_k8[1],
+                                                                              National_2017$M1_k9[1]))
+    
+    M2_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>2</sub>", M2, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M2_k1[1],
+                                                                              National_2017$M2_k2[1],
+                                                                              National_2017$M2_k3[1],
+                                                                              National_2017$M2_k4[1],
+                                                                              National_2017$M2_k5[1],
+                                                                              National_2017$M2_k6[1],
+                                                                              National_2017$M2_k7[1],
+                                                                              National_2017$M2_k8[1],
+                                                                              National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -1306,26 +1435,800 @@ server <- function(input, output, session) {
       options = leafletOptions(
         minZoom = 0, maxZoom= 18,
         drag = FALSE)) %>% addTiles() %>%
-      setView(lng = 30, lat=-19, zoom=6) %>%
-      get_polygon(Prov_Total_Map, pal, index, index_labels, "Poverty Index") %>%
-      get_polygon(Prov_Total_Map, pal, education_max, education_max_labels, "Max. Education") %>%
-      get_polygon(Prov_Total_Map, pal, education_dropout, education_dropout_labels, "Education Dropout") %>%
-      get_polygon(Prov_Total_Map, pal, health_chronic, health_chronic_labels, "Chronic Illness") %>%
-      get_polygon(Prov_Total_Map, pal, health_visit, health_visit_labels, "Lack of Health Visit") %>%
-      get_polygon(Prov_Total_Map, pal, employment, employment_labels, "Unemployment") %>%
-      get_polygon(Prov_Total_Map, pal, assets, assets_labels, "Lack of Household Assets") %>%
-      get_polygon(Prov_Total_Map, pal, services, services_labels, "Lack of Access to Services") %>%
-      get_polygon(Prov_Total_Map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
-      get_polygon(Prov_Total_Map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
-      get_polygon(Prov_Total_Map, pal, water, water_labels, "Poor Water Source") %>%
-      get_polygon(Prov_Total_Map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
-      get_polygon(Prov_Total_Map, pal, land, land_labels, "Lack of Land") %>%
-      get_polygon(Prov_Total_Map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
-      get_polygon(Prov_Total_Map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      setView(lng = 30, lat=-19, zoom=6) %>% 
+      get_polygon(Prov_Map, pal, M0, M0_labels, "M0") %>%
+      get_polygon(Prov_Map, pal, M1, M1_labels, "M1") %>%
+      get_polygon(Prov_Map, pal, M2, M2_labels, "M2") %>%
       clearControls() %>%
       addLayersControl(
-        baseGroups = c("Poverty Index", 
-                       "Max. Education", 
+        baseGroups = c("M0", "M1", "M2"),
+        options = layersControlOptions(collapsed = FALSE)
+      ) %>% 
+      addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_Prov_MPI),
+                position = "bottomright") %>%
+      htmlwidgets::prependContent(html_fix)
+  })
+  
+  output$Dist_91_Decomp_Map <- renderLeaflet({
+    # This is the level that the decomposition data is selected on. 
+    # 1 = g0, c0, 2 = g1, c1, 3 = g2, c2
+    level_selection = strtoi(input$LevelSelection_Decomp_91)
+    
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_91)
+    
+    map = switch(UrbRurSelection,
+                 Dist_91_Total_Map,
+                 Dist_91_Urban_Map,
+                 Dist_91_Rural_Map)
+    nat_data = switch(UrbRurSelection,
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
+    
+    
+    g_edu_max = switch(input$slider_91_Decomp,
+                       switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
+                       switch(level_selection,  map@data$g0_edu_max_k2,map@data$g1_edu_max_k2,map@data$g2_edu_max_k2),
+                       switch(level_selection,  map@data$g0_edu_max_k3,map@data$g1_edu_max_k3,map@data$g2_edu_max_k3),
+                       switch(level_selection,  map@data$g0_edu_max_k4,map@data$g1_edu_max_k4,map@data$g2_edu_max_k4),
+                       switch(level_selection,  map@data$g0_edu_max_k5,map@data$g1_edu_max_k5,map@data$g2_edu_max_k5),
+                       switch(level_selection,  map@data$g0_edu_max_k6,map@data$g1_edu_max_k6,map@data$g2_edu_max_k6),
+                       switch(level_selection,  map@data$g0_edu_max_k7,map@data$g1_edu_max_k7,map@data$g2_edu_max_k7),
+                       switch(level_selection,  map@data$g0_edu_max_k8,map@data$g1_edu_max_k8,map@data$g2_edu_max_k8),
+                       switch(level_selection,  map@data$g0_edu_max_k9,map@data$g1_edu_max_k9,map@data$g2_edu_max_k9)
+    )
+    g_edu_dropout = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$g0_edu_dropout_k1,map@data$g1_edu_dropout_k1,map@data$g2_edu_dropout_k1),
+                           switch(level_selection,  map@data$g0_edu_dropout_k2,map@data$g1_edu_dropout_k2,map@data$g2_edu_dropout_k2),
+                           switch(level_selection,  map@data$g0_edu_dropout_k3,map@data$g1_edu_dropout_k3,map@data$g2_edu_dropout_k3),
+                           switch(level_selection,  map@data$g0_edu_dropout_k4,map@data$g1_edu_dropout_k4,map@data$g2_edu_dropout_k4),
+                           switch(level_selection,  map@data$g0_edu_dropout_k5,map@data$g1_edu_dropout_k5,map@data$g2_edu_dropout_k5),
+                           switch(level_selection,  map@data$g0_edu_dropout_k6,map@data$g1_edu_dropout_k6,map@data$g2_edu_dropout_k6),
+                           switch(level_selection,  map@data$g0_edu_dropout_k7,map@data$g1_edu_dropout_k7,map@data$g2_edu_dropout_k7),
+                           switch(level_selection,  map@data$g0_edu_dropout_k8,map@data$g1_edu_dropout_k8,map@data$g2_edu_dropout_k8),
+                           switch(level_selection,  map@data$g0_edu_dropout_k9,map@data$g1_edu_dropout_k9,map@data$g2_edu_dropout_k9)
+    )
+    
+    g_hea_chronic = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$g0_hea_chronic_k1,map@data$g1_hea_chronic_k1,map@data$g2_hea_chronic_k1),
+                           switch(level_selection,  map@data$g0_hea_chronic_k2,map@data$g1_hea_chronic_k2,map@data$g2_hea_chronic_k2),
+                           switch(level_selection,  map@data$g0_hea_chronic_k3,map@data$g1_hea_chronic_k3,map@data$g2_hea_chronic_k3),
+                           switch(level_selection,  map@data$g0_hea_chronic_k4,map@data$g1_hea_chronic_k4,map@data$g2_hea_chronic_k4),
+                           switch(level_selection,  map@data$g0_hea_chronic_k5,map@data$g1_hea_chronic_k5,map@data$g2_hea_chronic_k5),
+                           switch(level_selection,  map@data$g0_hea_chronic_k6,map@data$g1_hea_chronic_k6,map@data$g2_hea_chronic_k6),
+                           switch(level_selection,  map@data$g0_hea_chronic_k7,map@data$g1_hea_chronic_k7,map@data$g2_hea_chronic_k7),
+                           switch(level_selection,  map@data$g0_hea_chronic_k8,map@data$g1_hea_chronic_k8,map@data$g2_hea_chronic_k8),
+                           switch(level_selection,  map@data$g0_hea_chronic_k9,map@data$g1_hea_chronic_k9,map@data$g2_hea_chronic_k9)
+    )
+    
+    g_hea_visit = switch(input$slider_91_Decomp,
+                         switch(level_selection,  map@data$g0_hea_visit_k1,map@data$g1_hea_visit_k1,map@data$g2_hea_visit_k1),
+                         switch(level_selection,  map@data$g0_hea_visit_k2,map@data$g1_hea_visit_k2,map@data$g2_hea_visit_k2),
+                         switch(level_selection,  map@data$g0_hea_visit_k3,map@data$g1_hea_visit_k3,map@data$g2_hea_visit_k3),
+                         switch(level_selection,  map@data$g0_hea_visit_k4,map@data$g1_hea_visit_k4,map@data$g2_hea_visit_k4),
+                         switch(level_selection,  map@data$g0_hea_visit_k5,map@data$g1_hea_visit_k5,map@data$g2_hea_visit_k5),
+                         switch(level_selection,  map@data$g0_hea_visit_k6,map@data$g1_hea_visit_k6,map@data$g2_hea_visit_k6),
+                         switch(level_selection,  map@data$g0_hea_visit_k7,map@data$g1_hea_visit_k7,map@data$g2_hea_visit_k7),
+                         switch(level_selection,  map@data$g0_hea_visit_k8,map@data$g1_hea_visit_k8,map@data$g2_hea_visit_k8),
+                         switch(level_selection,  map@data$g0_hea_visit_k9,map@data$g1_hea_visit_k9,map@data$g2_hea_visit_k9)
+    )
+    
+    g_employment = switch(input$slider_91_Decomp,
+                          switch(level_selection,  map@data$g0_employment_k1,map@data$g1_employment_k1,map@data$g2_employment_k1),
+                          switch(level_selection,  map@data$g0_employment_k2,map@data$g1_employment_k2,map@data$g2_employment_k2),
+                          switch(level_selection,  map@data$g0_employment_k3,map@data$g1_employment_k3,map@data$g2_employment_k3),
+                          switch(level_selection,  map@data$g0_employment_k4,map@data$g1_employment_k4,map@data$g2_employment_k4),
+                          switch(level_selection,  map@data$g0_employment_k5,map@data$g1_employment_k5,map@data$g2_employment_k5),
+                          switch(level_selection,  map@data$g0_employment_k6,map@data$g1_employment_k6,map@data$g2_employment_k6),
+                          switch(level_selection,  map@data$g0_employment_k7,map@data$g1_employment_k7,map@data$g2_employment_k7),
+                          switch(level_selection,  map@data$g0_employment_k8,map@data$g1_employment_k8,map@data$g2_employment_k8),
+                          switch(level_selection,  map@data$g0_employment_k9,map@data$g1_employment_k9,map@data$g2_employment_k9)
+    )
+    
+    g_assets = switch(input$slider_91_Decomp,
+                      switch(level_selection,  map@data$g0_assets_k1,map@data$g1_assets_k1,map@data$g2_assets_k1),
+                      switch(level_selection,  map@data$g0_assets_k2,map@data$g1_assets_k2,map@data$g2_assets_k2),
+                      switch(level_selection,  map@data$g0_assets_k3,map@data$g1_assets_k3,map@data$g2_assets_k3),
+                      switch(level_selection,  map@data$g0_assets_k4,map@data$g1_assets_k4,map@data$g2_assets_k4),
+                      switch(level_selection,  map@data$g0_assets_k5,map@data$g1_assets_k5,map@data$g2_assets_k5),
+                      switch(level_selection,  map@data$g0_assets_k6,map@data$g1_assets_k6,map@data$g2_assets_k6),
+                      switch(level_selection,  map@data$g0_assets_k7,map@data$g1_assets_k7,map@data$g2_assets_k7),
+                      switch(level_selection,  map@data$g0_assets_k8,map@data$g1_assets_k8,map@data$g2_assets_k8),
+                      switch(level_selection,  map@data$g0_assets_k9,map@data$g1_assets_k9,map@data$g2_assets_k9)
+    )
+    
+    g_services = switch(input$slider_91_Decomp,
+                        switch(level_selection,  map@data$g0_services_k1,map@data$g1_services_k1,map@data$g2_services_k1),
+                        switch(level_selection,  map@data$g0_services_k2,map@data$g1_services_k2,map@data$g2_services_k2),
+                        switch(level_selection,  map@data$g0_services_k3,map@data$g1_services_k3,map@data$g2_services_k3),
+                        switch(level_selection,  map@data$g0_services_k4,map@data$g1_services_k4,map@data$g2_services_k4),
+                        switch(level_selection,  map@data$g0_services_k5,map@data$g1_services_k5,map@data$g2_services_k5),
+                        switch(level_selection,  map@data$g0_services_k6,map@data$g1_services_k6,map@data$g2_services_k6),
+                        switch(level_selection,  map@data$g0_services_k7,map@data$g1_services_k7,map@data$g2_services_k7),
+                        switch(level_selection,  map@data$g0_services_k8,map@data$g1_services_k8,map@data$g2_services_k8),
+                        switch(level_selection,  map@data$g0_services_k9,map@data$g1_services_k9,map@data$g2_services_k9)
+    )
+    
+    g_electricity = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$g0_electricity_k1,map@data$g1_electricity_k1,map@data$g2_electricity_k1),
+                           switch(level_selection,  map@data$g0_electricity_k2,map@data$g1_electricity_k2,map@data$g2_electricity_k2),
+                           switch(level_selection,  map@data$g0_electricity_k3,map@data$g1_electricity_k3,map@data$g2_electricity_k3),
+                           switch(level_selection,  map@data$g0_electricity_k4,map@data$g1_electricity_k4,map@data$g2_electricity_k4),
+                           switch(level_selection,  map@data$g0_electricity_k5,map@data$g1_electricity_k5,map@data$g2_electricity_k5),
+                           switch(level_selection,  map@data$g0_electricity_k6,map@data$g1_electricity_k6,map@data$g2_electricity_k6),
+                           switch(level_selection,  map@data$g0_electricity_k7,map@data$g1_electricity_k7,map@data$g2_electricity_k7),
+                           switch(level_selection,  map@data$g0_electricity_k8,map@data$g1_electricity_k8,map@data$g2_electricity_k8),
+                           switch(level_selection,  map@data$g0_electricity_k9,map@data$g1_electricity_k9,map@data$g2_electricity_k9)
+    )
+    
+    g_cooking_fuel = switch(input$slider_91_Decomp,
+                            switch(level_selection,  map@data$g0_cooking_fuel_k1,map@data$g1_cooking_fuel_k1,map@data$g2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k2,map@data$g1_cooking_fuel_k2,map@data$g2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k3,map@data$g1_cooking_fuel_k3,map@data$g2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k4,map@data$g1_cooking_fuel_k4,map@data$g2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k5,map@data$g1_cooking_fuel_k5,map@data$g2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k6,map@data$g1_cooking_fuel_k6,map@data$g2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k7,map@data$g1_cooking_fuel_k7,map@data$g2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k8,map@data$g1_cooking_fuel_k8,map@data$g2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k9,map@data$g1_cooking_fuel_k9,map@data$g2_cooking_fuel_k9)
+    )
+    
+    g_water = switch(input$slider_91_Decomp,
+                     switch(level_selection,  map@data$g0_water_k1,map@data$g1_water_k1,map@data$g2_water_k1),
+                     switch(level_selection,  map@data$g0_water_k2,map@data$g1_water_k2,map@data$g2_water_k2),
+                     switch(level_selection,  map@data$g0_water_k3,map@data$g1_water_k3,map@data$g2_water_k3),
+                     switch(level_selection,  map@data$g0_water_k4,map@data$g1_water_k4,map@data$g2_water_k4),
+                     switch(level_selection,  map@data$g0_water_k5,map@data$g1_water_k5,map@data$g2_water_k5),
+                     switch(level_selection,  map@data$g0_water_k6,map@data$g1_water_k6,map@data$g2_water_k6),
+                     switch(level_selection,  map@data$g0_water_k7,map@data$g1_water_k7,map@data$g2_water_k7),
+                     switch(level_selection,  map@data$g0_water_k8,map@data$g1_water_k8,map@data$g2_water_k8),
+                     switch(level_selection,  map@data$g0_water_k9,map@data$g1_water_k9,map@data$g2_water_k9)
+    )
+    
+    g_toilet = switch(input$slider_91_Decomp,
+                      switch(level_selection,  map@data$g0_toilet_k1,map@data$g1_toilet_k1,map@data$g2_toilet_k1),
+                      switch(level_selection,  map@data$g0_toilet_k2,map@data$g1_toilet_k2,map@data$g2_toilet_k2),
+                      switch(level_selection,  map@data$g0_toilet_k3,map@data$g1_toilet_k3,map@data$g2_toilet_k3),
+                      switch(level_selection,  map@data$g0_toilet_k4,map@data$g1_toilet_k4,map@data$g2_toilet_k4),
+                      switch(level_selection,  map@data$g0_toilet_k5,map@data$g1_toilet_k5,map@data$g2_toilet_k5),
+                      switch(level_selection,  map@data$g0_toilet_k6,map@data$g1_toilet_k6,map@data$g2_toilet_k6),
+                      switch(level_selection,  map@data$g0_toilet_k7,map@data$g1_toilet_k7,map@data$g2_toilet_k7),
+                      switch(level_selection,  map@data$g0_toilet_k8,map@data$g1_toilet_k8,map@data$g2_toilet_k8),
+                      switch(level_selection,  map@data$g0_toilet_k9,map@data$g1_toilet_k9,map@data$g2_toilet_k9)
+    )
+    
+    g_land = switch(input$slider_91_Decomp,
+                    switch(level_selection,  map@data$g0_land_k1,map@data$g1_land_k1,map@data$g2_land_k1),
+                    switch(level_selection,  map@data$g0_land_k2,map@data$g1_land_k2,map@data$g2_land_k2),
+                    switch(level_selection,  map@data$g0_land_k3,map@data$g1_land_k3,map@data$g2_land_k3),
+                    switch(level_selection,  map@data$g0_land_k4,map@data$g1_land_k4,map@data$g2_land_k4),
+                    switch(level_selection,  map@data$g0_land_k5,map@data$g1_land_k5,map@data$g2_land_k5),
+                    switch(level_selection,  map@data$g0_land_k6,map@data$g1_land_k6,map@data$g2_land_k6),
+                    switch(level_selection,  map@data$g0_land_k7,map@data$g1_land_k7,map@data$g2_land_k7),
+                    switch(level_selection,  map@data$g0_land_k8,map@data$g1_land_k8,map@data$g2_land_k8),
+                    switch(level_selection,  map@data$g0_land_k9,map@data$g1_land_k9,map@data$g2_land_k9)
+    )
+    
+    g_livestock = switch(input$slider_91_Decomp,
+                         switch(level_selection,  map@data$g0_livestock_k1,map@data$g1_livestock_k1,map@data$g2_livestock_k1),
+                         switch(level_selection,  map@data$g0_livestock_k2,map@data$g1_livestock_k2,map@data$g2_livestock_k2),
+                         switch(level_selection,  map@data$g0_livestock_k3,map@data$g1_livestock_k3,map@data$g2_livestock_k3),
+                         switch(level_selection,  map@data$g0_livestock_k4,map@data$g1_livestock_k4,map@data$g2_livestock_k4),
+                         switch(level_selection,  map@data$g0_livestock_k5,map@data$g1_livestock_k5,map@data$g2_livestock_k5),
+                         switch(level_selection,  map@data$g0_livestock_k6,map@data$g1_livestock_k6,map@data$g2_livestock_k6),
+                         switch(level_selection,  map@data$g0_livestock_k7,map@data$g1_livestock_k7,map@data$g2_livestock_k7),
+                         switch(level_selection,  map@data$g0_livestock_k8,map@data$g1_livestock_k8,map@data$g2_livestock_k8),
+                         switch(level_selection,  map@data$g0_livestock_k9,map@data$g1_livestock_k9,map@data$g2_livestock_k9)
+    )
+    
+    g_rural_equip = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$g0_rural_equip_k1,map@data$g1_rural_equip_k1,map@data$g2_rural_equip_k1),
+                           switch(level_selection,  map@data$g0_rural_equip_k2,map@data$g1_rural_equip_k2,map@data$g2_rural_equip_k2),
+                           switch(level_selection,  map@data$g0_rural_equip_k3,map@data$g1_rural_equip_k3,map@data$g2_rural_equip_k3),
+                           switch(level_selection,  map@data$g0_rural_equip_k4,map@data$g1_rural_equip_k4,map@data$g2_rural_equip_k4),
+                           switch(level_selection,  map@data$g0_rural_equip_k5,map@data$g1_rural_equip_k5,map@data$g2_rural_equip_k5),
+                           switch(level_selection,  map@data$g0_rural_equip_k6,map@data$g1_rural_equip_k6,map@data$g2_rural_equip_k6),
+                           switch(level_selection,  map@data$g0_rural_equip_k7,map@data$g1_rural_equip_k7,map@data$g2_rural_equip_k7),
+                           switch(level_selection,  map@data$g0_rural_equip_k8,map@data$g1_rural_equip_k8,map@data$g2_rural_equip_k8),
+                           switch(level_selection,  map@data$g0_rural_equip_k9,map@data$g1_rural_equip_k9,map@data$g2_rural_equip_k9)
+    )
+    
+    
+    
+    
+    
+    c_edu_max = switch(input$slider_91_Decomp,
+                       switch(level_selection,  map@data$c0_edu_max_k1,map@data$c1_edu_max_k1,map@data$c2_edu_max_k1),
+                       switch(level_selection,  map@data$c0_edu_max_k2,map@data$c1_edu_max_k2,map@data$c2_edu_max_k2),
+                       switch(level_selection,  map@data$c0_edu_max_k3,map@data$c1_edu_max_k3,map@data$c2_edu_max_k3),
+                       switch(level_selection,  map@data$c0_edu_max_k4,map@data$c1_edu_max_k4,map@data$c2_edu_max_k4),
+                       switch(level_selection,  map@data$c0_edu_max_k5,map@data$c1_edu_max_k5,map@data$c2_edu_max_k5),
+                       switch(level_selection,  map@data$c0_edu_max_k6,map@data$c1_edu_max_k6,map@data$c2_edu_max_k6),
+                       switch(level_selection,  map@data$c0_edu_max_k7,map@data$c1_edu_max_k7,map@data$c2_edu_max_k7),
+                       switch(level_selection,  map@data$c0_edu_max_k8,map@data$c1_edu_max_k8,map@data$c2_edu_max_k8),
+                       switch(level_selection,  map@data$c0_edu_max_k9,map@data$c1_edu_max_k9,map@data$c2_edu_max_k9)
+    )
+    c_edu_dropout = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$c0_edu_dropout_k1,map@data$c1_edu_dropout_k1,map@data$c2_edu_dropout_k1),
+                           switch(level_selection,  map@data$c0_edu_dropout_k2,map@data$c1_edu_dropout_k2,map@data$c2_edu_dropout_k2),
+                           switch(level_selection,  map@data$c0_edu_dropout_k3,map@data$c1_edu_dropout_k3,map@data$c2_edu_dropout_k3),
+                           switch(level_selection,  map@data$c0_edu_dropout_k4,map@data$c1_edu_dropout_k4,map@data$c2_edu_dropout_k4),
+                           switch(level_selection,  map@data$c0_edu_dropout_k5,map@data$c1_edu_dropout_k5,map@data$c2_edu_dropout_k5),
+                           switch(level_selection,  map@data$c0_edu_dropout_k6,map@data$c1_edu_dropout_k6,map@data$c2_edu_dropout_k6),
+                           switch(level_selection,  map@data$c0_edu_dropout_k7,map@data$c1_edu_dropout_k7,map@data$c2_edu_dropout_k7),
+                           switch(level_selection,  map@data$c0_edu_dropout_k8,map@data$c1_edu_dropout_k8,map@data$c2_edu_dropout_k8),
+                           switch(level_selection,  map@data$c0_edu_dropout_k9,map@data$c1_edu_dropout_k9,map@data$c2_edu_dropout_k9)
+    )
+    
+    c_hea_chronic = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$c0_hea_chronic_k1,map@data$c1_hea_chronic_k1,map@data$c2_hea_chronic_k1),
+                           switch(level_selection,  map@data$c0_hea_chronic_k2,map@data$c1_hea_chronic_k2,map@data$c2_hea_chronic_k2),
+                           switch(level_selection,  map@data$c0_hea_chronic_k3,map@data$c1_hea_chronic_k3,map@data$c2_hea_chronic_k3),
+                           switch(level_selection,  map@data$c0_hea_chronic_k4,map@data$c1_hea_chronic_k4,map@data$c2_hea_chronic_k4),
+                           switch(level_selection,  map@data$c0_hea_chronic_k5,map@data$c1_hea_chronic_k5,map@data$c2_hea_chronic_k5),
+                           switch(level_selection,  map@data$c0_hea_chronic_k6,map@data$c1_hea_chronic_k6,map@data$c2_hea_chronic_k6),
+                           switch(level_selection,  map@data$c0_hea_chronic_k7,map@data$c1_hea_chronic_k7,map@data$c2_hea_chronic_k7),
+                           switch(level_selection,  map@data$c0_hea_chronic_k8,map@data$c1_hea_chronic_k8,map@data$c2_hea_chronic_k8),
+                           switch(level_selection,  map@data$c0_hea_chronic_k9,map@data$c1_hea_chronic_k9,map@data$c2_hea_chronic_k9)
+    )
+    
+    c_hea_visit = switch(input$slider_91_Decomp,
+                         switch(level_selection,  map@data$c0_hea_visit_k1,map@data$c1_hea_visit_k1,map@data$c2_hea_visit_k1),
+                         switch(level_selection,  map@data$c0_hea_visit_k2,map@data$c1_hea_visit_k2,map@data$c2_hea_visit_k2),
+                         switch(level_selection,  map@data$c0_hea_visit_k3,map@data$c1_hea_visit_k3,map@data$c2_hea_visit_k3),
+                         switch(level_selection,  map@data$c0_hea_visit_k4,map@data$c1_hea_visit_k4,map@data$c2_hea_visit_k4),
+                         switch(level_selection,  map@data$c0_hea_visit_k5,map@data$c1_hea_visit_k5,map@data$c2_hea_visit_k5),
+                         switch(level_selection,  map@data$c0_hea_visit_k6,map@data$c1_hea_visit_k6,map@data$c2_hea_visit_k6),
+                         switch(level_selection,  map@data$c0_hea_visit_k7,map@data$c1_hea_visit_k7,map@data$c2_hea_visit_k7),
+                         switch(level_selection,  map@data$c0_hea_visit_k8,map@data$c1_hea_visit_k8,map@data$c2_hea_visit_k8),
+                         switch(level_selection,  map@data$c0_hea_visit_k9,map@data$c1_hea_visit_k9,map@data$c2_hea_visit_k9)
+    )
+    
+    c_employment = switch(input$slider_91_Decomp,
+                          switch(level_selection,  map@data$c0_employment_k1,map@data$c1_employment_k1,map@data$c2_employment_k1),
+                          switch(level_selection,  map@data$c0_employment_k2,map@data$c1_employment_k2,map@data$c2_employment_k2),
+                          switch(level_selection,  map@data$c0_employment_k3,map@data$c1_employment_k3,map@data$c2_employment_k3),
+                          switch(level_selection,  map@data$c0_employment_k4,map@data$c1_employment_k4,map@data$c2_employment_k4),
+                          switch(level_selection,  map@data$c0_employment_k5,map@data$c1_employment_k5,map@data$c2_employment_k5),
+                          switch(level_selection,  map@data$c0_employment_k6,map@data$c1_employment_k6,map@data$c2_employment_k6),
+                          switch(level_selection,  map@data$c0_employment_k7,map@data$c1_employment_k7,map@data$c2_employment_k7),
+                          switch(level_selection,  map@data$c0_employment_k8,map@data$c1_employment_k8,map@data$c2_employment_k8),
+                          switch(level_selection,  map@data$c0_employment_k9,map@data$c1_employment_k9,map@data$c2_employment_k9)
+    )
+    
+    c_assets = switch(input$slider_91_Decomp,
+                      switch(level_selection,  map@data$c0_assets_k1,map@data$c1_assets_k1,map@data$c2_assets_k1),
+                      switch(level_selection,  map@data$c0_assets_k2,map@data$c1_assets_k2,map@data$c2_assets_k2),
+                      switch(level_selection,  map@data$c0_assets_k3,map@data$c1_assets_k3,map@data$c2_assets_k3),
+                      switch(level_selection,  map@data$c0_assets_k4,map@data$c1_assets_k4,map@data$c2_assets_k4),
+                      switch(level_selection,  map@data$c0_assets_k5,map@data$c1_assets_k5,map@data$c2_assets_k5),
+                      switch(level_selection,  map@data$c0_assets_k6,map@data$c1_assets_k6,map@data$c2_assets_k6),
+                      switch(level_selection,  map@data$c0_assets_k7,map@data$c1_assets_k7,map@data$c2_assets_k7),
+                      switch(level_selection,  map@data$c0_assets_k8,map@data$c1_assets_k8,map@data$c2_assets_k8),
+                      switch(level_selection,  map@data$c0_assets_k9,map@data$c1_assets_k9,map@data$c2_assets_k9)
+    )
+    
+    c_services = switch(input$slider_91_Decomp,
+                        switch(level_selection,  map@data$c0_services_k1,map@data$c1_services_k1,map@data$c2_services_k1),
+                        switch(level_selection,  map@data$c0_services_k2,map@data$c1_services_k2,map@data$c2_services_k2),
+                        switch(level_selection,  map@data$c0_services_k3,map@data$c1_services_k3,map@data$c2_services_k3),
+                        switch(level_selection,  map@data$c0_services_k4,map@data$c1_services_k4,map@data$c2_services_k4),
+                        switch(level_selection,  map@data$c0_services_k5,map@data$c1_services_k5,map@data$c2_services_k5),
+                        switch(level_selection,  map@data$c0_services_k6,map@data$c1_services_k6,map@data$c2_services_k6),
+                        switch(level_selection,  map@data$c0_services_k7,map@data$c1_services_k7,map@data$c2_services_k7),
+                        switch(level_selection,  map@data$c0_services_k8,map@data$c1_services_k8,map@data$c2_services_k8),
+                        switch(level_selection,  map@data$c0_services_k9,map@data$c1_services_k9,map@data$c2_services_k9)
+    )
+    
+    c_electricity = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$c0_electricity_k1,map@data$c1_electricity_k1,map@data$c2_electricity_k1),
+                           switch(level_selection,  map@data$c0_electricity_k2,map@data$c1_electricity_k2,map@data$c2_electricity_k2),
+                           switch(level_selection,  map@data$c0_electricity_k3,map@data$c1_electricity_k3,map@data$c2_electricity_k3),
+                           switch(level_selection,  map@data$c0_electricity_k4,map@data$c1_electricity_k4,map@data$c2_electricity_k4),
+                           switch(level_selection,  map@data$c0_electricity_k5,map@data$c1_electricity_k5,map@data$c2_electricity_k5),
+                           switch(level_selection,  map@data$c0_electricity_k6,map@data$c1_electricity_k6,map@data$c2_electricity_k6),
+                           switch(level_selection,  map@data$c0_electricity_k7,map@data$c1_electricity_k7,map@data$c2_electricity_k7),
+                           switch(level_selection,  map@data$c0_electricity_k8,map@data$c1_electricity_k8,map@data$c2_electricity_k8),
+                           switch(level_selection,  map@data$c0_electricity_k9,map@data$c1_electricity_k9,map@data$c2_electricity_k9)
+    )
+    
+    c_cooking_fuel = switch(input$slider_91_Decomp,
+                            switch(level_selection,  map@data$c0_cooking_fuel_k1,map@data$c1_cooking_fuel_k1,map@data$c2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k2,map@data$c1_cooking_fuel_k2,map@data$c2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k3,map@data$c1_cooking_fuel_k3,map@data$c2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k4,map@data$c1_cooking_fuel_k4,map@data$c2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k5,map@data$c1_cooking_fuel_k5,map@data$c2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k6,map@data$c1_cooking_fuel_k6,map@data$c2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k7,map@data$c1_cooking_fuel_k7,map@data$c2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k8,map@data$c1_cooking_fuel_k8,map@data$c2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k9,map@data$c1_cooking_fuel_k9,map@data$c2_cooking_fuel_k9)
+    )
+    
+    c_water = switch(input$slider_91_Decomp,
+                     switch(level_selection,  map@data$c0_water_k1,map@data$c1_water_k1,map@data$c2_water_k1),
+                     switch(level_selection,  map@data$c0_water_k2,map@data$c1_water_k2,map@data$c2_water_k2),
+                     switch(level_selection,  map@data$c0_water_k3,map@data$c1_water_k3,map@data$c2_water_k3),
+                     switch(level_selection,  map@data$c0_water_k4,map@data$c1_water_k4,map@data$c2_water_k4),
+                     switch(level_selection,  map@data$c0_water_k5,map@data$c1_water_k5,map@data$c2_water_k5),
+                     switch(level_selection,  map@data$c0_water_k6,map@data$c1_water_k6,map@data$c2_water_k6),
+                     switch(level_selection,  map@data$c0_water_k7,map@data$c1_water_k7,map@data$c2_water_k7),
+                     switch(level_selection,  map@data$c0_water_k8,map@data$c1_water_k8,map@data$c2_water_k8),
+                     switch(level_selection,  map@data$c0_water_k9,map@data$c1_water_k9,map@data$c2_water_k9)
+    )
+    
+    c_toilet = switch(input$slider_91_Decomp,
+                      switch(level_selection,  map@data$c0_toilet_k1,map@data$c1_toilet_k1,map@data$c2_toilet_k1),
+                      switch(level_selection,  map@data$c0_toilet_k2,map@data$c1_toilet_k2,map@data$c2_toilet_k2),
+                      switch(level_selection,  map@data$c0_toilet_k3,map@data$c1_toilet_k3,map@data$c2_toilet_k3),
+                      switch(level_selection,  map@data$c0_toilet_k4,map@data$c1_toilet_k4,map@data$c2_toilet_k4),
+                      switch(level_selection,  map@data$c0_toilet_k5,map@data$c1_toilet_k5,map@data$c2_toilet_k5),
+                      switch(level_selection,  map@data$c0_toilet_k6,map@data$c1_toilet_k6,map@data$c2_toilet_k6),
+                      switch(level_selection,  map@data$c0_toilet_k7,map@data$c1_toilet_k7,map@data$c2_toilet_k7),
+                      switch(level_selection,  map@data$c0_toilet_k8,map@data$c1_toilet_k8,map@data$c2_toilet_k8),
+                      switch(level_selection,  map@data$c0_toilet_k9,map@data$c1_toilet_k9,map@data$c2_toilet_k9)
+    )
+    
+    c_land = switch(input$slider_91_Decomp,
+                    switch(level_selection,  map@data$c0_land_k1,map@data$c1_land_k1,map@data$c2_land_k1),
+                    switch(level_selection,  map@data$c0_land_k2,map@data$c1_land_k2,map@data$c2_land_k2),
+                    switch(level_selection,  map@data$c0_land_k3,map@data$c1_land_k3,map@data$c2_land_k3),
+                    switch(level_selection,  map@data$c0_land_k4,map@data$c1_land_k4,map@data$c2_land_k4),
+                    switch(level_selection,  map@data$c0_land_k5,map@data$c1_land_k5,map@data$c2_land_k5),
+                    switch(level_selection,  map@data$c0_land_k6,map@data$c1_land_k6,map@data$c2_land_k6),
+                    switch(level_selection,  map@data$c0_land_k7,map@data$c1_land_k7,map@data$c2_land_k7),
+                    switch(level_selection,  map@data$c0_land_k8,map@data$c1_land_k8,map@data$c2_land_k8),
+                    switch(level_selection,  map@data$c0_land_k9,map@data$c1_land_k9,map@data$c2_land_k9)
+    )
+    
+    c_livestock = switch(input$slider_91_Decomp,
+                         switch(level_selection,  map@data$c0_livestock_k1,map@data$c1_livestock_k1,map@data$c2_livestock_k1),
+                         switch(level_selection,  map@data$c0_livestock_k2,map@data$c1_livestock_k2,map@data$c2_livestock_k2),
+                         switch(level_selection,  map@data$c0_livestock_k3,map@data$c1_livestock_k3,map@data$c2_livestock_k3),
+                         switch(level_selection,  map@data$c0_livestock_k4,map@data$c1_livestock_k4,map@data$c2_livestock_k4),
+                         switch(level_selection,  map@data$c0_livestock_k5,map@data$c1_livestock_k5,map@data$c2_livestock_k5),
+                         switch(level_selection,  map@data$c0_livestock_k6,map@data$c1_livestock_k6,map@data$c2_livestock_k6),
+                         switch(level_selection,  map@data$c0_livestock_k7,map@data$c1_livestock_k7,map@data$c2_livestock_k7),
+                         switch(level_selection,  map@data$c0_livestock_k8,map@data$c1_livestock_k8,map@data$c2_livestock_k8),
+                         switch(level_selection,  map@data$c0_livestock_k9,map@data$c1_livestock_k9,map@data$c2_livestock_k9)
+    )
+    
+    c_rural_equip = switch(input$slider_91_Decomp,
+                           switch(level_selection,  map@data$c0_rural_equip_k1,map@data$c1_rural_equip_k1,map@data$c2_rural_equip_k1),
+                           switch(level_selection,  map@data$c0_rural_equip_k2,map@data$c1_rural_equip_k2,map@data$c2_rural_equip_k2),
+                           switch(level_selection,  map@data$c0_rural_equip_k3,map@data$c1_rural_equip_k3,map@data$c2_rural_equip_k3),
+                           switch(level_selection,  map@data$c0_rural_equip_k4,map@data$c1_rural_equip_k4,map@data$c2_rural_equip_k4),
+                           switch(level_selection,  map@data$c0_rural_equip_k5,map@data$c1_rural_equip_k5,map@data$c2_rural_equip_k5),
+                           switch(level_selection,  map@data$c0_rural_equip_k6,map@data$c1_rural_equip_k6,map@data$c2_rural_equip_k6),
+                           switch(level_selection,  map@data$c0_rural_equip_k7,map@data$c1_rural_equip_k7,map@data$c2_rural_equip_k7),
+                           switch(level_selection,  map@data$c0_rural_equip_k8,map@data$c1_rural_equip_k8,map@data$c2_rural_equip_k8),
+                           switch(level_selection,  map@data$c0_rural_equip_k9,map@data$c1_rural_equip_k9,map@data$c2_rural_equip_k9)
+    )
+    
+    
+    
+    n_c_edu_max = switch(input$slider_91_Decomp,
+                         switch(level_selection,  nat_data$c0_edu_max_k1,nat_data$c1_edu_max_k1,nat_data$c2_edu_max_k1),
+                         switch(level_selection,  nat_data$c0_edu_max_k2,nat_data$c1_edu_max_k2,nat_data$c2_edu_max_k2),
+                         switch(level_selection,  nat_data$c0_edu_max_k3,nat_data$c1_edu_max_k3,nat_data$c2_edu_max_k3),
+                         switch(level_selection,  nat_data$c0_edu_max_k4,nat_data$c1_edu_max_k4,nat_data$c2_edu_max_k4),
+                         switch(level_selection,  nat_data$c0_edu_max_k5,nat_data$c1_edu_max_k5,nat_data$c2_edu_max_k5),
+                         switch(level_selection,  nat_data$c0_edu_max_k6,nat_data$c1_edu_max_k6,nat_data$c2_edu_max_k6),
+                         switch(level_selection,  nat_data$c0_edu_max_k7,nat_data$c1_edu_max_k7,nat_data$c2_edu_max_k7),
+                         switch(level_selection,  nat_data$c0_edu_max_k8,nat_data$c1_edu_max_k8,nat_data$c2_edu_max_k8),
+                         switch(level_selection,  nat_data$c0_edu_max_k9,nat_data$c1_edu_max_k9,nat_data$c2_edu_max_k9)
+    )
+    n_c_edu_dropout = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$c0_edu_dropout_k1,nat_data$c1_edu_dropout_k1,nat_data$c2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k2,nat_data$c1_edu_dropout_k2,nat_data$c2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k3,nat_data$c1_edu_dropout_k3,nat_data$c2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k4,nat_data$c1_edu_dropout_k4,nat_data$c2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k5,nat_data$c1_edu_dropout_k5,nat_data$c2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k6,nat_data$c1_edu_dropout_k6,nat_data$c2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k7,nat_data$c1_edu_dropout_k7,nat_data$c2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k8,nat_data$c1_edu_dropout_k8,nat_data$c2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k9,nat_data$c1_edu_dropout_k9,nat_data$c2_edu_dropout_k9)
+    )
+    
+    n_c_hea_chronic = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$c0_hea_chronic_k1,nat_data$c1_hea_chronic_k1,nat_data$c2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k2,nat_data$c1_hea_chronic_k2,nat_data$c2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k3,nat_data$c1_hea_chronic_k3,nat_data$c2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k4,nat_data$c1_hea_chronic_k4,nat_data$c2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k5,nat_data$c1_hea_chronic_k5,nat_data$c2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k6,nat_data$c1_hea_chronic_k6,nat_data$c2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k7,nat_data$c1_hea_chronic_k7,nat_data$c2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k8,nat_data$c1_hea_chronic_k8,nat_data$c2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k9,nat_data$c1_hea_chronic_k9,nat_data$c2_hea_chronic_k9)
+    )
+    
+    n_c_hea_visit = switch(input$slider_91_Decomp,
+                           switch(level_selection,  nat_data$c0_hea_visit_k1,nat_data$c1_hea_visit_k1,nat_data$c2_hea_visit_k1),
+                           switch(level_selection,  nat_data$c0_hea_visit_k2,nat_data$c1_hea_visit_k2,nat_data$c2_hea_visit_k2),
+                           switch(level_selection,  nat_data$c0_hea_visit_k3,nat_data$c1_hea_visit_k3,nat_data$c2_hea_visit_k3),
+                           switch(level_selection,  nat_data$c0_hea_visit_k4,nat_data$c1_hea_visit_k4,nat_data$c2_hea_visit_k4),
+                           switch(level_selection,  nat_data$c0_hea_visit_k5,nat_data$c1_hea_visit_k5,nat_data$c2_hea_visit_k5),
+                           switch(level_selection,  nat_data$c0_hea_visit_k6,nat_data$c1_hea_visit_k6,nat_data$c2_hea_visit_k6),
+                           switch(level_selection,  nat_data$c0_hea_visit_k7,nat_data$c1_hea_visit_k7,nat_data$c2_hea_visit_k7),
+                           switch(level_selection,  nat_data$c0_hea_visit_k8,nat_data$c1_hea_visit_k8,nat_data$c2_hea_visit_k8),
+                           switch(level_selection,  nat_data$c0_hea_visit_k9,nat_data$c1_hea_visit_k9,nat_data$c2_hea_visit_k9)
+    )
+    
+    n_c_employment = switch(input$slider_91_Decomp,
+                            switch(level_selection,  nat_data$c0_employment_k1,nat_data$c1_employment_k1,nat_data$c2_employment_k1),
+                            switch(level_selection,  nat_data$c0_employment_k2,nat_data$c1_employment_k2,nat_data$c2_employment_k2),
+                            switch(level_selection,  nat_data$c0_employment_k3,nat_data$c1_employment_k3,nat_data$c2_employment_k3),
+                            switch(level_selection,  nat_data$c0_employment_k4,nat_data$c1_employment_k4,nat_data$c2_employment_k4),
+                            switch(level_selection,  nat_data$c0_employment_k5,nat_data$c1_employment_k5,nat_data$c2_employment_k5),
+                            switch(level_selection,  nat_data$c0_employment_k6,nat_data$c1_employment_k6,nat_data$c2_employment_k6),
+                            switch(level_selection,  nat_data$c0_employment_k7,nat_data$c1_employment_k7,nat_data$c2_employment_k7),
+                            switch(level_selection,  nat_data$c0_employment_k8,nat_data$c1_employment_k8,nat_data$c2_employment_k8),
+                            switch(level_selection,  nat_data$c0_employment_k9,nat_data$c1_employment_k9,nat_data$c2_employment_k9)
+    )
+    
+    n_c_assets = switch(input$slider_91_Decomp,
+                        switch(level_selection,  nat_data$c0_assets_k1,nat_data$c1_assets_k1,nat_data$c2_assets_k1),
+                        switch(level_selection,  nat_data$c0_assets_k2,nat_data$c1_assets_k2,nat_data$c2_assets_k2),
+                        switch(level_selection,  nat_data$c0_assets_k3,nat_data$c1_assets_k3,nat_data$c2_assets_k3),
+                        switch(level_selection,  nat_data$c0_assets_k4,nat_data$c1_assets_k4,nat_data$c2_assets_k4),
+                        switch(level_selection,  nat_data$c0_assets_k5,nat_data$c1_assets_k5,nat_data$c2_assets_k5),
+                        switch(level_selection,  nat_data$c0_assets_k6,nat_data$c1_assets_k6,nat_data$c2_assets_k6),
+                        switch(level_selection,  nat_data$c0_assets_k7,nat_data$c1_assets_k7,nat_data$c2_assets_k7),
+                        switch(level_selection,  nat_data$c0_assets_k8,nat_data$c1_assets_k8,nat_data$c2_assets_k8),
+                        switch(level_selection,  nat_data$c0_assets_k9,nat_data$c1_assets_k9,nat_data$c2_assets_k9)
+    )
+    
+    n_c_services = switch(input$slider_91_Decomp,
+                          switch(level_selection,  nat_data$c0_services_k1,nat_data$c1_services_k1,nat_data$c2_services_k1),
+                          switch(level_selection,  nat_data$c0_services_k2,nat_data$c1_services_k2,nat_data$c2_services_k2),
+                          switch(level_selection,  nat_data$c0_services_k3,nat_data$c1_services_k3,nat_data$c2_services_k3),
+                          switch(level_selection,  nat_data$c0_services_k4,nat_data$c1_services_k4,nat_data$c2_services_k4),
+                          switch(level_selection,  nat_data$c0_services_k5,nat_data$c1_services_k5,nat_data$c2_services_k5),
+                          switch(level_selection,  nat_data$c0_services_k6,nat_data$c1_services_k6,nat_data$c2_services_k6),
+                          switch(level_selection,  nat_data$c0_services_k7,nat_data$c1_services_k7,nat_data$c2_services_k7),
+                          switch(level_selection,  nat_data$c0_services_k8,nat_data$c1_services_k8,nat_data$c2_services_k8),
+                          switch(level_selection,  nat_data$c0_services_k9,nat_data$c1_services_k9,nat_data$c2_services_k9)
+    )
+    
+    n_c_electricity = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$c0_electricity_k1,nat_data$c1_electricity_k1,nat_data$c2_electricity_k1),
+                             switch(level_selection,  nat_data$c0_electricity_k2,nat_data$c1_electricity_k2,nat_data$c2_electricity_k2),
+                             switch(level_selection,  nat_data$c0_electricity_k3,nat_data$c1_electricity_k3,nat_data$c2_electricity_k3),
+                             switch(level_selection,  nat_data$c0_electricity_k4,nat_data$c1_electricity_k4,nat_data$c2_electricity_k4),
+                             switch(level_selection,  nat_data$c0_electricity_k5,nat_data$c1_electricity_k5,nat_data$c2_electricity_k5),
+                             switch(level_selection,  nat_data$c0_electricity_k6,nat_data$c1_electricity_k6,nat_data$c2_electricity_k6),
+                             switch(level_selection,  nat_data$c0_electricity_k7,nat_data$c1_electricity_k7,nat_data$c2_electricity_k7),
+                             switch(level_selection,  nat_data$c0_electricity_k8,nat_data$c1_electricity_k8,nat_data$c2_electricity_k8),
+                             switch(level_selection,  nat_data$c0_electricity_k9,nat_data$c1_electricity_k9,nat_data$c2_electricity_k9)
+    )
+    
+    n_c_cooking_fuel = switch(input$slider_91_Decomp,
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k1,nat_data$c1_cooking_fuel_k1,nat_data$c2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k2,nat_data$c1_cooking_fuel_k2,nat_data$c2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k3,nat_data$c1_cooking_fuel_k3,nat_data$c2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k4,nat_data$c1_cooking_fuel_k4,nat_data$c2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k5,nat_data$c1_cooking_fuel_k5,nat_data$c2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k6,nat_data$c1_cooking_fuel_k6,nat_data$c2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k7,nat_data$c1_cooking_fuel_k7,nat_data$c2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k8,nat_data$c1_cooking_fuel_k8,nat_data$c2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k9,nat_data$c1_cooking_fuel_k9,nat_data$c2_cooking_fuel_k9)
+    )
+    
+    n_c_water = switch(input$slider_91_Decomp,
+                       switch(level_selection,  nat_data$c0_water_k1,nat_data$c1_water_k1,nat_data$c2_water_k1),
+                       switch(level_selection,  nat_data$c0_water_k2,nat_data$c1_water_k2,nat_data$c2_water_k2),
+                       switch(level_selection,  nat_data$c0_water_k3,nat_data$c1_water_k3,nat_data$c2_water_k3),
+                       switch(level_selection,  nat_data$c0_water_k4,nat_data$c1_water_k4,nat_data$c2_water_k4),
+                       switch(level_selection,  nat_data$c0_water_k5,nat_data$c1_water_k5,nat_data$c2_water_k5),
+                       switch(level_selection,  nat_data$c0_water_k6,nat_data$c1_water_k6,nat_data$c2_water_k6),
+                       switch(level_selection,  nat_data$c0_water_k7,nat_data$c1_water_k7,nat_data$c2_water_k7),
+                       switch(level_selection,  nat_data$c0_water_k8,nat_data$c1_water_k8,nat_data$c2_water_k8),
+                       switch(level_selection,  nat_data$c0_water_k9,nat_data$c1_water_k9,nat_data$c2_water_k9)
+    )
+    
+    n_c_toilet = switch(input$slider_91_Decomp,
+                        switch(level_selection,  nat_data$c0_toilet_k1,nat_data$c1_toilet_k1,nat_data$c2_toilet_k1),
+                        switch(level_selection,  nat_data$c0_toilet_k2,nat_data$c1_toilet_k2,nat_data$c2_toilet_k2),
+                        switch(level_selection,  nat_data$c0_toilet_k3,nat_data$c1_toilet_k3,nat_data$c2_toilet_k3),
+                        switch(level_selection,  nat_data$c0_toilet_k4,nat_data$c1_toilet_k4,nat_data$c2_toilet_k4),
+                        switch(level_selection,  nat_data$c0_toilet_k5,nat_data$c1_toilet_k5,nat_data$c2_toilet_k5),
+                        switch(level_selection,  nat_data$c0_toilet_k6,nat_data$c1_toilet_k6,nat_data$c2_toilet_k6),
+                        switch(level_selection,  nat_data$c0_toilet_k7,nat_data$c1_toilet_k7,nat_data$c2_toilet_k7),
+                        switch(level_selection,  nat_data$c0_toilet_k8,nat_data$c1_toilet_k8,nat_data$c2_toilet_k8),
+                        switch(level_selection,  nat_data$c0_toilet_k9,nat_data$c1_toilet_k9,nat_data$c2_toilet_k9)
+    )
+    
+    n_c_land = switch(input$slider_91_Decomp,
+                      switch(level_selection,  nat_data$c0_land_k1,nat_data$c1_land_k1,nat_data$c2_land_k1),
+                      switch(level_selection,  nat_data$c0_land_k2,nat_data$c1_land_k2,nat_data$c2_land_k2),
+                      switch(level_selection,  nat_data$c0_land_k3,nat_data$c1_land_k3,nat_data$c2_land_k3),
+                      switch(level_selection,  nat_data$c0_land_k4,nat_data$c1_land_k4,nat_data$c2_land_k4),
+                      switch(level_selection,  nat_data$c0_land_k5,nat_data$c1_land_k5,nat_data$c2_land_k5),
+                      switch(level_selection,  nat_data$c0_land_k6,nat_data$c1_land_k6,nat_data$c2_land_k6),
+                      switch(level_selection,  nat_data$c0_land_k7,nat_data$c1_land_k7,nat_data$c2_land_k7),
+                      switch(level_selection,  nat_data$c0_land_k8,nat_data$c1_land_k8,nat_data$c2_land_k8),
+                      switch(level_selection,  nat_data$c0_land_k9,nat_data$c1_land_k9,nat_data$c2_land_k9)
+    )
+    
+    n_c_livestock = switch(input$slider_91_Decomp,
+                           switch(level_selection,  nat_data$c0_livestock_k1,nat_data$c1_livestock_k1,nat_data$c2_livestock_k1),
+                           switch(level_selection,  nat_data$c0_livestock_k2,nat_data$c1_livestock_k2,nat_data$c2_livestock_k2),
+                           switch(level_selection,  nat_data$c0_livestock_k3,nat_data$c1_livestock_k3,nat_data$c2_livestock_k3),
+                           switch(level_selection,  nat_data$c0_livestock_k4,nat_data$c1_livestock_k4,nat_data$c2_livestock_k4),
+                           switch(level_selection,  nat_data$c0_livestock_k5,nat_data$c1_livestock_k5,nat_data$c2_livestock_k5),
+                           switch(level_selection,  nat_data$c0_livestock_k6,nat_data$c1_livestock_k6,nat_data$c2_livestock_k6),
+                           switch(level_selection,  nat_data$c0_livestock_k7,nat_data$c1_livestock_k7,nat_data$c2_livestock_k7),
+                           switch(level_selection,  nat_data$c0_livestock_k8,nat_data$c1_livestock_k8,nat_data$c2_livestock_k8),
+                           switch(level_selection,  nat_data$c0_livestock_k9,nat_data$c1_livestock_k9,nat_data$c2_livestock_k9)
+    )
+    
+    n_c_rural_equip = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$c0_rural_equip_k1,nat_data$c1_rural_equip_k1,nat_data$c2_rural_equip_k1),
+                             switch(level_selection,  nat_data$c0_rural_equip_k2,nat_data$c1_rural_equip_k2,nat_data$c2_rural_equip_k2),
+                             switch(level_selection,  nat_data$c0_rural_equip_k3,nat_data$c1_rural_equip_k3,nat_data$c2_rural_equip_k3),
+                             switch(level_selection,  nat_data$c0_rural_equip_k4,nat_data$c1_rural_equip_k4,nat_data$c2_rural_equip_k4),
+                             switch(level_selection,  nat_data$c0_rural_equip_k5,nat_data$c1_rural_equip_k5,nat_data$c2_rural_equip_k5),
+                             switch(level_selection,  nat_data$c0_rural_equip_k6,nat_data$c1_rural_equip_k6,nat_data$c2_rural_equip_k6),
+                             switch(level_selection,  nat_data$c0_rural_equip_k7,nat_data$c1_rural_equip_k7,nat_data$c2_rural_equip_k7),
+                             switch(level_selection,  nat_data$c0_rural_equip_k8,nat_data$c1_rural_equip_k8,nat_data$c2_rural_equip_k8),
+                             switch(level_selection,  nat_data$c0_rural_equip_k9,nat_data$c1_rural_equip_k9,nat_data$c2_rural_equip_k9)
+    )
+    
+    n_g_edu_max = switch(input$slider_91_Decomp,
+                         switch(level_selection,  nat_data$g0_edu_max_k1,nat_data$g1_edu_max_k1,nat_data$g2_edu_max_k1),
+                         switch(level_selection,  nat_data$g0_edu_max_k2,nat_data$g1_edu_max_k2,nat_data$g2_edu_max_k2),
+                         switch(level_selection,  nat_data$g0_edu_max_k3,nat_data$g1_edu_max_k3,nat_data$g2_edu_max_k3),
+                         switch(level_selection,  nat_data$g0_edu_max_k4,nat_data$g1_edu_max_k4,nat_data$g2_edu_max_k4),
+                         switch(level_selection,  nat_data$g0_edu_max_k5,nat_data$g1_edu_max_k5,nat_data$g2_edu_max_k5),
+                         switch(level_selection,  nat_data$g0_edu_max_k6,nat_data$g1_edu_max_k6,nat_data$g2_edu_max_k6),
+                         switch(level_selection,  nat_data$g0_edu_max_k7,nat_data$g1_edu_max_k7,nat_data$g2_edu_max_k7),
+                         switch(level_selection,  nat_data$g0_edu_max_k8,nat_data$g1_edu_max_k8,nat_data$g2_edu_max_k8),
+                         switch(level_selection,  nat_data$g0_edu_max_k9,nat_data$g1_edu_max_k9,nat_data$g2_edu_max_k9)
+    )
+    n_g_edu_dropout = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$g0_edu_dropout_k1,nat_data$g1_edu_dropout_k1,nat_data$g2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k2,nat_data$g1_edu_dropout_k2,nat_data$g2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k3,nat_data$g1_edu_dropout_k3,nat_data$g2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k4,nat_data$g1_edu_dropout_k4,nat_data$g2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k5,nat_data$g1_edu_dropout_k5,nat_data$g2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k6,nat_data$g1_edu_dropout_k6,nat_data$g2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k7,nat_data$g1_edu_dropout_k7,nat_data$g2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k8,nat_data$g1_edu_dropout_k8,nat_data$g2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k9,nat_data$g1_edu_dropout_k9,nat_data$g2_edu_dropout_k9)
+    )
+    
+    n_g_hea_chronic = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$g0_hea_chronic_k1,nat_data$g1_hea_chronic_k1,nat_data$g2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k2,nat_data$g1_hea_chronic_k2,nat_data$g2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k3,nat_data$g1_hea_chronic_k3,nat_data$g2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k4,nat_data$g1_hea_chronic_k4,nat_data$g2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k5,nat_data$g1_hea_chronic_k5,nat_data$g2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k6,nat_data$g1_hea_chronic_k6,nat_data$g2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k7,nat_data$g1_hea_chronic_k7,nat_data$g2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k8,nat_data$g1_hea_chronic_k8,nat_data$g2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k9,nat_data$g1_hea_chronic_k9,nat_data$g2_hea_chronic_k9)
+    )
+    
+    n_g_hea_visit = switch(input$slider_91_Decomp,
+                           switch(level_selection,  nat_data$g0_hea_visit_k1,nat_data$g1_hea_visit_k1,nat_data$g2_hea_visit_k1),
+                           switch(level_selection,  nat_data$g0_hea_visit_k2,nat_data$g1_hea_visit_k2,nat_data$g2_hea_visit_k2),
+                           switch(level_selection,  nat_data$g0_hea_visit_k3,nat_data$g1_hea_visit_k3,nat_data$g2_hea_visit_k3),
+                           switch(level_selection,  nat_data$g0_hea_visit_k4,nat_data$g1_hea_visit_k4,nat_data$g2_hea_visit_k4),
+                           switch(level_selection,  nat_data$g0_hea_visit_k5,nat_data$g1_hea_visit_k5,nat_data$g2_hea_visit_k5),
+                           switch(level_selection,  nat_data$g0_hea_visit_k6,nat_data$g1_hea_visit_k6,nat_data$g2_hea_visit_k6),
+                           switch(level_selection,  nat_data$g0_hea_visit_k7,nat_data$g1_hea_visit_k7,nat_data$g2_hea_visit_k7),
+                           switch(level_selection,  nat_data$g0_hea_visit_k8,nat_data$g1_hea_visit_k8,nat_data$g2_hea_visit_k8),
+                           switch(level_selection,  nat_data$g0_hea_visit_k9,nat_data$g1_hea_visit_k9,nat_data$g2_hea_visit_k9)
+    )
+    
+    n_g_employment = switch(input$slider_91_Decomp,
+                            switch(level_selection,  nat_data$g0_employment_k1,nat_data$g1_employment_k1,nat_data$g2_employment_k1),
+                            switch(level_selection,  nat_data$g0_employment_k2,nat_data$g1_employment_k2,nat_data$g2_employment_k2),
+                            switch(level_selection,  nat_data$g0_employment_k3,nat_data$g1_employment_k3,nat_data$g2_employment_k3),
+                            switch(level_selection,  nat_data$g0_employment_k4,nat_data$g1_employment_k4,nat_data$g2_employment_k4),
+                            switch(level_selection,  nat_data$g0_employment_k5,nat_data$g1_employment_k5,nat_data$g2_employment_k5),
+                            switch(level_selection,  nat_data$g0_employment_k6,nat_data$g1_employment_k6,nat_data$g2_employment_k6),
+                            switch(level_selection,  nat_data$g0_employment_k7,nat_data$g1_employment_k7,nat_data$g2_employment_k7),
+                            switch(level_selection,  nat_data$g0_employment_k8,nat_data$g1_employment_k8,nat_data$g2_employment_k8),
+                            switch(level_selection,  nat_data$g0_employment_k9,nat_data$g1_employment_k9,nat_data$g2_employment_k9)
+    )
+    
+    n_g_assets = switch(input$slider_91_Decomp,
+                        switch(level_selection,  nat_data$g0_assets_k1,nat_data$g1_assets_k1,nat_data$g2_assets_k1),
+                        switch(level_selection,  nat_data$g0_assets_k2,nat_data$g1_assets_k2,nat_data$g2_assets_k2),
+                        switch(level_selection,  nat_data$g0_assets_k3,nat_data$g1_assets_k3,nat_data$g2_assets_k3),
+                        switch(level_selection,  nat_data$g0_assets_k4,nat_data$g1_assets_k4,nat_data$g2_assets_k4),
+                        switch(level_selection,  nat_data$g0_assets_k5,nat_data$g1_assets_k5,nat_data$g2_assets_k5),
+                        switch(level_selection,  nat_data$g0_assets_k6,nat_data$g1_assets_k6,nat_data$g2_assets_k6),
+                        switch(level_selection,  nat_data$g0_assets_k7,nat_data$g1_assets_k7,nat_data$g2_assets_k7),
+                        switch(level_selection,  nat_data$g0_assets_k8,nat_data$g1_assets_k8,nat_data$g2_assets_k8),
+                        switch(level_selection,  nat_data$g0_assets_k9,nat_data$g1_assets_k9,nat_data$g2_assets_k9)
+    )
+    
+    n_g_services = switch(input$slider_91_Decomp,
+                          switch(level_selection,  nat_data$g0_services_k1,nat_data$g1_services_k1,nat_data$g2_services_k1),
+                          switch(level_selection,  nat_data$g0_services_k2,nat_data$g1_services_k2,nat_data$g2_services_k2),
+                          switch(level_selection,  nat_data$g0_services_k3,nat_data$g1_services_k3,nat_data$g2_services_k3),
+                          switch(level_selection,  nat_data$g0_services_k4,nat_data$g1_services_k4,nat_data$g2_services_k4),
+                          switch(level_selection,  nat_data$g0_services_k5,nat_data$g1_services_k5,nat_data$g2_services_k5),
+                          switch(level_selection,  nat_data$g0_services_k6,nat_data$g1_services_k6,nat_data$g2_services_k6),
+                          switch(level_selection,  nat_data$g0_services_k7,nat_data$g1_services_k7,nat_data$g2_services_k7),
+                          switch(level_selection,  nat_data$g0_services_k8,nat_data$g1_services_k8,nat_data$g2_services_k8),
+                          switch(level_selection,  nat_data$g0_services_k9,nat_data$g1_services_k9,nat_data$g2_services_k9)
+    )
+    
+    n_g_electricity = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$g0_electricity_k1,nat_data$g1_electricity_k1,nat_data$g2_electricity_k1),
+                             switch(level_selection,  nat_data$g0_electricity_k2,nat_data$g1_electricity_k2,nat_data$g2_electricity_k2),
+                             switch(level_selection,  nat_data$g0_electricity_k3,nat_data$g1_electricity_k3,nat_data$g2_electricity_k3),
+                             switch(level_selection,  nat_data$g0_electricity_k4,nat_data$g1_electricity_k4,nat_data$g2_electricity_k4),
+                             switch(level_selection,  nat_data$g0_electricity_k5,nat_data$g1_electricity_k5,nat_data$g2_electricity_k5),
+                             switch(level_selection,  nat_data$g0_electricity_k6,nat_data$g1_electricity_k6,nat_data$g2_electricity_k6),
+                             switch(level_selection,  nat_data$g0_electricity_k7,nat_data$g1_electricity_k7,nat_data$g2_electricity_k7),
+                             switch(level_selection,  nat_data$g0_electricity_k8,nat_data$g1_electricity_k8,nat_data$g2_electricity_k8),
+                             switch(level_selection,  nat_data$g0_electricity_k9,nat_data$g1_electricity_k9,nat_data$g2_electricity_k9)
+    )
+    
+    n_g_cooking_fuel = switch(input$slider_91_Decomp,
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k1,nat_data$g1_cooking_fuel_k1,nat_data$g2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k2,nat_data$g1_cooking_fuel_k2,nat_data$g2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k3,nat_data$g1_cooking_fuel_k3,nat_data$g2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k4,nat_data$g1_cooking_fuel_k4,nat_data$g2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k5,nat_data$g1_cooking_fuel_k5,nat_data$g2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k6,nat_data$g1_cooking_fuel_k6,nat_data$g2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k7,nat_data$g1_cooking_fuel_k7,nat_data$g2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k8,nat_data$g1_cooking_fuel_k8,nat_data$g2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k9,nat_data$g1_cooking_fuel_k9,nat_data$g2_cooking_fuel_k9)
+    )
+    
+    n_g_water = switch(input$slider_91_Decomp,
+                       switch(level_selection,  nat_data$g0_water_k1,nat_data$g1_water_k1,nat_data$g2_water_k1),
+                       switch(level_selection,  nat_data$g0_water_k2,nat_data$g1_water_k2,nat_data$g2_water_k2),
+                       switch(level_selection,  nat_data$g0_water_k3,nat_data$g1_water_k3,nat_data$g2_water_k3),
+                       switch(level_selection,  nat_data$g0_water_k4,nat_data$g1_water_k4,nat_data$g2_water_k4),
+                       switch(level_selection,  nat_data$g0_water_k5,nat_data$g1_water_k5,nat_data$g2_water_k5),
+                       switch(level_selection,  nat_data$g0_water_k6,nat_data$g1_water_k6,nat_data$g2_water_k6),
+                       switch(level_selection,  nat_data$g0_water_k7,nat_data$g1_water_k7,nat_data$g2_water_k7),
+                       switch(level_selection,  nat_data$g0_water_k8,nat_data$g1_water_k8,nat_data$g2_water_k8),
+                       switch(level_selection,  nat_data$g0_water_k9,nat_data$g1_water_k9,nat_data$g2_water_k9)
+    )
+    
+    n_g_toilet = switch(input$slider_91_Decomp,
+                        switch(level_selection,  nat_data$g0_toilet_k1,nat_data$g1_toilet_k1,nat_data$g2_toilet_k1),
+                        switch(level_selection,  nat_data$g0_toilet_k2,nat_data$g1_toilet_k2,nat_data$g2_toilet_k2),
+                        switch(level_selection,  nat_data$g0_toilet_k3,nat_data$g1_toilet_k3,nat_data$g2_toilet_k3),
+                        switch(level_selection,  nat_data$g0_toilet_k4,nat_data$g1_toilet_k4,nat_data$g2_toilet_k4),
+                        switch(level_selection,  nat_data$g0_toilet_k5,nat_data$g1_toilet_k5,nat_data$g2_toilet_k5),
+                        switch(level_selection,  nat_data$g0_toilet_k6,nat_data$g1_toilet_k6,nat_data$g2_toilet_k6),
+                        switch(level_selection,  nat_data$g0_toilet_k7,nat_data$g1_toilet_k7,nat_data$g2_toilet_k7),
+                        switch(level_selection,  nat_data$g0_toilet_k8,nat_data$g1_toilet_k8,nat_data$g2_toilet_k8),
+                        switch(level_selection,  nat_data$g0_toilet_k9,nat_data$g1_toilet_k9,nat_data$g2_toilet_k9)
+    )
+    
+    n_g_land = switch(input$slider_91_Decomp,
+                      switch(level_selection,  nat_data$g0_land_k1,nat_data$g1_land_k1,nat_data$g2_land_k1),
+                      switch(level_selection,  nat_data$g0_land_k2,nat_data$g1_land_k2,nat_data$g2_land_k2),
+                      switch(level_selection,  nat_data$g0_land_k3,nat_data$g1_land_k3,nat_data$g2_land_k3),
+                      switch(level_selection,  nat_data$g0_land_k4,nat_data$g1_land_k4,nat_data$g2_land_k4),
+                      switch(level_selection,  nat_data$g0_land_k5,nat_data$g1_land_k5,nat_data$g2_land_k5),
+                      switch(level_selection,  nat_data$g0_land_k6,nat_data$g1_land_k6,nat_data$g2_land_k6),
+                      switch(level_selection,  nat_data$g0_land_k7,nat_data$g1_land_k7,nat_data$g2_land_k7),
+                      switch(level_selection,  nat_data$g0_land_k8,nat_data$g1_land_k8,nat_data$g2_land_k8),
+                      switch(level_selection,  nat_data$g0_land_k9,nat_data$g1_land_k9,nat_data$g2_land_k9)
+    )
+    
+    n_g_livestock = switch(input$slider_91_Decomp,
+                           switch(level_selection,  nat_data$g0_livestock_k1,nat_data$g1_livestock_k1,nat_data$g2_livestock_k1),
+                           switch(level_selection,  nat_data$g0_livestock_k2,nat_data$g1_livestock_k2,nat_data$g2_livestock_k2),
+                           switch(level_selection,  nat_data$g0_livestock_k3,nat_data$g1_livestock_k3,nat_data$g2_livestock_k3),
+                           switch(level_selection,  nat_data$g0_livestock_k4,nat_data$g1_livestock_k4,nat_data$g2_livestock_k4),
+                           switch(level_selection,  nat_data$g0_livestock_k5,nat_data$g1_livestock_k5,nat_data$g2_livestock_k5),
+                           switch(level_selection,  nat_data$g0_livestock_k6,nat_data$g1_livestock_k6,nat_data$g2_livestock_k6),
+                           switch(level_selection,  nat_data$g0_livestock_k7,nat_data$g1_livestock_k7,nat_data$g2_livestock_k7),
+                           switch(level_selection,  nat_data$g0_livestock_k8,nat_data$g1_livestock_k8,nat_data$g2_livestock_k8),
+                           switch(level_selection,  nat_data$g0_livestock_k9,nat_data$g1_livestock_k9,nat_data$g2_livestock_k9)
+    )
+    
+    n_g_rural_equip = switch(input$slider_91_Decomp,
+                             switch(level_selection,  nat_data$g0_rural_equip_k1,nat_data$g1_rural_equip_k1,nat_data$g2_rural_equip_k1),
+                             switch(level_selection,  nat_data$g0_rural_equip_k2,nat_data$g1_rural_equip_k2,nat_data$g2_rural_equip_k2),
+                             switch(level_selection,  nat_data$g0_rural_equip_k3,nat_data$g1_rural_equip_k3,nat_data$g2_rural_equip_k3),
+                             switch(level_selection,  nat_data$g0_rural_equip_k4,nat_data$g1_rural_equip_k4,nat_data$g2_rural_equip_k4),
+                             switch(level_selection,  nat_data$g0_rural_equip_k5,nat_data$g1_rural_equip_k5,nat_data$g2_rural_equip_k5),
+                             switch(level_selection,  nat_data$g0_rural_equip_k6,nat_data$g1_rural_equip_k6,nat_data$g2_rural_equip_k6),
+                             switch(level_selection,  nat_data$g0_rural_equip_k7,nat_data$g1_rural_equip_k7,nat_data$g2_rural_equip_k7),
+                             switch(level_selection,  nat_data$g0_rural_equip_k8,nat_data$g1_rural_equip_k8,nat_data$g2_rural_equip_k8),
+                             switch(level_selection,  nat_data$g0_rural_equip_k9,nat_data$g1_rural_equip_k9,nat_data$g2_rural_equip_k9)
+    )
+    
+    # 1 = c (percent contribution), 2 = g (gap)
+    c_g_selection = strtoi(input$c_g_Decomp_91)
+    
+    edu_max = switch(c_g_selection, c_edu_max, g_edu_max)
+    edu_dropout = switch(c_g_selection, c_edu_dropout, g_edu_dropout)
+    hea_chronic = switch(c_g_selection, c_hea_chronic, g_hea_chronic)
+    hea_visit = switch(c_g_selection, c_hea_visit, g_hea_visit)
+    employment = switch(c_g_selection, c_employment, g_employment)
+    assets = switch(c_g_selection, c_assets, g_assets)
+    services = switch(c_g_selection, c_services, g_services)
+    electricity = switch(c_g_selection, c_electricity, g_electricity)
+    cooking_fuel = switch(c_g_selection, c_cooking_fuel, g_cooking_fuel)
+    water = switch(c_g_selection, c_water, g_water)
+    toilet = switch(c_g_selection, c_toilet, g_toilet)
+    land = switch(c_g_selection, c_land, g_land)
+    livestock = switch(c_g_selection, c_livestock, g_livestock)
+    rural_equip = switch(c_g_selection, c_rural_equip, g_rural_equip)
+    
+    n_edu_max = switch(c_g_selection, n_c_edu_max, n_g_edu_max)
+    n_edu_dropout = switch(c_g_selection, n_c_edu_dropout, n_g_edu_dropout)
+    n_hea_chronic = switch(c_g_selection, n_c_hea_chronic, n_g_hea_chronic)
+    n_hea_visit = switch(c_g_selection, n_c_hea_visit, n_g_hea_visit)
+    n_employment = switch(c_g_selection, n_c_employment, n_g_employment)
+    n_assets = switch(c_g_selection, n_c_assets, n_g_assets)
+    n_services = switch(c_g_selection, n_c_services, n_g_services)
+    n_electricity = switch(c_g_selection, n_c_electricity, n_g_electricity)
+    n_cooking_fuel = switch(c_g_selection, n_c_cooking_fuel, n_g_cooking_fuel)
+    n_water = switch(c_g_selection, n_c_water, n_g_water)
+    n_toilet = switch(c_g_selection, n_c_toilet, n_g_toilet)
+    n_land = switch(c_g_selection, n_c_land, n_g_land)
+    n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
+    n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
+    
+    edu_max_labels <- get_label(map@data$ADM2_EN, "Max. Education", edu_max, n_edu_max)
+    edu_dropout_labels <- get_label(map@data$ADM2_EN, "Education Dropout", edu_dropout, n_edu_dropout)
+    hea_chronic_labels <- get_label(map@data$ADM2_EN, "Chronic Illness", hea_chronic, n_hea_chronic)
+    hea_visit_labels <- get_label(map@data$ADM2_EN, "Lack of Health Visit", hea_visit, n_hea_visit)
+    employment_labels <- get_label(map@data$ADM2_EN, "Unemployment", employment, n_employment)
+    assets_labels <- get_label(map@data$ADM2_EN, "Household Assets", assets, n_assets)
+    services_labels <- get_label(map@data$ADM2_EN, "Access to Services", services, n_services)
+    electricity_labels <- get_label(map@data$ADM2_EN, "Lack of Electricity", electricity, n_electricity)
+    cooking_fuel_labels <- get_label(map@data$ADM2_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
+    water_labels <- get_label(map@data$ADM2_EN, "Poor Water Source", water, n_water)
+    toilet_labels <- get_label(map@data$ADM2_EN, "Lack of Toilet", toilet, n_toilet)
+    land_labels <- get_label(map@data$ADM2_EN, "Lack of Land", land, n_land)
+    livestock_labels <- get_label(map@data$ADM2_EN, "Lack of Livestock", livestock, n_livestock)
+    rural_equip_labels <- get_label(map@data$ADM2_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip)
+    
+    
+    pal <- colorNumeric(
+      palette = "viridis",
+      domain = switch(c_g_selection,
+                      c(0, .6),
+                      c(0, 1)),
+      reverse = TRUE)
+    
+    ## MAPPING----------------------------------------------------------------------
+    # These lines of code fix the positioning of the "No Data" label. Previously, it
+    # was appearing to the right of the data instead of at the bottom where it was 
+    # supposed to. 
+    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
+    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
+    
+    # This is where the map gets plotted 
+    m <- leaflet(
+      options = leafletOptions(
+        minZoom = 0, maxZoom= 18,
+        drag = FALSE)) %>% addTiles() %>%
+      setView(lng = 30, lat=-19, zoom=6)
+    
+    m %>%
+      get_polygon(map, pal, edu_max, edu_max_labels, "Max. Education") %>%
+      get_polygon(map, pal, edu_dropout, edu_dropout_labels, "Education Dropout") %>%
+      get_polygon(map, pal, hea_chronic, hea_chronic_labels, "Chronic Illness") %>%
+      get_polygon(map, pal, hea_visit, hea_visit_labels, "Lack of Health Visit") %>%
+      get_polygon(map, pal, employment, employment_labels, "Unemployment") %>%
+      get_polygon(map, pal, assets, assets_labels, "Lack of Household Assets") %>%
+      get_polygon(map, pal, services, services_labels, "Lack of Access to Services") %>%
+      get_polygon(map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
+      get_polygon(map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
+      get_polygon(map, pal, water, water_labels, "Poor Water Source") %>%
+      get_polygon(map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
+      get_polygon(map, pal, land, land_labels, "Lack of Land") %>%
+      get_polygon(map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
+      get_polygon(map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      clearControls() %>%
+      addLayersControl(
+        baseGroups = c("Max. Education", 
                        "Education Dropout", 
                        "Chronic Illness", 
                        "Lack of Health Visit", 
@@ -1340,14 +2243,1610 @@ server <- function(input, output, session) {
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
         options = layersControlOptions(collapsed = TRUE)) %>%
-      addLegend(pal = pal, values = c(0, 1), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_Prov, ")"),
+      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_91_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
                 position = "bottomleft") %>%
       htmlwidgets::prependContent(html_fix)
   })
-}
 
+  output$Dist_60_Decomp_Map <- renderLeaflet({
+    # This is the level that the decomposition data is selected on. 
+    # 1 = g0, c0, 2 = g1, c1, 3 = g2, c2
+    level_selection = strtoi(input$LevelSelection_Decomp_60)
+    
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_60)
+    
+    map = switch(UrbRurSelection,
+                 Dist_60_Total_Map,
+                 Dist_60_Urban_Map,
+                 Dist_60_Rural_Map)
+    nat_data = switch(UrbRurSelection,
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
+    
+    
+    g_edu_max = switch(input$slider_60_Decomp,
+                       switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
+                       switch(level_selection,  map@data$g0_edu_max_k2,map@data$g1_edu_max_k2,map@data$g2_edu_max_k2),
+                       switch(level_selection,  map@data$g0_edu_max_k3,map@data$g1_edu_max_k3,map@data$g2_edu_max_k3),
+                       switch(level_selection,  map@data$g0_edu_max_k4,map@data$g1_edu_max_k4,map@data$g2_edu_max_k4),
+                       switch(level_selection,  map@data$g0_edu_max_k5,map@data$g1_edu_max_k5,map@data$g2_edu_max_k5),
+                       switch(level_selection,  map@data$g0_edu_max_k6,map@data$g1_edu_max_k6,map@data$g2_edu_max_k6),
+                       switch(level_selection,  map@data$g0_edu_max_k7,map@data$g1_edu_max_k7,map@data$g2_edu_max_k7),
+                       switch(level_selection,  map@data$g0_edu_max_k8,map@data$g1_edu_max_k8,map@data$g2_edu_max_k8),
+                       switch(level_selection,  map@data$g0_edu_max_k9,map@data$g1_edu_max_k9,map@data$g2_edu_max_k9)
+    )
+    g_edu_dropout = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$g0_edu_dropout_k1,map@data$g1_edu_dropout_k1,map@data$g2_edu_dropout_k1),
+                           switch(level_selection,  map@data$g0_edu_dropout_k2,map@data$g1_edu_dropout_k2,map@data$g2_edu_dropout_k2),
+                           switch(level_selection,  map@data$g0_edu_dropout_k3,map@data$g1_edu_dropout_k3,map@data$g2_edu_dropout_k3),
+                           switch(level_selection,  map@data$g0_edu_dropout_k4,map@data$g1_edu_dropout_k4,map@data$g2_edu_dropout_k4),
+                           switch(level_selection,  map@data$g0_edu_dropout_k5,map@data$g1_edu_dropout_k5,map@data$g2_edu_dropout_k5),
+                           switch(level_selection,  map@data$g0_edu_dropout_k6,map@data$g1_edu_dropout_k6,map@data$g2_edu_dropout_k6),
+                           switch(level_selection,  map@data$g0_edu_dropout_k7,map@data$g1_edu_dropout_k7,map@data$g2_edu_dropout_k7),
+                           switch(level_selection,  map@data$g0_edu_dropout_k8,map@data$g1_edu_dropout_k8,map@data$g2_edu_dropout_k8),
+                           switch(level_selection,  map@data$g0_edu_dropout_k9,map@data$g1_edu_dropout_k9,map@data$g2_edu_dropout_k9)
+    )
+    
+    g_hea_chronic = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$g0_hea_chronic_k1,map@data$g1_hea_chronic_k1,map@data$g2_hea_chronic_k1),
+                           switch(level_selection,  map@data$g0_hea_chronic_k2,map@data$g1_hea_chronic_k2,map@data$g2_hea_chronic_k2),
+                           switch(level_selection,  map@data$g0_hea_chronic_k3,map@data$g1_hea_chronic_k3,map@data$g2_hea_chronic_k3),
+                           switch(level_selection,  map@data$g0_hea_chronic_k4,map@data$g1_hea_chronic_k4,map@data$g2_hea_chronic_k4),
+                           switch(level_selection,  map@data$g0_hea_chronic_k5,map@data$g1_hea_chronic_k5,map@data$g2_hea_chronic_k5),
+                           switch(level_selection,  map@data$g0_hea_chronic_k6,map@data$g1_hea_chronic_k6,map@data$g2_hea_chronic_k6),
+                           switch(level_selection,  map@data$g0_hea_chronic_k7,map@data$g1_hea_chronic_k7,map@data$g2_hea_chronic_k7),
+                           switch(level_selection,  map@data$g0_hea_chronic_k8,map@data$g1_hea_chronic_k8,map@data$g2_hea_chronic_k8),
+                           switch(level_selection,  map@data$g0_hea_chronic_k9,map@data$g1_hea_chronic_k9,map@data$g2_hea_chronic_k9)
+    )
+    
+    g_hea_visit = switch(input$slider_60_Decomp,
+                         switch(level_selection,  map@data$g0_hea_visit_k1,map@data$g1_hea_visit_k1,map@data$g2_hea_visit_k1),
+                         switch(level_selection,  map@data$g0_hea_visit_k2,map@data$g1_hea_visit_k2,map@data$g2_hea_visit_k2),
+                         switch(level_selection,  map@data$g0_hea_visit_k3,map@data$g1_hea_visit_k3,map@data$g2_hea_visit_k3),
+                         switch(level_selection,  map@data$g0_hea_visit_k4,map@data$g1_hea_visit_k4,map@data$g2_hea_visit_k4),
+                         switch(level_selection,  map@data$g0_hea_visit_k5,map@data$g1_hea_visit_k5,map@data$g2_hea_visit_k5),
+                         switch(level_selection,  map@data$g0_hea_visit_k6,map@data$g1_hea_visit_k6,map@data$g2_hea_visit_k6),
+                         switch(level_selection,  map@data$g0_hea_visit_k7,map@data$g1_hea_visit_k7,map@data$g2_hea_visit_k7),
+                         switch(level_selection,  map@data$g0_hea_visit_k8,map@data$g1_hea_visit_k8,map@data$g2_hea_visit_k8),
+                         switch(level_selection,  map@data$g0_hea_visit_k9,map@data$g1_hea_visit_k9,map@data$g2_hea_visit_k9)
+    )
+    
+    g_employment = switch(input$slider_60_Decomp,
+                          switch(level_selection,  map@data$g0_employment_k1,map@data$g1_employment_k1,map@data$g2_employment_k1),
+                          switch(level_selection,  map@data$g0_employment_k2,map@data$g1_employment_k2,map@data$g2_employment_k2),
+                          switch(level_selection,  map@data$g0_employment_k3,map@data$g1_employment_k3,map@data$g2_employment_k3),
+                          switch(level_selection,  map@data$g0_employment_k4,map@data$g1_employment_k4,map@data$g2_employment_k4),
+                          switch(level_selection,  map@data$g0_employment_k5,map@data$g1_employment_k5,map@data$g2_employment_k5),
+                          switch(level_selection,  map@data$g0_employment_k6,map@data$g1_employment_k6,map@data$g2_employment_k6),
+                          switch(level_selection,  map@data$g0_employment_k7,map@data$g1_employment_k7,map@data$g2_employment_k7),
+                          switch(level_selection,  map@data$g0_employment_k8,map@data$g1_employment_k8,map@data$g2_employment_k8),
+                          switch(level_selection,  map@data$g0_employment_k9,map@data$g1_employment_k9,map@data$g2_employment_k9)
+    )
+    
+    g_assets = switch(input$slider_60_Decomp,
+                      switch(level_selection,  map@data$g0_assets_k1,map@data$g1_assets_k1,map@data$g2_assets_k1),
+                      switch(level_selection,  map@data$g0_assets_k2,map@data$g1_assets_k2,map@data$g2_assets_k2),
+                      switch(level_selection,  map@data$g0_assets_k3,map@data$g1_assets_k3,map@data$g2_assets_k3),
+                      switch(level_selection,  map@data$g0_assets_k4,map@data$g1_assets_k4,map@data$g2_assets_k4),
+                      switch(level_selection,  map@data$g0_assets_k5,map@data$g1_assets_k5,map@data$g2_assets_k5),
+                      switch(level_selection,  map@data$g0_assets_k6,map@data$g1_assets_k6,map@data$g2_assets_k6),
+                      switch(level_selection,  map@data$g0_assets_k7,map@data$g1_assets_k7,map@data$g2_assets_k7),
+                      switch(level_selection,  map@data$g0_assets_k8,map@data$g1_assets_k8,map@data$g2_assets_k8),
+                      switch(level_selection,  map@data$g0_assets_k9,map@data$g1_assets_k9,map@data$g2_assets_k9)
+    )
+    
+    g_services = switch(input$slider_60_Decomp,
+                        switch(level_selection,  map@data$g0_services_k1,map@data$g1_services_k1,map@data$g2_services_k1),
+                        switch(level_selection,  map@data$g0_services_k2,map@data$g1_services_k2,map@data$g2_services_k2),
+                        switch(level_selection,  map@data$g0_services_k3,map@data$g1_services_k3,map@data$g2_services_k3),
+                        switch(level_selection,  map@data$g0_services_k4,map@data$g1_services_k4,map@data$g2_services_k4),
+                        switch(level_selection,  map@data$g0_services_k5,map@data$g1_services_k5,map@data$g2_services_k5),
+                        switch(level_selection,  map@data$g0_services_k6,map@data$g1_services_k6,map@data$g2_services_k6),
+                        switch(level_selection,  map@data$g0_services_k7,map@data$g1_services_k7,map@data$g2_services_k7),
+                        switch(level_selection,  map@data$g0_services_k8,map@data$g1_services_k8,map@data$g2_services_k8),
+                        switch(level_selection,  map@data$g0_services_k9,map@data$g1_services_k9,map@data$g2_services_k9)
+    )
+    
+    g_electricity = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$g0_electricity_k1,map@data$g1_electricity_k1,map@data$g2_electricity_k1),
+                           switch(level_selection,  map@data$g0_electricity_k2,map@data$g1_electricity_k2,map@data$g2_electricity_k2),
+                           switch(level_selection,  map@data$g0_electricity_k3,map@data$g1_electricity_k3,map@data$g2_electricity_k3),
+                           switch(level_selection,  map@data$g0_electricity_k4,map@data$g1_electricity_k4,map@data$g2_electricity_k4),
+                           switch(level_selection,  map@data$g0_electricity_k5,map@data$g1_electricity_k5,map@data$g2_electricity_k5),
+                           switch(level_selection,  map@data$g0_electricity_k6,map@data$g1_electricity_k6,map@data$g2_electricity_k6),
+                           switch(level_selection,  map@data$g0_electricity_k7,map@data$g1_electricity_k7,map@data$g2_electricity_k7),
+                           switch(level_selection,  map@data$g0_electricity_k8,map@data$g1_electricity_k8,map@data$g2_electricity_k8),
+                           switch(level_selection,  map@data$g0_electricity_k9,map@data$g1_electricity_k9,map@data$g2_electricity_k9)
+    )
+    
+    g_cooking_fuel = switch(input$slider_60_Decomp,
+                            switch(level_selection,  map@data$g0_cooking_fuel_k1,map@data$g1_cooking_fuel_k1,map@data$g2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k2,map@data$g1_cooking_fuel_k2,map@data$g2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k3,map@data$g1_cooking_fuel_k3,map@data$g2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k4,map@data$g1_cooking_fuel_k4,map@data$g2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k5,map@data$g1_cooking_fuel_k5,map@data$g2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k6,map@data$g1_cooking_fuel_k6,map@data$g2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k7,map@data$g1_cooking_fuel_k7,map@data$g2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k8,map@data$g1_cooking_fuel_k8,map@data$g2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k9,map@data$g1_cooking_fuel_k9,map@data$g2_cooking_fuel_k9)
+    )
+    
+    g_water = switch(input$slider_60_Decomp,
+                     switch(level_selection,  map@data$g0_water_k1,map@data$g1_water_k1,map@data$g2_water_k1),
+                     switch(level_selection,  map@data$g0_water_k2,map@data$g1_water_k2,map@data$g2_water_k2),
+                     switch(level_selection,  map@data$g0_water_k3,map@data$g1_water_k3,map@data$g2_water_k3),
+                     switch(level_selection,  map@data$g0_water_k4,map@data$g1_water_k4,map@data$g2_water_k4),
+                     switch(level_selection,  map@data$g0_water_k5,map@data$g1_water_k5,map@data$g2_water_k5),
+                     switch(level_selection,  map@data$g0_water_k6,map@data$g1_water_k6,map@data$g2_water_k6),
+                     switch(level_selection,  map@data$g0_water_k7,map@data$g1_water_k7,map@data$g2_water_k7),
+                     switch(level_selection,  map@data$g0_water_k8,map@data$g1_water_k8,map@data$g2_water_k8),
+                     switch(level_selection,  map@data$g0_water_k9,map@data$g1_water_k9,map@data$g2_water_k9)
+    )
+    
+    g_toilet = switch(input$slider_60_Decomp,
+                      switch(level_selection,  map@data$g0_toilet_k1,map@data$g1_toilet_k1,map@data$g2_toilet_k1),
+                      switch(level_selection,  map@data$g0_toilet_k2,map@data$g1_toilet_k2,map@data$g2_toilet_k2),
+                      switch(level_selection,  map@data$g0_toilet_k3,map@data$g1_toilet_k3,map@data$g2_toilet_k3),
+                      switch(level_selection,  map@data$g0_toilet_k4,map@data$g1_toilet_k4,map@data$g2_toilet_k4),
+                      switch(level_selection,  map@data$g0_toilet_k5,map@data$g1_toilet_k5,map@data$g2_toilet_k5),
+                      switch(level_selection,  map@data$g0_toilet_k6,map@data$g1_toilet_k6,map@data$g2_toilet_k6),
+                      switch(level_selection,  map@data$g0_toilet_k7,map@data$g1_toilet_k7,map@data$g2_toilet_k7),
+                      switch(level_selection,  map@data$g0_toilet_k8,map@data$g1_toilet_k8,map@data$g2_toilet_k8),
+                      switch(level_selection,  map@data$g0_toilet_k9,map@data$g1_toilet_k9,map@data$g2_toilet_k9)
+    )
+    
+    g_land = switch(input$slider_60_Decomp,
+                    switch(level_selection,  map@data$g0_land_k1,map@data$g1_land_k1,map@data$g2_land_k1),
+                    switch(level_selection,  map@data$g0_land_k2,map@data$g1_land_k2,map@data$g2_land_k2),
+                    switch(level_selection,  map@data$g0_land_k3,map@data$g1_land_k3,map@data$g2_land_k3),
+                    switch(level_selection,  map@data$g0_land_k4,map@data$g1_land_k4,map@data$g2_land_k4),
+                    switch(level_selection,  map@data$g0_land_k5,map@data$g1_land_k5,map@data$g2_land_k5),
+                    switch(level_selection,  map@data$g0_land_k6,map@data$g1_land_k6,map@data$g2_land_k6),
+                    switch(level_selection,  map@data$g0_land_k7,map@data$g1_land_k7,map@data$g2_land_k7),
+                    switch(level_selection,  map@data$g0_land_k8,map@data$g1_land_k8,map@data$g2_land_k8),
+                    switch(level_selection,  map@data$g0_land_k9,map@data$g1_land_k9,map@data$g2_land_k9)
+    )
+    
+    g_livestock = switch(input$slider_60_Decomp,
+                         switch(level_selection,  map@data$g0_livestock_k1,map@data$g1_livestock_k1,map@data$g2_livestock_k1),
+                         switch(level_selection,  map@data$g0_livestock_k2,map@data$g1_livestock_k2,map@data$g2_livestock_k2),
+                         switch(level_selection,  map@data$g0_livestock_k3,map@data$g1_livestock_k3,map@data$g2_livestock_k3),
+                         switch(level_selection,  map@data$g0_livestock_k4,map@data$g1_livestock_k4,map@data$g2_livestock_k4),
+                         switch(level_selection,  map@data$g0_livestock_k5,map@data$g1_livestock_k5,map@data$g2_livestock_k5),
+                         switch(level_selection,  map@data$g0_livestock_k6,map@data$g1_livestock_k6,map@data$g2_livestock_k6),
+                         switch(level_selection,  map@data$g0_livestock_k7,map@data$g1_livestock_k7,map@data$g2_livestock_k7),
+                         switch(level_selection,  map@data$g0_livestock_k8,map@data$g1_livestock_k8,map@data$g2_livestock_k8),
+                         switch(level_selection,  map@data$g0_livestock_k9,map@data$g1_livestock_k9,map@data$g2_livestock_k9)
+    )
+    
+    g_rural_equip = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$g0_rural_equip_k1,map@data$g1_rural_equip_k1,map@data$g2_rural_equip_k1),
+                           switch(level_selection,  map@data$g0_rural_equip_k2,map@data$g1_rural_equip_k2,map@data$g2_rural_equip_k2),
+                           switch(level_selection,  map@data$g0_rural_equip_k3,map@data$g1_rural_equip_k3,map@data$g2_rural_equip_k3),
+                           switch(level_selection,  map@data$g0_rural_equip_k4,map@data$g1_rural_equip_k4,map@data$g2_rural_equip_k4),
+                           switch(level_selection,  map@data$g0_rural_equip_k5,map@data$g1_rural_equip_k5,map@data$g2_rural_equip_k5),
+                           switch(level_selection,  map@data$g0_rural_equip_k6,map@data$g1_rural_equip_k6,map@data$g2_rural_equip_k6),
+                           switch(level_selection,  map@data$g0_rural_equip_k7,map@data$g1_rural_equip_k7,map@data$g2_rural_equip_k7),
+                           switch(level_selection,  map@data$g0_rural_equip_k8,map@data$g1_rural_equip_k8,map@data$g2_rural_equip_k8),
+                           switch(level_selection,  map@data$g0_rural_equip_k9,map@data$g1_rural_equip_k9,map@data$g2_rural_equip_k9)
+    )
+    
+    
+    
+    
+    
+    c_edu_max = switch(input$slider_60_Decomp,
+                       switch(level_selection,  map@data$c0_edu_max_k1,map@data$c1_edu_max_k1,map@data$c2_edu_max_k1),
+                       switch(level_selection,  map@data$c0_edu_max_k2,map@data$c1_edu_max_k2,map@data$c2_edu_max_k2),
+                       switch(level_selection,  map@data$c0_edu_max_k3,map@data$c1_edu_max_k3,map@data$c2_edu_max_k3),
+                       switch(level_selection,  map@data$c0_edu_max_k4,map@data$c1_edu_max_k4,map@data$c2_edu_max_k4),
+                       switch(level_selection,  map@data$c0_edu_max_k5,map@data$c1_edu_max_k5,map@data$c2_edu_max_k5),
+                       switch(level_selection,  map@data$c0_edu_max_k6,map@data$c1_edu_max_k6,map@data$c2_edu_max_k6),
+                       switch(level_selection,  map@data$c0_edu_max_k7,map@data$c1_edu_max_k7,map@data$c2_edu_max_k7),
+                       switch(level_selection,  map@data$c0_edu_max_k8,map@data$c1_edu_max_k8,map@data$c2_edu_max_k8),
+                       switch(level_selection,  map@data$c0_edu_max_k9,map@data$c1_edu_max_k9,map@data$c2_edu_max_k9)
+    )
+    c_edu_dropout = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$c0_edu_dropout_k1,map@data$c1_edu_dropout_k1,map@data$c2_edu_dropout_k1),
+                           switch(level_selection,  map@data$c0_edu_dropout_k2,map@data$c1_edu_dropout_k2,map@data$c2_edu_dropout_k2),
+                           switch(level_selection,  map@data$c0_edu_dropout_k3,map@data$c1_edu_dropout_k3,map@data$c2_edu_dropout_k3),
+                           switch(level_selection,  map@data$c0_edu_dropout_k4,map@data$c1_edu_dropout_k4,map@data$c2_edu_dropout_k4),
+                           switch(level_selection,  map@data$c0_edu_dropout_k5,map@data$c1_edu_dropout_k5,map@data$c2_edu_dropout_k5),
+                           switch(level_selection,  map@data$c0_edu_dropout_k6,map@data$c1_edu_dropout_k6,map@data$c2_edu_dropout_k6),
+                           switch(level_selection,  map@data$c0_edu_dropout_k7,map@data$c1_edu_dropout_k7,map@data$c2_edu_dropout_k7),
+                           switch(level_selection,  map@data$c0_edu_dropout_k8,map@data$c1_edu_dropout_k8,map@data$c2_edu_dropout_k8),
+                           switch(level_selection,  map@data$c0_edu_dropout_k9,map@data$c1_edu_dropout_k9,map@data$c2_edu_dropout_k9)
+    )
+    
+    c_hea_chronic = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$c0_hea_chronic_k1,map@data$c1_hea_chronic_k1,map@data$c2_hea_chronic_k1),
+                           switch(level_selection,  map@data$c0_hea_chronic_k2,map@data$c1_hea_chronic_k2,map@data$c2_hea_chronic_k2),
+                           switch(level_selection,  map@data$c0_hea_chronic_k3,map@data$c1_hea_chronic_k3,map@data$c2_hea_chronic_k3),
+                           switch(level_selection,  map@data$c0_hea_chronic_k4,map@data$c1_hea_chronic_k4,map@data$c2_hea_chronic_k4),
+                           switch(level_selection,  map@data$c0_hea_chronic_k5,map@data$c1_hea_chronic_k5,map@data$c2_hea_chronic_k5),
+                           switch(level_selection,  map@data$c0_hea_chronic_k6,map@data$c1_hea_chronic_k6,map@data$c2_hea_chronic_k6),
+                           switch(level_selection,  map@data$c0_hea_chronic_k7,map@data$c1_hea_chronic_k7,map@data$c2_hea_chronic_k7),
+                           switch(level_selection,  map@data$c0_hea_chronic_k8,map@data$c1_hea_chronic_k8,map@data$c2_hea_chronic_k8),
+                           switch(level_selection,  map@data$c0_hea_chronic_k9,map@data$c1_hea_chronic_k9,map@data$c2_hea_chronic_k9)
+    )
+    
+    c_hea_visit = switch(input$slider_60_Decomp,
+                         switch(level_selection,  map@data$c0_hea_visit_k1,map@data$c1_hea_visit_k1,map@data$c2_hea_visit_k1),
+                         switch(level_selection,  map@data$c0_hea_visit_k2,map@data$c1_hea_visit_k2,map@data$c2_hea_visit_k2),
+                         switch(level_selection,  map@data$c0_hea_visit_k3,map@data$c1_hea_visit_k3,map@data$c2_hea_visit_k3),
+                         switch(level_selection,  map@data$c0_hea_visit_k4,map@data$c1_hea_visit_k4,map@data$c2_hea_visit_k4),
+                         switch(level_selection,  map@data$c0_hea_visit_k5,map@data$c1_hea_visit_k5,map@data$c2_hea_visit_k5),
+                         switch(level_selection,  map@data$c0_hea_visit_k6,map@data$c1_hea_visit_k6,map@data$c2_hea_visit_k6),
+                         switch(level_selection,  map@data$c0_hea_visit_k7,map@data$c1_hea_visit_k7,map@data$c2_hea_visit_k7),
+                         switch(level_selection,  map@data$c0_hea_visit_k8,map@data$c1_hea_visit_k8,map@data$c2_hea_visit_k8),
+                         switch(level_selection,  map@data$c0_hea_visit_k9,map@data$c1_hea_visit_k9,map@data$c2_hea_visit_k9)
+    )
+    
+    c_employment = switch(input$slider_60_Decomp,
+                          switch(level_selection,  map@data$c0_employment_k1,map@data$c1_employment_k1,map@data$c2_employment_k1),
+                          switch(level_selection,  map@data$c0_employment_k2,map@data$c1_employment_k2,map@data$c2_employment_k2),
+                          switch(level_selection,  map@data$c0_employment_k3,map@data$c1_employment_k3,map@data$c2_employment_k3),
+                          switch(level_selection,  map@data$c0_employment_k4,map@data$c1_employment_k4,map@data$c2_employment_k4),
+                          switch(level_selection,  map@data$c0_employment_k5,map@data$c1_employment_k5,map@data$c2_employment_k5),
+                          switch(level_selection,  map@data$c0_employment_k6,map@data$c1_employment_k6,map@data$c2_employment_k6),
+                          switch(level_selection,  map@data$c0_employment_k7,map@data$c1_employment_k7,map@data$c2_employment_k7),
+                          switch(level_selection,  map@data$c0_employment_k8,map@data$c1_employment_k8,map@data$c2_employment_k8),
+                          switch(level_selection,  map@data$c0_employment_k9,map@data$c1_employment_k9,map@data$c2_employment_k9)
+    )
+    
+    c_assets = switch(input$slider_60_Decomp,
+                      switch(level_selection,  map@data$c0_assets_k1,map@data$c1_assets_k1,map@data$c2_assets_k1),
+                      switch(level_selection,  map@data$c0_assets_k2,map@data$c1_assets_k2,map@data$c2_assets_k2),
+                      switch(level_selection,  map@data$c0_assets_k3,map@data$c1_assets_k3,map@data$c2_assets_k3),
+                      switch(level_selection,  map@data$c0_assets_k4,map@data$c1_assets_k4,map@data$c2_assets_k4),
+                      switch(level_selection,  map@data$c0_assets_k5,map@data$c1_assets_k5,map@data$c2_assets_k5),
+                      switch(level_selection,  map@data$c0_assets_k6,map@data$c1_assets_k6,map@data$c2_assets_k6),
+                      switch(level_selection,  map@data$c0_assets_k7,map@data$c1_assets_k7,map@data$c2_assets_k7),
+                      switch(level_selection,  map@data$c0_assets_k8,map@data$c1_assets_k8,map@data$c2_assets_k8),
+                      switch(level_selection,  map@data$c0_assets_k9,map@data$c1_assets_k9,map@data$c2_assets_k9)
+    )
+    
+    c_services = switch(input$slider_60_Decomp,
+                        switch(level_selection,  map@data$c0_services_k1,map@data$c1_services_k1,map@data$c2_services_k1),
+                        switch(level_selection,  map@data$c0_services_k2,map@data$c1_services_k2,map@data$c2_services_k2),
+                        switch(level_selection,  map@data$c0_services_k3,map@data$c1_services_k3,map@data$c2_services_k3),
+                        switch(level_selection,  map@data$c0_services_k4,map@data$c1_services_k4,map@data$c2_services_k4),
+                        switch(level_selection,  map@data$c0_services_k5,map@data$c1_services_k5,map@data$c2_services_k5),
+                        switch(level_selection,  map@data$c0_services_k6,map@data$c1_services_k6,map@data$c2_services_k6),
+                        switch(level_selection,  map@data$c0_services_k7,map@data$c1_services_k7,map@data$c2_services_k7),
+                        switch(level_selection,  map@data$c0_services_k8,map@data$c1_services_k8,map@data$c2_services_k8),
+                        switch(level_selection,  map@data$c0_services_k9,map@data$c1_services_k9,map@data$c2_services_k9)
+    )
+    
+    c_electricity = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$c0_electricity_k1,map@data$c1_electricity_k1,map@data$c2_electricity_k1),
+                           switch(level_selection,  map@data$c0_electricity_k2,map@data$c1_electricity_k2,map@data$c2_electricity_k2),
+                           switch(level_selection,  map@data$c0_electricity_k3,map@data$c1_electricity_k3,map@data$c2_electricity_k3),
+                           switch(level_selection,  map@data$c0_electricity_k4,map@data$c1_electricity_k4,map@data$c2_electricity_k4),
+                           switch(level_selection,  map@data$c0_electricity_k5,map@data$c1_electricity_k5,map@data$c2_electricity_k5),
+                           switch(level_selection,  map@data$c0_electricity_k6,map@data$c1_electricity_k6,map@data$c2_electricity_k6),
+                           switch(level_selection,  map@data$c0_electricity_k7,map@data$c1_electricity_k7,map@data$c2_electricity_k7),
+                           switch(level_selection,  map@data$c0_electricity_k8,map@data$c1_electricity_k8,map@data$c2_electricity_k8),
+                           switch(level_selection,  map@data$c0_electricity_k9,map@data$c1_electricity_k9,map@data$c2_electricity_k9)
+    )
+    
+    c_cooking_fuel = switch(input$slider_60_Decomp,
+                            switch(level_selection,  map@data$c0_cooking_fuel_k1,map@data$c1_cooking_fuel_k1,map@data$c2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k2,map@data$c1_cooking_fuel_k2,map@data$c2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k3,map@data$c1_cooking_fuel_k3,map@data$c2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k4,map@data$c1_cooking_fuel_k4,map@data$c2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k5,map@data$c1_cooking_fuel_k5,map@data$c2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k6,map@data$c1_cooking_fuel_k6,map@data$c2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k7,map@data$c1_cooking_fuel_k7,map@data$c2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k8,map@data$c1_cooking_fuel_k8,map@data$c2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k9,map@data$c1_cooking_fuel_k9,map@data$c2_cooking_fuel_k9)
+    )
+    
+    c_water = switch(input$slider_60_Decomp,
+                     switch(level_selection,  map@data$c0_water_k1,map@data$c1_water_k1,map@data$c2_water_k1),
+                     switch(level_selection,  map@data$c0_water_k2,map@data$c1_water_k2,map@data$c2_water_k2),
+                     switch(level_selection,  map@data$c0_water_k3,map@data$c1_water_k3,map@data$c2_water_k3),
+                     switch(level_selection,  map@data$c0_water_k4,map@data$c1_water_k4,map@data$c2_water_k4),
+                     switch(level_selection,  map@data$c0_water_k5,map@data$c1_water_k5,map@data$c2_water_k5),
+                     switch(level_selection,  map@data$c0_water_k6,map@data$c1_water_k6,map@data$c2_water_k6),
+                     switch(level_selection,  map@data$c0_water_k7,map@data$c1_water_k7,map@data$c2_water_k7),
+                     switch(level_selection,  map@data$c0_water_k8,map@data$c1_water_k8,map@data$c2_water_k8),
+                     switch(level_selection,  map@data$c0_water_k9,map@data$c1_water_k9,map@data$c2_water_k9)
+    )
+    
+    c_toilet = switch(input$slider_60_Decomp,
+                      switch(level_selection,  map@data$c0_toilet_k1,map@data$c1_toilet_k1,map@data$c2_toilet_k1),
+                      switch(level_selection,  map@data$c0_toilet_k2,map@data$c1_toilet_k2,map@data$c2_toilet_k2),
+                      switch(level_selection,  map@data$c0_toilet_k3,map@data$c1_toilet_k3,map@data$c2_toilet_k3),
+                      switch(level_selection,  map@data$c0_toilet_k4,map@data$c1_toilet_k4,map@data$c2_toilet_k4),
+                      switch(level_selection,  map@data$c0_toilet_k5,map@data$c1_toilet_k5,map@data$c2_toilet_k5),
+                      switch(level_selection,  map@data$c0_toilet_k6,map@data$c1_toilet_k6,map@data$c2_toilet_k6),
+                      switch(level_selection,  map@data$c0_toilet_k7,map@data$c1_toilet_k7,map@data$c2_toilet_k7),
+                      switch(level_selection,  map@data$c0_toilet_k8,map@data$c1_toilet_k8,map@data$c2_toilet_k8),
+                      switch(level_selection,  map@data$c0_toilet_k9,map@data$c1_toilet_k9,map@data$c2_toilet_k9)
+    )
+    
+    c_land = switch(input$slider_60_Decomp,
+                    switch(level_selection,  map@data$c0_land_k1,map@data$c1_land_k1,map@data$c2_land_k1),
+                    switch(level_selection,  map@data$c0_land_k2,map@data$c1_land_k2,map@data$c2_land_k2),
+                    switch(level_selection,  map@data$c0_land_k3,map@data$c1_land_k3,map@data$c2_land_k3),
+                    switch(level_selection,  map@data$c0_land_k4,map@data$c1_land_k4,map@data$c2_land_k4),
+                    switch(level_selection,  map@data$c0_land_k5,map@data$c1_land_k5,map@data$c2_land_k5),
+                    switch(level_selection,  map@data$c0_land_k6,map@data$c1_land_k6,map@data$c2_land_k6),
+                    switch(level_selection,  map@data$c0_land_k7,map@data$c1_land_k7,map@data$c2_land_k7),
+                    switch(level_selection,  map@data$c0_land_k8,map@data$c1_land_k8,map@data$c2_land_k8),
+                    switch(level_selection,  map@data$c0_land_k9,map@data$c1_land_k9,map@data$c2_land_k9)
+    )
+    
+    c_livestock = switch(input$slider_60_Decomp,
+                         switch(level_selection,  map@data$c0_livestock_k1,map@data$c1_livestock_k1,map@data$c2_livestock_k1),
+                         switch(level_selection,  map@data$c0_livestock_k2,map@data$c1_livestock_k2,map@data$c2_livestock_k2),
+                         switch(level_selection,  map@data$c0_livestock_k3,map@data$c1_livestock_k3,map@data$c2_livestock_k3),
+                         switch(level_selection,  map@data$c0_livestock_k4,map@data$c1_livestock_k4,map@data$c2_livestock_k4),
+                         switch(level_selection,  map@data$c0_livestock_k5,map@data$c1_livestock_k5,map@data$c2_livestock_k5),
+                         switch(level_selection,  map@data$c0_livestock_k6,map@data$c1_livestock_k6,map@data$c2_livestock_k6),
+                         switch(level_selection,  map@data$c0_livestock_k7,map@data$c1_livestock_k7,map@data$c2_livestock_k7),
+                         switch(level_selection,  map@data$c0_livestock_k8,map@data$c1_livestock_k8,map@data$c2_livestock_k8),
+                         switch(level_selection,  map@data$c0_livestock_k9,map@data$c1_livestock_k9,map@data$c2_livestock_k9)
+    )
+    
+    c_rural_equip = switch(input$slider_60_Decomp,
+                           switch(level_selection,  map@data$c0_rural_equip_k1,map@data$c1_rural_equip_k1,map@data$c2_rural_equip_k1),
+                           switch(level_selection,  map@data$c0_rural_equip_k2,map@data$c1_rural_equip_k2,map@data$c2_rural_equip_k2),
+                           switch(level_selection,  map@data$c0_rural_equip_k3,map@data$c1_rural_equip_k3,map@data$c2_rural_equip_k3),
+                           switch(level_selection,  map@data$c0_rural_equip_k4,map@data$c1_rural_equip_k4,map@data$c2_rural_equip_k4),
+                           switch(level_selection,  map@data$c0_rural_equip_k5,map@data$c1_rural_equip_k5,map@data$c2_rural_equip_k5),
+                           switch(level_selection,  map@data$c0_rural_equip_k6,map@data$c1_rural_equip_k6,map@data$c2_rural_equip_k6),
+                           switch(level_selection,  map@data$c0_rural_equip_k7,map@data$c1_rural_equip_k7,map@data$c2_rural_equip_k7),
+                           switch(level_selection,  map@data$c0_rural_equip_k8,map@data$c1_rural_equip_k8,map@data$c2_rural_equip_k8),
+                           switch(level_selection,  map@data$c0_rural_equip_k9,map@data$c1_rural_equip_k9,map@data$c2_rural_equip_k9)
+    )
+    
+    
+    
+    n_c_edu_max = switch(input$slider_60_Decomp,
+                         switch(level_selection,  nat_data$c0_edu_max_k1,nat_data$c1_edu_max_k1,nat_data$c2_edu_max_k1),
+                         switch(level_selection,  nat_data$c0_edu_max_k2,nat_data$c1_edu_max_k2,nat_data$c2_edu_max_k2),
+                         switch(level_selection,  nat_data$c0_edu_max_k3,nat_data$c1_edu_max_k3,nat_data$c2_edu_max_k3),
+                         switch(level_selection,  nat_data$c0_edu_max_k4,nat_data$c1_edu_max_k4,nat_data$c2_edu_max_k4),
+                         switch(level_selection,  nat_data$c0_edu_max_k5,nat_data$c1_edu_max_k5,nat_data$c2_edu_max_k5),
+                         switch(level_selection,  nat_data$c0_edu_max_k6,nat_data$c1_edu_max_k6,nat_data$c2_edu_max_k6),
+                         switch(level_selection,  nat_data$c0_edu_max_k7,nat_data$c1_edu_max_k7,nat_data$c2_edu_max_k7),
+                         switch(level_selection,  nat_data$c0_edu_max_k8,nat_data$c1_edu_max_k8,nat_data$c2_edu_max_k8),
+                         switch(level_selection,  nat_data$c0_edu_max_k9,nat_data$c1_edu_max_k9,nat_data$c2_edu_max_k9)
+    )
+    n_c_edu_dropout = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$c0_edu_dropout_k1,nat_data$c1_edu_dropout_k1,nat_data$c2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k2,nat_data$c1_edu_dropout_k2,nat_data$c2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k3,nat_data$c1_edu_dropout_k3,nat_data$c2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k4,nat_data$c1_edu_dropout_k4,nat_data$c2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k5,nat_data$c1_edu_dropout_k5,nat_data$c2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k6,nat_data$c1_edu_dropout_k6,nat_data$c2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k7,nat_data$c1_edu_dropout_k7,nat_data$c2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k8,nat_data$c1_edu_dropout_k8,nat_data$c2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k9,nat_data$c1_edu_dropout_k9,nat_data$c2_edu_dropout_k9)
+    )
+    
+    n_c_hea_chronic = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$c0_hea_chronic_k1,nat_data$c1_hea_chronic_k1,nat_data$c2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k2,nat_data$c1_hea_chronic_k2,nat_data$c2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k3,nat_data$c1_hea_chronic_k3,nat_data$c2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k4,nat_data$c1_hea_chronic_k4,nat_data$c2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k5,nat_data$c1_hea_chronic_k5,nat_data$c2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k6,nat_data$c1_hea_chronic_k6,nat_data$c2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k7,nat_data$c1_hea_chronic_k7,nat_data$c2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k8,nat_data$c1_hea_chronic_k8,nat_data$c2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k9,nat_data$c1_hea_chronic_k9,nat_data$c2_hea_chronic_k9)
+    )
+    
+    n_c_hea_visit = switch(input$slider_60_Decomp,
+                           switch(level_selection,  nat_data$c0_hea_visit_k1,nat_data$c1_hea_visit_k1,nat_data$c2_hea_visit_k1),
+                           switch(level_selection,  nat_data$c0_hea_visit_k2,nat_data$c1_hea_visit_k2,nat_data$c2_hea_visit_k2),
+                           switch(level_selection,  nat_data$c0_hea_visit_k3,nat_data$c1_hea_visit_k3,nat_data$c2_hea_visit_k3),
+                           switch(level_selection,  nat_data$c0_hea_visit_k4,nat_data$c1_hea_visit_k4,nat_data$c2_hea_visit_k4),
+                           switch(level_selection,  nat_data$c0_hea_visit_k5,nat_data$c1_hea_visit_k5,nat_data$c2_hea_visit_k5),
+                           switch(level_selection,  nat_data$c0_hea_visit_k6,nat_data$c1_hea_visit_k6,nat_data$c2_hea_visit_k6),
+                           switch(level_selection,  nat_data$c0_hea_visit_k7,nat_data$c1_hea_visit_k7,nat_data$c2_hea_visit_k7),
+                           switch(level_selection,  nat_data$c0_hea_visit_k8,nat_data$c1_hea_visit_k8,nat_data$c2_hea_visit_k8),
+                           switch(level_selection,  nat_data$c0_hea_visit_k9,nat_data$c1_hea_visit_k9,nat_data$c2_hea_visit_k9)
+    )
+    
+    n_c_employment = switch(input$slider_60_Decomp,
+                            switch(level_selection,  nat_data$c0_employment_k1,nat_data$c1_employment_k1,nat_data$c2_employment_k1),
+                            switch(level_selection,  nat_data$c0_employment_k2,nat_data$c1_employment_k2,nat_data$c2_employment_k2),
+                            switch(level_selection,  nat_data$c0_employment_k3,nat_data$c1_employment_k3,nat_data$c2_employment_k3),
+                            switch(level_selection,  nat_data$c0_employment_k4,nat_data$c1_employment_k4,nat_data$c2_employment_k4),
+                            switch(level_selection,  nat_data$c0_employment_k5,nat_data$c1_employment_k5,nat_data$c2_employment_k5),
+                            switch(level_selection,  nat_data$c0_employment_k6,nat_data$c1_employment_k6,nat_data$c2_employment_k6),
+                            switch(level_selection,  nat_data$c0_employment_k7,nat_data$c1_employment_k7,nat_data$c2_employment_k7),
+                            switch(level_selection,  nat_data$c0_employment_k8,nat_data$c1_employment_k8,nat_data$c2_employment_k8),
+                            switch(level_selection,  nat_data$c0_employment_k9,nat_data$c1_employment_k9,nat_data$c2_employment_k9)
+    )
+    
+    n_c_assets = switch(input$slider_60_Decomp,
+                        switch(level_selection,  nat_data$c0_assets_k1,nat_data$c1_assets_k1,nat_data$c2_assets_k1),
+                        switch(level_selection,  nat_data$c0_assets_k2,nat_data$c1_assets_k2,nat_data$c2_assets_k2),
+                        switch(level_selection,  nat_data$c0_assets_k3,nat_data$c1_assets_k3,nat_data$c2_assets_k3),
+                        switch(level_selection,  nat_data$c0_assets_k4,nat_data$c1_assets_k4,nat_data$c2_assets_k4),
+                        switch(level_selection,  nat_data$c0_assets_k5,nat_data$c1_assets_k5,nat_data$c2_assets_k5),
+                        switch(level_selection,  nat_data$c0_assets_k6,nat_data$c1_assets_k6,nat_data$c2_assets_k6),
+                        switch(level_selection,  nat_data$c0_assets_k7,nat_data$c1_assets_k7,nat_data$c2_assets_k7),
+                        switch(level_selection,  nat_data$c0_assets_k8,nat_data$c1_assets_k8,nat_data$c2_assets_k8),
+                        switch(level_selection,  nat_data$c0_assets_k9,nat_data$c1_assets_k9,nat_data$c2_assets_k9)
+    )
+    
+    n_c_services = switch(input$slider_60_Decomp,
+                          switch(level_selection,  nat_data$c0_services_k1,nat_data$c1_services_k1,nat_data$c2_services_k1),
+                          switch(level_selection,  nat_data$c0_services_k2,nat_data$c1_services_k2,nat_data$c2_services_k2),
+                          switch(level_selection,  nat_data$c0_services_k3,nat_data$c1_services_k3,nat_data$c2_services_k3),
+                          switch(level_selection,  nat_data$c0_services_k4,nat_data$c1_services_k4,nat_data$c2_services_k4),
+                          switch(level_selection,  nat_data$c0_services_k5,nat_data$c1_services_k5,nat_data$c2_services_k5),
+                          switch(level_selection,  nat_data$c0_services_k6,nat_data$c1_services_k6,nat_data$c2_services_k6),
+                          switch(level_selection,  nat_data$c0_services_k7,nat_data$c1_services_k7,nat_data$c2_services_k7),
+                          switch(level_selection,  nat_data$c0_services_k8,nat_data$c1_services_k8,nat_data$c2_services_k8),
+                          switch(level_selection,  nat_data$c0_services_k9,nat_data$c1_services_k9,nat_data$c2_services_k9)
+    )
+    
+    n_c_electricity = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$c0_electricity_k1,nat_data$c1_electricity_k1,nat_data$c2_electricity_k1),
+                             switch(level_selection,  nat_data$c0_electricity_k2,nat_data$c1_electricity_k2,nat_data$c2_electricity_k2),
+                             switch(level_selection,  nat_data$c0_electricity_k3,nat_data$c1_electricity_k3,nat_data$c2_electricity_k3),
+                             switch(level_selection,  nat_data$c0_electricity_k4,nat_data$c1_electricity_k4,nat_data$c2_electricity_k4),
+                             switch(level_selection,  nat_data$c0_electricity_k5,nat_data$c1_electricity_k5,nat_data$c2_electricity_k5),
+                             switch(level_selection,  nat_data$c0_electricity_k6,nat_data$c1_electricity_k6,nat_data$c2_electricity_k6),
+                             switch(level_selection,  nat_data$c0_electricity_k7,nat_data$c1_electricity_k7,nat_data$c2_electricity_k7),
+                             switch(level_selection,  nat_data$c0_electricity_k8,nat_data$c1_electricity_k8,nat_data$c2_electricity_k8),
+                             switch(level_selection,  nat_data$c0_electricity_k9,nat_data$c1_electricity_k9,nat_data$c2_electricity_k9)
+    )
+    
+    n_c_cooking_fuel = switch(input$slider_60_Decomp,
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k1,nat_data$c1_cooking_fuel_k1,nat_data$c2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k2,nat_data$c1_cooking_fuel_k2,nat_data$c2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k3,nat_data$c1_cooking_fuel_k3,nat_data$c2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k4,nat_data$c1_cooking_fuel_k4,nat_data$c2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k5,nat_data$c1_cooking_fuel_k5,nat_data$c2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k6,nat_data$c1_cooking_fuel_k6,nat_data$c2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k7,nat_data$c1_cooking_fuel_k7,nat_data$c2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k8,nat_data$c1_cooking_fuel_k8,nat_data$c2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k9,nat_data$c1_cooking_fuel_k9,nat_data$c2_cooking_fuel_k9)
+    )
+    
+    n_c_water = switch(input$slider_60_Decomp,
+                       switch(level_selection,  nat_data$c0_water_k1,nat_data$c1_water_k1,nat_data$c2_water_k1),
+                       switch(level_selection,  nat_data$c0_water_k2,nat_data$c1_water_k2,nat_data$c2_water_k2),
+                       switch(level_selection,  nat_data$c0_water_k3,nat_data$c1_water_k3,nat_data$c2_water_k3),
+                       switch(level_selection,  nat_data$c0_water_k4,nat_data$c1_water_k4,nat_data$c2_water_k4),
+                       switch(level_selection,  nat_data$c0_water_k5,nat_data$c1_water_k5,nat_data$c2_water_k5),
+                       switch(level_selection,  nat_data$c0_water_k6,nat_data$c1_water_k6,nat_data$c2_water_k6),
+                       switch(level_selection,  nat_data$c0_water_k7,nat_data$c1_water_k7,nat_data$c2_water_k7),
+                       switch(level_selection,  nat_data$c0_water_k8,nat_data$c1_water_k8,nat_data$c2_water_k8),
+                       switch(level_selection,  nat_data$c0_water_k9,nat_data$c1_water_k9,nat_data$c2_water_k9)
+    )
+    
+    n_c_toilet = switch(input$slider_60_Decomp,
+                        switch(level_selection,  nat_data$c0_toilet_k1,nat_data$c1_toilet_k1,nat_data$c2_toilet_k1),
+                        switch(level_selection,  nat_data$c0_toilet_k2,nat_data$c1_toilet_k2,nat_data$c2_toilet_k2),
+                        switch(level_selection,  nat_data$c0_toilet_k3,nat_data$c1_toilet_k3,nat_data$c2_toilet_k3),
+                        switch(level_selection,  nat_data$c0_toilet_k4,nat_data$c1_toilet_k4,nat_data$c2_toilet_k4),
+                        switch(level_selection,  nat_data$c0_toilet_k5,nat_data$c1_toilet_k5,nat_data$c2_toilet_k5),
+                        switch(level_selection,  nat_data$c0_toilet_k6,nat_data$c1_toilet_k6,nat_data$c2_toilet_k6),
+                        switch(level_selection,  nat_data$c0_toilet_k7,nat_data$c1_toilet_k7,nat_data$c2_toilet_k7),
+                        switch(level_selection,  nat_data$c0_toilet_k8,nat_data$c1_toilet_k8,nat_data$c2_toilet_k8),
+                        switch(level_selection,  nat_data$c0_toilet_k9,nat_data$c1_toilet_k9,nat_data$c2_toilet_k9)
+    )
+    
+    n_c_land = switch(input$slider_60_Decomp,
+                      switch(level_selection,  nat_data$c0_land_k1,nat_data$c1_land_k1,nat_data$c2_land_k1),
+                      switch(level_selection,  nat_data$c0_land_k2,nat_data$c1_land_k2,nat_data$c2_land_k2),
+                      switch(level_selection,  nat_data$c0_land_k3,nat_data$c1_land_k3,nat_data$c2_land_k3),
+                      switch(level_selection,  nat_data$c0_land_k4,nat_data$c1_land_k4,nat_data$c2_land_k4),
+                      switch(level_selection,  nat_data$c0_land_k5,nat_data$c1_land_k5,nat_data$c2_land_k5),
+                      switch(level_selection,  nat_data$c0_land_k6,nat_data$c1_land_k6,nat_data$c2_land_k6),
+                      switch(level_selection,  nat_data$c0_land_k7,nat_data$c1_land_k7,nat_data$c2_land_k7),
+                      switch(level_selection,  nat_data$c0_land_k8,nat_data$c1_land_k8,nat_data$c2_land_k8),
+                      switch(level_selection,  nat_data$c0_land_k9,nat_data$c1_land_k9,nat_data$c2_land_k9)
+    )
+    
+    n_c_livestock = switch(input$slider_60_Decomp,
+                           switch(level_selection,  nat_data$c0_livestock_k1,nat_data$c1_livestock_k1,nat_data$c2_livestock_k1),
+                           switch(level_selection,  nat_data$c0_livestock_k2,nat_data$c1_livestock_k2,nat_data$c2_livestock_k2),
+                           switch(level_selection,  nat_data$c0_livestock_k3,nat_data$c1_livestock_k3,nat_data$c2_livestock_k3),
+                           switch(level_selection,  nat_data$c0_livestock_k4,nat_data$c1_livestock_k4,nat_data$c2_livestock_k4),
+                           switch(level_selection,  nat_data$c0_livestock_k5,nat_data$c1_livestock_k5,nat_data$c2_livestock_k5),
+                           switch(level_selection,  nat_data$c0_livestock_k6,nat_data$c1_livestock_k6,nat_data$c2_livestock_k6),
+                           switch(level_selection,  nat_data$c0_livestock_k7,nat_data$c1_livestock_k7,nat_data$c2_livestock_k7),
+                           switch(level_selection,  nat_data$c0_livestock_k8,nat_data$c1_livestock_k8,nat_data$c2_livestock_k8),
+                           switch(level_selection,  nat_data$c0_livestock_k9,nat_data$c1_livestock_k9,nat_data$c2_livestock_k9)
+    )
+    
+    n_c_rural_equip = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$c0_rural_equip_k1,nat_data$c1_rural_equip_k1,nat_data$c2_rural_equip_k1),
+                             switch(level_selection,  nat_data$c0_rural_equip_k2,nat_data$c1_rural_equip_k2,nat_data$c2_rural_equip_k2),
+                             switch(level_selection,  nat_data$c0_rural_equip_k3,nat_data$c1_rural_equip_k3,nat_data$c2_rural_equip_k3),
+                             switch(level_selection,  nat_data$c0_rural_equip_k4,nat_data$c1_rural_equip_k4,nat_data$c2_rural_equip_k4),
+                             switch(level_selection,  nat_data$c0_rural_equip_k5,nat_data$c1_rural_equip_k5,nat_data$c2_rural_equip_k5),
+                             switch(level_selection,  nat_data$c0_rural_equip_k6,nat_data$c1_rural_equip_k6,nat_data$c2_rural_equip_k6),
+                             switch(level_selection,  nat_data$c0_rural_equip_k7,nat_data$c1_rural_equip_k7,nat_data$c2_rural_equip_k7),
+                             switch(level_selection,  nat_data$c0_rural_equip_k8,nat_data$c1_rural_equip_k8,nat_data$c2_rural_equip_k8),
+                             switch(level_selection,  nat_data$c0_rural_equip_k9,nat_data$c1_rural_equip_k9,nat_data$c2_rural_equip_k9)
+    )
+    
+    n_g_edu_max = switch(input$slider_60_Decomp,
+                         switch(level_selection,  nat_data$g0_edu_max_k1,nat_data$g1_edu_max_k1,nat_data$g2_edu_max_k1),
+                         switch(level_selection,  nat_data$g0_edu_max_k2,nat_data$g1_edu_max_k2,nat_data$g2_edu_max_k2),
+                         switch(level_selection,  nat_data$g0_edu_max_k3,nat_data$g1_edu_max_k3,nat_data$g2_edu_max_k3),
+                         switch(level_selection,  nat_data$g0_edu_max_k4,nat_data$g1_edu_max_k4,nat_data$g2_edu_max_k4),
+                         switch(level_selection,  nat_data$g0_edu_max_k5,nat_data$g1_edu_max_k5,nat_data$g2_edu_max_k5),
+                         switch(level_selection,  nat_data$g0_edu_max_k6,nat_data$g1_edu_max_k6,nat_data$g2_edu_max_k6),
+                         switch(level_selection,  nat_data$g0_edu_max_k7,nat_data$g1_edu_max_k7,nat_data$g2_edu_max_k7),
+                         switch(level_selection,  nat_data$g0_edu_max_k8,nat_data$g1_edu_max_k8,nat_data$g2_edu_max_k8),
+                         switch(level_selection,  nat_data$g0_edu_max_k9,nat_data$g1_edu_max_k9,nat_data$g2_edu_max_k9)
+    )
+    n_g_edu_dropout = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$g0_edu_dropout_k1,nat_data$g1_edu_dropout_k1,nat_data$g2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k2,nat_data$g1_edu_dropout_k2,nat_data$g2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k3,nat_data$g1_edu_dropout_k3,nat_data$g2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k4,nat_data$g1_edu_dropout_k4,nat_data$g2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k5,nat_data$g1_edu_dropout_k5,nat_data$g2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k6,nat_data$g1_edu_dropout_k6,nat_data$g2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k7,nat_data$g1_edu_dropout_k7,nat_data$g2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k8,nat_data$g1_edu_dropout_k8,nat_data$g2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k9,nat_data$g1_edu_dropout_k9,nat_data$g2_edu_dropout_k9)
+    )
+    
+    n_g_hea_chronic = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$g0_hea_chronic_k1,nat_data$g1_hea_chronic_k1,nat_data$g2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k2,nat_data$g1_hea_chronic_k2,nat_data$g2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k3,nat_data$g1_hea_chronic_k3,nat_data$g2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k4,nat_data$g1_hea_chronic_k4,nat_data$g2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k5,nat_data$g1_hea_chronic_k5,nat_data$g2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k6,nat_data$g1_hea_chronic_k6,nat_data$g2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k7,nat_data$g1_hea_chronic_k7,nat_data$g2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k8,nat_data$g1_hea_chronic_k8,nat_data$g2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k9,nat_data$g1_hea_chronic_k9,nat_data$g2_hea_chronic_k9)
+    )
+    
+    n_g_hea_visit = switch(input$slider_60_Decomp,
+                           switch(level_selection,  nat_data$g0_hea_visit_k1,nat_data$g1_hea_visit_k1,nat_data$g2_hea_visit_k1),
+                           switch(level_selection,  nat_data$g0_hea_visit_k2,nat_data$g1_hea_visit_k2,nat_data$g2_hea_visit_k2),
+                           switch(level_selection,  nat_data$g0_hea_visit_k3,nat_data$g1_hea_visit_k3,nat_data$g2_hea_visit_k3),
+                           switch(level_selection,  nat_data$g0_hea_visit_k4,nat_data$g1_hea_visit_k4,nat_data$g2_hea_visit_k4),
+                           switch(level_selection,  nat_data$g0_hea_visit_k5,nat_data$g1_hea_visit_k5,nat_data$g2_hea_visit_k5),
+                           switch(level_selection,  nat_data$g0_hea_visit_k6,nat_data$g1_hea_visit_k6,nat_data$g2_hea_visit_k6),
+                           switch(level_selection,  nat_data$g0_hea_visit_k7,nat_data$g1_hea_visit_k7,nat_data$g2_hea_visit_k7),
+                           switch(level_selection,  nat_data$g0_hea_visit_k8,nat_data$g1_hea_visit_k8,nat_data$g2_hea_visit_k8),
+                           switch(level_selection,  nat_data$g0_hea_visit_k9,nat_data$g1_hea_visit_k9,nat_data$g2_hea_visit_k9)
+    )
+    
+    n_g_employment = switch(input$slider_60_Decomp,
+                            switch(level_selection,  nat_data$g0_employment_k1,nat_data$g1_employment_k1,nat_data$g2_employment_k1),
+                            switch(level_selection,  nat_data$g0_employment_k2,nat_data$g1_employment_k2,nat_data$g2_employment_k2),
+                            switch(level_selection,  nat_data$g0_employment_k3,nat_data$g1_employment_k3,nat_data$g2_employment_k3),
+                            switch(level_selection,  nat_data$g0_employment_k4,nat_data$g1_employment_k4,nat_data$g2_employment_k4),
+                            switch(level_selection,  nat_data$g0_employment_k5,nat_data$g1_employment_k5,nat_data$g2_employment_k5),
+                            switch(level_selection,  nat_data$g0_employment_k6,nat_data$g1_employment_k6,nat_data$g2_employment_k6),
+                            switch(level_selection,  nat_data$g0_employment_k7,nat_data$g1_employment_k7,nat_data$g2_employment_k7),
+                            switch(level_selection,  nat_data$g0_employment_k8,nat_data$g1_employment_k8,nat_data$g2_employment_k8),
+                            switch(level_selection,  nat_data$g0_employment_k9,nat_data$g1_employment_k9,nat_data$g2_employment_k9)
+    )
+    
+    n_g_assets = switch(input$slider_60_Decomp,
+                        switch(level_selection,  nat_data$g0_assets_k1,nat_data$g1_assets_k1,nat_data$g2_assets_k1),
+                        switch(level_selection,  nat_data$g0_assets_k2,nat_data$g1_assets_k2,nat_data$g2_assets_k2),
+                        switch(level_selection,  nat_data$g0_assets_k3,nat_data$g1_assets_k3,nat_data$g2_assets_k3),
+                        switch(level_selection,  nat_data$g0_assets_k4,nat_data$g1_assets_k4,nat_data$g2_assets_k4),
+                        switch(level_selection,  nat_data$g0_assets_k5,nat_data$g1_assets_k5,nat_data$g2_assets_k5),
+                        switch(level_selection,  nat_data$g0_assets_k6,nat_data$g1_assets_k6,nat_data$g2_assets_k6),
+                        switch(level_selection,  nat_data$g0_assets_k7,nat_data$g1_assets_k7,nat_data$g2_assets_k7),
+                        switch(level_selection,  nat_data$g0_assets_k8,nat_data$g1_assets_k8,nat_data$g2_assets_k8),
+                        switch(level_selection,  nat_data$g0_assets_k9,nat_data$g1_assets_k9,nat_data$g2_assets_k9)
+    )
+    
+    n_g_services = switch(input$slider_60_Decomp,
+                          switch(level_selection,  nat_data$g0_services_k1,nat_data$g1_services_k1,nat_data$g2_services_k1),
+                          switch(level_selection,  nat_data$g0_services_k2,nat_data$g1_services_k2,nat_data$g2_services_k2),
+                          switch(level_selection,  nat_data$g0_services_k3,nat_data$g1_services_k3,nat_data$g2_services_k3),
+                          switch(level_selection,  nat_data$g0_services_k4,nat_data$g1_services_k4,nat_data$g2_services_k4),
+                          switch(level_selection,  nat_data$g0_services_k5,nat_data$g1_services_k5,nat_data$g2_services_k5),
+                          switch(level_selection,  nat_data$g0_services_k6,nat_data$g1_services_k6,nat_data$g2_services_k6),
+                          switch(level_selection,  nat_data$g0_services_k7,nat_data$g1_services_k7,nat_data$g2_services_k7),
+                          switch(level_selection,  nat_data$g0_services_k8,nat_data$g1_services_k8,nat_data$g2_services_k8),
+                          switch(level_selection,  nat_data$g0_services_k9,nat_data$g1_services_k9,nat_data$g2_services_k9)
+    )
+    
+    n_g_electricity = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$g0_electricity_k1,nat_data$g1_electricity_k1,nat_data$g2_electricity_k1),
+                             switch(level_selection,  nat_data$g0_electricity_k2,nat_data$g1_electricity_k2,nat_data$g2_electricity_k2),
+                             switch(level_selection,  nat_data$g0_electricity_k3,nat_data$g1_electricity_k3,nat_data$g2_electricity_k3),
+                             switch(level_selection,  nat_data$g0_electricity_k4,nat_data$g1_electricity_k4,nat_data$g2_electricity_k4),
+                             switch(level_selection,  nat_data$g0_electricity_k5,nat_data$g1_electricity_k5,nat_data$g2_electricity_k5),
+                             switch(level_selection,  nat_data$g0_electricity_k6,nat_data$g1_electricity_k6,nat_data$g2_electricity_k6),
+                             switch(level_selection,  nat_data$g0_electricity_k7,nat_data$g1_electricity_k7,nat_data$g2_electricity_k7),
+                             switch(level_selection,  nat_data$g0_electricity_k8,nat_data$g1_electricity_k8,nat_data$g2_electricity_k8),
+                             switch(level_selection,  nat_data$g0_electricity_k9,nat_data$g1_electricity_k9,nat_data$g2_electricity_k9)
+    )
+    
+    n_g_cooking_fuel = switch(input$slider_60_Decomp,
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k1,nat_data$g1_cooking_fuel_k1,nat_data$g2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k2,nat_data$g1_cooking_fuel_k2,nat_data$g2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k3,nat_data$g1_cooking_fuel_k3,nat_data$g2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k4,nat_data$g1_cooking_fuel_k4,nat_data$g2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k5,nat_data$g1_cooking_fuel_k5,nat_data$g2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k6,nat_data$g1_cooking_fuel_k6,nat_data$g2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k7,nat_data$g1_cooking_fuel_k7,nat_data$g2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k8,nat_data$g1_cooking_fuel_k8,nat_data$g2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k9,nat_data$g1_cooking_fuel_k9,nat_data$g2_cooking_fuel_k9)
+    )
+    
+    n_g_water = switch(input$slider_60_Decomp,
+                       switch(level_selection,  nat_data$g0_water_k1,nat_data$g1_water_k1,nat_data$g2_water_k1),
+                       switch(level_selection,  nat_data$g0_water_k2,nat_data$g1_water_k2,nat_data$g2_water_k2),
+                       switch(level_selection,  nat_data$g0_water_k3,nat_data$g1_water_k3,nat_data$g2_water_k3),
+                       switch(level_selection,  nat_data$g0_water_k4,nat_data$g1_water_k4,nat_data$g2_water_k4),
+                       switch(level_selection,  nat_data$g0_water_k5,nat_data$g1_water_k5,nat_data$g2_water_k5),
+                       switch(level_selection,  nat_data$g0_water_k6,nat_data$g1_water_k6,nat_data$g2_water_k6),
+                       switch(level_selection,  nat_data$g0_water_k7,nat_data$g1_water_k7,nat_data$g2_water_k7),
+                       switch(level_selection,  nat_data$g0_water_k8,nat_data$g1_water_k8,nat_data$g2_water_k8),
+                       switch(level_selection,  nat_data$g0_water_k9,nat_data$g1_water_k9,nat_data$g2_water_k9)
+    )
+    
+    n_g_toilet = switch(input$slider_60_Decomp,
+                        switch(level_selection,  nat_data$g0_toilet_k1,nat_data$g1_toilet_k1,nat_data$g2_toilet_k1),
+                        switch(level_selection,  nat_data$g0_toilet_k2,nat_data$g1_toilet_k2,nat_data$g2_toilet_k2),
+                        switch(level_selection,  nat_data$g0_toilet_k3,nat_data$g1_toilet_k3,nat_data$g2_toilet_k3),
+                        switch(level_selection,  nat_data$g0_toilet_k4,nat_data$g1_toilet_k4,nat_data$g2_toilet_k4),
+                        switch(level_selection,  nat_data$g0_toilet_k5,nat_data$g1_toilet_k5,nat_data$g2_toilet_k5),
+                        switch(level_selection,  nat_data$g0_toilet_k6,nat_data$g1_toilet_k6,nat_data$g2_toilet_k6),
+                        switch(level_selection,  nat_data$g0_toilet_k7,nat_data$g1_toilet_k7,nat_data$g2_toilet_k7),
+                        switch(level_selection,  nat_data$g0_toilet_k8,nat_data$g1_toilet_k8,nat_data$g2_toilet_k8),
+                        switch(level_selection,  nat_data$g0_toilet_k9,nat_data$g1_toilet_k9,nat_data$g2_toilet_k9)
+    )
+    
+    n_g_land = switch(input$slider_60_Decomp,
+                      switch(level_selection,  nat_data$g0_land_k1,nat_data$g1_land_k1,nat_data$g2_land_k1),
+                      switch(level_selection,  nat_data$g0_land_k2,nat_data$g1_land_k2,nat_data$g2_land_k2),
+                      switch(level_selection,  nat_data$g0_land_k3,nat_data$g1_land_k3,nat_data$g2_land_k3),
+                      switch(level_selection,  nat_data$g0_land_k4,nat_data$g1_land_k4,nat_data$g2_land_k4),
+                      switch(level_selection,  nat_data$g0_land_k5,nat_data$g1_land_k5,nat_data$g2_land_k5),
+                      switch(level_selection,  nat_data$g0_land_k6,nat_data$g1_land_k6,nat_data$g2_land_k6),
+                      switch(level_selection,  nat_data$g0_land_k7,nat_data$g1_land_k7,nat_data$g2_land_k7),
+                      switch(level_selection,  nat_data$g0_land_k8,nat_data$g1_land_k8,nat_data$g2_land_k8),
+                      switch(level_selection,  nat_data$g0_land_k9,nat_data$g1_land_k9,nat_data$g2_land_k9)
+    )
+    
+    n_g_livestock = switch(input$slider_60_Decomp,
+                           switch(level_selection,  nat_data$g0_livestock_k1,nat_data$g1_livestock_k1,nat_data$g2_livestock_k1),
+                           switch(level_selection,  nat_data$g0_livestock_k2,nat_data$g1_livestock_k2,nat_data$g2_livestock_k2),
+                           switch(level_selection,  nat_data$g0_livestock_k3,nat_data$g1_livestock_k3,nat_data$g2_livestock_k3),
+                           switch(level_selection,  nat_data$g0_livestock_k4,nat_data$g1_livestock_k4,nat_data$g2_livestock_k4),
+                           switch(level_selection,  nat_data$g0_livestock_k5,nat_data$g1_livestock_k5,nat_data$g2_livestock_k5),
+                           switch(level_selection,  nat_data$g0_livestock_k6,nat_data$g1_livestock_k6,nat_data$g2_livestock_k6),
+                           switch(level_selection,  nat_data$g0_livestock_k7,nat_data$g1_livestock_k7,nat_data$g2_livestock_k7),
+                           switch(level_selection,  nat_data$g0_livestock_k8,nat_data$g1_livestock_k8,nat_data$g2_livestock_k8),
+                           switch(level_selection,  nat_data$g0_livestock_k9,nat_data$g1_livestock_k9,nat_data$g2_livestock_k9)
+    )
+    
+    n_g_rural_equip = switch(input$slider_60_Decomp,
+                             switch(level_selection,  nat_data$g0_rural_equip_k1,nat_data$g1_rural_equip_k1,nat_data$g2_rural_equip_k1),
+                             switch(level_selection,  nat_data$g0_rural_equip_k2,nat_data$g1_rural_equip_k2,nat_data$g2_rural_equip_k2),
+                             switch(level_selection,  nat_data$g0_rural_equip_k3,nat_data$g1_rural_equip_k3,nat_data$g2_rural_equip_k3),
+                             switch(level_selection,  nat_data$g0_rural_equip_k4,nat_data$g1_rural_equip_k4,nat_data$g2_rural_equip_k4),
+                             switch(level_selection,  nat_data$g0_rural_equip_k5,nat_data$g1_rural_equip_k5,nat_data$g2_rural_equip_k5),
+                             switch(level_selection,  nat_data$g0_rural_equip_k6,nat_data$g1_rural_equip_k6,nat_data$g2_rural_equip_k6),
+                             switch(level_selection,  nat_data$g0_rural_equip_k7,nat_data$g1_rural_equip_k7,nat_data$g2_rural_equip_k7),
+                             switch(level_selection,  nat_data$g0_rural_equip_k8,nat_data$g1_rural_equip_k8,nat_data$g2_rural_equip_k8),
+                             switch(level_selection,  nat_data$g0_rural_equip_k9,nat_data$g1_rural_equip_k9,nat_data$g2_rural_equip_k9)
+    )
+    
+    # 1 = c (percent contribution), 2 = g (gap)
+    c_g_selection = strtoi(input$c_g_Decomp_60)
+    
+    edu_max = switch(c_g_selection, c_edu_max, g_edu_max)
+    edu_dropout = switch(c_g_selection, c_edu_dropout, g_edu_dropout)
+    hea_chronic = switch(c_g_selection, c_hea_chronic, g_hea_chronic)
+    hea_visit = switch(c_g_selection, c_hea_visit, g_hea_visit)
+    employment = switch(c_g_selection, c_employment, g_employment)
+    assets = switch(c_g_selection, c_assets, g_assets)
+    services = switch(c_g_selection, c_services, g_services)
+    electricity = switch(c_g_selection, c_electricity, g_electricity)
+    cooking_fuel = switch(c_g_selection, c_cooking_fuel, g_cooking_fuel)
+    water = switch(c_g_selection, c_water, g_water)
+    toilet = switch(c_g_selection, c_toilet, g_toilet)
+    land = switch(c_g_selection, c_land, g_land)
+    livestock = switch(c_g_selection, c_livestock, g_livestock)
+    rural_equip = switch(c_g_selection, c_rural_equip, g_rural_equip)
+    
+    n_edu_max = switch(c_g_selection, n_c_edu_max, n_g_edu_max)
+    n_edu_dropout = switch(c_g_selection, n_c_edu_dropout, n_g_edu_dropout)
+    n_hea_chronic = switch(c_g_selection, n_c_hea_chronic, n_g_hea_chronic)
+    n_hea_visit = switch(c_g_selection, n_c_hea_visit, n_g_hea_visit)
+    n_employment = switch(c_g_selection, n_c_employment, n_g_employment)
+    n_assets = switch(c_g_selection, n_c_assets, n_g_assets)
+    n_services = switch(c_g_selection, n_c_services, n_g_services)
+    n_electricity = switch(c_g_selection, n_c_electricity, n_g_electricity)
+    n_cooking_fuel = switch(c_g_selection, n_c_cooking_fuel, n_g_cooking_fuel)
+    n_water = switch(c_g_selection, n_c_water, n_g_water)
+    n_toilet = switch(c_g_selection, n_c_toilet, n_g_toilet)
+    n_land = switch(c_g_selection, n_c_land, n_g_land)
+    n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
+    n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
+    
+    edu_max_labels <- get_label(map@data$NAME_2, "Max. Education", edu_max, n_edu_max)
+    edu_dropout_labels <- get_label(map@data$NAME_2, "Education Dropout", edu_dropout, n_edu_dropout)
+    hea_chronic_labels <- get_label(map@data$NAME_2, "Chronic Illness", hea_chronic, n_hea_chronic)
+    hea_visit_labels <- get_label(map@data$NAME_2, "Lack of Health Visit", hea_visit, n_hea_visit)
+    employment_labels <- get_label(map@data$NAME_2, "Unemployment", employment, n_employment)
+    assets_labels <- get_label(map@data$NAME_2, "Household Assets", assets, n_assets)
+    services_labels <- get_label(map@data$NAME_2, "Access to Services", services, n_services)
+    electricity_labels <- get_label(map@data$NAME_2, "Lack of Electricity", electricity, n_electricity)
+    cooking_fuel_labels <- get_label(map@data$NAME_2, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
+    water_labels <- get_label(map@data$NAME_2, "Poor Water Source", water, n_water)
+    toilet_labels <- get_label(map@data$NAME_2, "Lack of Toilet", toilet, n_toilet)
+    land_labels <- get_label(map@data$NAME_2, "Lack of Land", land, n_land)
+    livestock_labels <- get_label(map@data$NAME_2, "Lack of Livestock", livestock, n_livestock)
+    rural_equip_labels <- get_label(map@data$NAME_2, "Lack of Rural Equipment", rural_equip, n_rural_equip)
+    
+    
+    pal <- colorNumeric(
+      palette = "viridis",
+      domain = switch(c_g_selection,
+                      c(0, .6),
+                      c(0, 1)),
+      reverse = TRUE)
+    
+    ## MAPPING----------------------------------------------------------------------
+    # These lines of code fix the positioning of the "No Data" label. Previously, it
+    # was appearing to the right of the data instead of at the bottom where it was 
+    # supposed to. 
+    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
+    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
+    
+    # This is where the map gets plotted 
+    leaflet(
+      options = leafletOptions(
+        minZoom = 0, maxZoom= 18,
+        drag = FALSE)) %>% addTiles() %>%
+      setView(lng = 30, lat=-19, zoom=6) %>%
+      get_polygon(map, pal, edu_max, edu_max_labels, "Max. Education") %>%
+      get_polygon(map, pal, edu_dropout, edu_dropout_labels, "Education Dropout") %>%
+      get_polygon(map, pal, hea_chronic, hea_chronic_labels, "Chronic Illness") %>%
+      get_polygon(map, pal, hea_visit, hea_visit_labels, "Lack of Health Visit") %>%
+      get_polygon(map, pal, employment, employment_labels, "Unemployment") %>%
+      get_polygon(map, pal, assets, assets_labels, "Lack of Household Assets") %>%
+      get_polygon(map, pal, services, services_labels, "Lack of Access to Services") %>%
+      get_polygon(map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
+      get_polygon(map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
+      get_polygon(map, pal, water, water_labels, "Poor Water Source") %>%
+      get_polygon(map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
+      get_polygon(map, pal, land, land_labels, "Lack of Land") %>%
+      get_polygon(map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
+      get_polygon(map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      clearControls() %>%
+      addLayersControl(
+        baseGroups = c("Max. Education", 
+                       "Education Dropout", 
+                       "Chronic Illness", 
+                       "Lack of Health Visit", 
+                       "Unemployment", 
+                       "Lack of Household Assets", 
+                       "Lack of Access to Services", 
+                       "Lack of Electricity", 
+                       "Poor Cooking Fuel",
+                       "Poor Water Source",
+                       "Lack of Toilet",
+                       "Lack of Land",
+                       "Lack of Livestock",
+                       "Lack of Rural Equipment"),
+        options = layersControlOptions(collapsed = TRUE)) %>%
+      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_60_Decomp, ")"),
+                na.label = "No Data",
+                group = c("Poverty Index", "Max. Education"),
+                position = "bottomleft") %>%
+      htmlwidgets::prependContent(html_fix)
+  })
+  
+  output$Prov_Decomp_Map <- renderLeaflet({
+    # This is the level that the decomposition data is selected on. 
+    # 1 = g0, c0, 2 = g1, c1, 3 = g2, c2
+    level_selection = strtoi(input$LevelSelection_Decomp_Prov)
+    
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_Prov)
+    
+    map = switch(UrbRurSelection,
+                 Prov_Total_Map,
+                 Prov_Urban_Map,
+                 Prov_Rural_Map)
+    nat_data = switch(UrbRurSelection,
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
+    
+    g_edu_max = switch(input$slider_Prov_Decomp,
+                       switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
+                       switch(level_selection,  map@data$g0_edu_max_k2,map@data$g1_edu_max_k2,map@data$g2_edu_max_k2),
+                       switch(level_selection,  map@data$g0_edu_max_k3,map@data$g1_edu_max_k3,map@data$g2_edu_max_k3),
+                       switch(level_selection,  map@data$g0_edu_max_k4,map@data$g1_edu_max_k4,map@data$g2_edu_max_k4),
+                       switch(level_selection,  map@data$g0_edu_max_k5,map@data$g1_edu_max_k5,map@data$g2_edu_max_k5),
+                       switch(level_selection,  map@data$g0_edu_max_k6,map@data$g1_edu_max_k6,map@data$g2_edu_max_k6),
+                       switch(level_selection,  map@data$g0_edu_max_k7,map@data$g1_edu_max_k7,map@data$g2_edu_max_k7),
+                       switch(level_selection,  map@data$g0_edu_max_k8,map@data$g1_edu_max_k8,map@data$g2_edu_max_k8),
+                       switch(level_selection,  map@data$g0_edu_max_k9,map@data$g1_edu_max_k9,map@data$g2_edu_max_k9)
+    )
+    g_edu_dropout = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$g0_edu_dropout_k1,map@data$g1_edu_dropout_k1,map@data$g2_edu_dropout_k1),
+                           switch(level_selection,  map@data$g0_edu_dropout_k2,map@data$g1_edu_dropout_k2,map@data$g2_edu_dropout_k2),
+                           switch(level_selection,  map@data$g0_edu_dropout_k3,map@data$g1_edu_dropout_k3,map@data$g2_edu_dropout_k3),
+                           switch(level_selection,  map@data$g0_edu_dropout_k4,map@data$g1_edu_dropout_k4,map@data$g2_edu_dropout_k4),
+                           switch(level_selection,  map@data$g0_edu_dropout_k5,map@data$g1_edu_dropout_k5,map@data$g2_edu_dropout_k5),
+                           switch(level_selection,  map@data$g0_edu_dropout_k6,map@data$g1_edu_dropout_k6,map@data$g2_edu_dropout_k6),
+                           switch(level_selection,  map@data$g0_edu_dropout_k7,map@data$g1_edu_dropout_k7,map@data$g2_edu_dropout_k7),
+                           switch(level_selection,  map@data$g0_edu_dropout_k8,map@data$g1_edu_dropout_k8,map@data$g2_edu_dropout_k8),
+                           switch(level_selection,  map@data$g0_edu_dropout_k9,map@data$g1_edu_dropout_k9,map@data$g2_edu_dropout_k9)
+    )
+    
+    g_hea_chronic = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$g0_hea_chronic_k1,map@data$g1_hea_chronic_k1,map@data$g2_hea_chronic_k1),
+                           switch(level_selection,  map@data$g0_hea_chronic_k2,map@data$g1_hea_chronic_k2,map@data$g2_hea_chronic_k2),
+                           switch(level_selection,  map@data$g0_hea_chronic_k3,map@data$g1_hea_chronic_k3,map@data$g2_hea_chronic_k3),
+                           switch(level_selection,  map@data$g0_hea_chronic_k4,map@data$g1_hea_chronic_k4,map@data$g2_hea_chronic_k4),
+                           switch(level_selection,  map@data$g0_hea_chronic_k5,map@data$g1_hea_chronic_k5,map@data$g2_hea_chronic_k5),
+                           switch(level_selection,  map@data$g0_hea_chronic_k6,map@data$g1_hea_chronic_k6,map@data$g2_hea_chronic_k6),
+                           switch(level_selection,  map@data$g0_hea_chronic_k7,map@data$g1_hea_chronic_k7,map@data$g2_hea_chronic_k7),
+                           switch(level_selection,  map@data$g0_hea_chronic_k8,map@data$g1_hea_chronic_k8,map@data$g2_hea_chronic_k8),
+                           switch(level_selection,  map@data$g0_hea_chronic_k9,map@data$g1_hea_chronic_k9,map@data$g2_hea_chronic_k9)
+    )
+    
+    g_hea_visit = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  map@data$g0_hea_visit_k1,map@data$g1_hea_visit_k1,map@data$g2_hea_visit_k1),
+                         switch(level_selection,  map@data$g0_hea_visit_k2,map@data$g1_hea_visit_k2,map@data$g2_hea_visit_k2),
+                         switch(level_selection,  map@data$g0_hea_visit_k3,map@data$g1_hea_visit_k3,map@data$g2_hea_visit_k3),
+                         switch(level_selection,  map@data$g0_hea_visit_k4,map@data$g1_hea_visit_k4,map@data$g2_hea_visit_k4),
+                         switch(level_selection,  map@data$g0_hea_visit_k5,map@data$g1_hea_visit_k5,map@data$g2_hea_visit_k5),
+                         switch(level_selection,  map@data$g0_hea_visit_k6,map@data$g1_hea_visit_k6,map@data$g2_hea_visit_k6),
+                         switch(level_selection,  map@data$g0_hea_visit_k7,map@data$g1_hea_visit_k7,map@data$g2_hea_visit_k7),
+                         switch(level_selection,  map@data$g0_hea_visit_k8,map@data$g1_hea_visit_k8,map@data$g2_hea_visit_k8),
+                         switch(level_selection,  map@data$g0_hea_visit_k9,map@data$g1_hea_visit_k9,map@data$g2_hea_visit_k9)
+    )
+    
+    g_employment = switch(input$slider_Prov_Decomp,
+                          switch(level_selection,  map@data$g0_employment_k1,map@data$g1_employment_k1,map@data$g2_employment_k1),
+                          switch(level_selection,  map@data$g0_employment_k2,map@data$g1_employment_k2,map@data$g2_employment_k2),
+                          switch(level_selection,  map@data$g0_employment_k3,map@data$g1_employment_k3,map@data$g2_employment_k3),
+                          switch(level_selection,  map@data$g0_employment_k4,map@data$g1_employment_k4,map@data$g2_employment_k4),
+                          switch(level_selection,  map@data$g0_employment_k5,map@data$g1_employment_k5,map@data$g2_employment_k5),
+                          switch(level_selection,  map@data$g0_employment_k6,map@data$g1_employment_k6,map@data$g2_employment_k6),
+                          switch(level_selection,  map@data$g0_employment_k7,map@data$g1_employment_k7,map@data$g2_employment_k7),
+                          switch(level_selection,  map@data$g0_employment_k8,map@data$g1_employment_k8,map@data$g2_employment_k8),
+                          switch(level_selection,  map@data$g0_employment_k9,map@data$g1_employment_k9,map@data$g2_employment_k9)
+    )
+    
+    g_assets = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  map@data$g0_assets_k1,map@data$g1_assets_k1,map@data$g2_assets_k1),
+                      switch(level_selection,  map@data$g0_assets_k2,map@data$g1_assets_k2,map@data$g2_assets_k2),
+                      switch(level_selection,  map@data$g0_assets_k3,map@data$g1_assets_k3,map@data$g2_assets_k3),
+                      switch(level_selection,  map@data$g0_assets_k4,map@data$g1_assets_k4,map@data$g2_assets_k4),
+                      switch(level_selection,  map@data$g0_assets_k5,map@data$g1_assets_k5,map@data$g2_assets_k5),
+                      switch(level_selection,  map@data$g0_assets_k6,map@data$g1_assets_k6,map@data$g2_assets_k6),
+                      switch(level_selection,  map@data$g0_assets_k7,map@data$g1_assets_k7,map@data$g2_assets_k7),
+                      switch(level_selection,  map@data$g0_assets_k8,map@data$g1_assets_k8,map@data$g2_assets_k8),
+                      switch(level_selection,  map@data$g0_assets_k9,map@data$g1_assets_k9,map@data$g2_assets_k9)
+    )
+    
+    g_services = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  map@data$g0_services_k1,map@data$g1_services_k1,map@data$g2_services_k1),
+                        switch(level_selection,  map@data$g0_services_k2,map@data$g1_services_k2,map@data$g2_services_k2),
+                        switch(level_selection,  map@data$g0_services_k3,map@data$g1_services_k3,map@data$g2_services_k3),
+                        switch(level_selection,  map@data$g0_services_k4,map@data$g1_services_k4,map@data$g2_services_k4),
+                        switch(level_selection,  map@data$g0_services_k5,map@data$g1_services_k5,map@data$g2_services_k5),
+                        switch(level_selection,  map@data$g0_services_k6,map@data$g1_services_k6,map@data$g2_services_k6),
+                        switch(level_selection,  map@data$g0_services_k7,map@data$g1_services_k7,map@data$g2_services_k7),
+                        switch(level_selection,  map@data$g0_services_k8,map@data$g1_services_k8,map@data$g2_services_k8),
+                        switch(level_selection,  map@data$g0_services_k9,map@data$g1_services_k9,map@data$g2_services_k9)
+    )
+    
+    g_electricity = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$g0_electricity_k1,map@data$g1_electricity_k1,map@data$g2_electricity_k1),
+                           switch(level_selection,  map@data$g0_electricity_k2,map@data$g1_electricity_k2,map@data$g2_electricity_k2),
+                           switch(level_selection,  map@data$g0_electricity_k3,map@data$g1_electricity_k3,map@data$g2_electricity_k3),
+                           switch(level_selection,  map@data$g0_electricity_k4,map@data$g1_electricity_k4,map@data$g2_electricity_k4),
+                           switch(level_selection,  map@data$g0_electricity_k5,map@data$g1_electricity_k5,map@data$g2_electricity_k5),
+                           switch(level_selection,  map@data$g0_electricity_k6,map@data$g1_electricity_k6,map@data$g2_electricity_k6),
+                           switch(level_selection,  map@data$g0_electricity_k7,map@data$g1_electricity_k7,map@data$g2_electricity_k7),
+                           switch(level_selection,  map@data$g0_electricity_k8,map@data$g1_electricity_k8,map@data$g2_electricity_k8),
+                           switch(level_selection,  map@data$g0_electricity_k9,map@data$g1_electricity_k9,map@data$g2_electricity_k9)
+    )
+    
+    g_cooking_fuel = switch(input$slider_Prov_Decomp,
+                            switch(level_selection,  map@data$g0_cooking_fuel_k1,map@data$g1_cooking_fuel_k1,map@data$g2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k2,map@data$g1_cooking_fuel_k2,map@data$g2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k3,map@data$g1_cooking_fuel_k3,map@data$g2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k4,map@data$g1_cooking_fuel_k4,map@data$g2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k5,map@data$g1_cooking_fuel_k5,map@data$g2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k6,map@data$g1_cooking_fuel_k6,map@data$g2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k7,map@data$g1_cooking_fuel_k7,map@data$g2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k8,map@data$g1_cooking_fuel_k8,map@data$g2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$g0_cooking_fuel_k9,map@data$g1_cooking_fuel_k9,map@data$g2_cooking_fuel_k9)
+    )
+    
+    g_water = switch(input$slider_Prov_Decomp,
+                     switch(level_selection,  map@data$g0_water_k1,map@data$g1_water_k1,map@data$g2_water_k1),
+                     switch(level_selection,  map@data$g0_water_k2,map@data$g1_water_k2,map@data$g2_water_k2),
+                     switch(level_selection,  map@data$g0_water_k3,map@data$g1_water_k3,map@data$g2_water_k3),
+                     switch(level_selection,  map@data$g0_water_k4,map@data$g1_water_k4,map@data$g2_water_k4),
+                     switch(level_selection,  map@data$g0_water_k5,map@data$g1_water_k5,map@data$g2_water_k5),
+                     switch(level_selection,  map@data$g0_water_k6,map@data$g1_water_k6,map@data$g2_water_k6),
+                     switch(level_selection,  map@data$g0_water_k7,map@data$g1_water_k7,map@data$g2_water_k7),
+                     switch(level_selection,  map@data$g0_water_k8,map@data$g1_water_k8,map@data$g2_water_k8),
+                     switch(level_selection,  map@data$g0_water_k9,map@data$g1_water_k9,map@data$g2_water_k9)
+    )
+    
+    g_toilet = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  map@data$g0_toilet_k1,map@data$g1_toilet_k1,map@data$g2_toilet_k1),
+                      switch(level_selection,  map@data$g0_toilet_k2,map@data$g1_toilet_k2,map@data$g2_toilet_k2),
+                      switch(level_selection,  map@data$g0_toilet_k3,map@data$g1_toilet_k3,map@data$g2_toilet_k3),
+                      switch(level_selection,  map@data$g0_toilet_k4,map@data$g1_toilet_k4,map@data$g2_toilet_k4),
+                      switch(level_selection,  map@data$g0_toilet_k5,map@data$g1_toilet_k5,map@data$g2_toilet_k5),
+                      switch(level_selection,  map@data$g0_toilet_k6,map@data$g1_toilet_k6,map@data$g2_toilet_k6),
+                      switch(level_selection,  map@data$g0_toilet_k7,map@data$g1_toilet_k7,map@data$g2_toilet_k7),
+                      switch(level_selection,  map@data$g0_toilet_k8,map@data$g1_toilet_k8,map@data$g2_toilet_k8),
+                      switch(level_selection,  map@data$g0_toilet_k9,map@data$g1_toilet_k9,map@data$g2_toilet_k9)
+    )
+    
+    g_land = switch(input$slider_Prov_Decomp,
+                    switch(level_selection,  map@data$g0_land_k1,map@data$g1_land_k1,map@data$g2_land_k1),
+                    switch(level_selection,  map@data$g0_land_k2,map@data$g1_land_k2,map@data$g2_land_k2),
+                    switch(level_selection,  map@data$g0_land_k3,map@data$g1_land_k3,map@data$g2_land_k3),
+                    switch(level_selection,  map@data$g0_land_k4,map@data$g1_land_k4,map@data$g2_land_k4),
+                    switch(level_selection,  map@data$g0_land_k5,map@data$g1_land_k5,map@data$g2_land_k5),
+                    switch(level_selection,  map@data$g0_land_k6,map@data$g1_land_k6,map@data$g2_land_k6),
+                    switch(level_selection,  map@data$g0_land_k7,map@data$g1_land_k7,map@data$g2_land_k7),
+                    switch(level_selection,  map@data$g0_land_k8,map@data$g1_land_k8,map@data$g2_land_k8),
+                    switch(level_selection,  map@data$g0_land_k9,map@data$g1_land_k9,map@data$g2_land_k9)
+    )
+    
+    g_livestock = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  map@data$g0_livestock_k1,map@data$g1_livestock_k1,map@data$g2_livestock_k1),
+                         switch(level_selection,  map@data$g0_livestock_k2,map@data$g1_livestock_k2,map@data$g2_livestock_k2),
+                         switch(level_selection,  map@data$g0_livestock_k3,map@data$g1_livestock_k3,map@data$g2_livestock_k3),
+                         switch(level_selection,  map@data$g0_livestock_k4,map@data$g1_livestock_k4,map@data$g2_livestock_k4),
+                         switch(level_selection,  map@data$g0_livestock_k5,map@data$g1_livestock_k5,map@data$g2_livestock_k5),
+                         switch(level_selection,  map@data$g0_livestock_k6,map@data$g1_livestock_k6,map@data$g2_livestock_k6),
+                         switch(level_selection,  map@data$g0_livestock_k7,map@data$g1_livestock_k7,map@data$g2_livestock_k7),
+                         switch(level_selection,  map@data$g0_livestock_k8,map@data$g1_livestock_k8,map@data$g2_livestock_k8),
+                         switch(level_selection,  map@data$g0_livestock_k9,map@data$g1_livestock_k9,map@data$g2_livestock_k9)
+    )
+    
+    g_rural_equip = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$g0_rural_equip_k1,map@data$g1_rural_equip_k1,map@data$g2_rural_equip_k1),
+                           switch(level_selection,  map@data$g0_rural_equip_k2,map@data$g1_rural_equip_k2,map@data$g2_rural_equip_k2),
+                           switch(level_selection,  map@data$g0_rural_equip_k3,map@data$g1_rural_equip_k3,map@data$g2_rural_equip_k3),
+                           switch(level_selection,  map@data$g0_rural_equip_k4,map@data$g1_rural_equip_k4,map@data$g2_rural_equip_k4),
+                           switch(level_selection,  map@data$g0_rural_equip_k5,map@data$g1_rural_equip_k5,map@data$g2_rural_equip_k5),
+                           switch(level_selection,  map@data$g0_rural_equip_k6,map@data$g1_rural_equip_k6,map@data$g2_rural_equip_k6),
+                           switch(level_selection,  map@data$g0_rural_equip_k7,map@data$g1_rural_equip_k7,map@data$g2_rural_equip_k7),
+                           switch(level_selection,  map@data$g0_rural_equip_k8,map@data$g1_rural_equip_k8,map@data$g2_rural_equip_k8),
+                           switch(level_selection,  map@data$g0_rural_equip_k9,map@data$g1_rural_equip_k9,map@data$g2_rural_equip_k9)
+    )
+    
+    
+    
+    
+    
+    c_edu_max = switch(input$slider_Prov_Decomp,
+                       switch(level_selection,  map@data$c0_edu_max_k1,map@data$c1_edu_max_k1,map@data$c2_edu_max_k1),
+                       switch(level_selection,  map@data$c0_edu_max_k2,map@data$c1_edu_max_k2,map@data$c2_edu_max_k2),
+                       switch(level_selection,  map@data$c0_edu_max_k3,map@data$c1_edu_max_k3,map@data$c2_edu_max_k3),
+                       switch(level_selection,  map@data$c0_edu_max_k4,map@data$c1_edu_max_k4,map@data$c2_edu_max_k4),
+                       switch(level_selection,  map@data$c0_edu_max_k5,map@data$c1_edu_max_k5,map@data$c2_edu_max_k5),
+                       switch(level_selection,  map@data$c0_edu_max_k6,map@data$c1_edu_max_k6,map@data$c2_edu_max_k6),
+                       switch(level_selection,  map@data$c0_edu_max_k7,map@data$c1_edu_max_k7,map@data$c2_edu_max_k7),
+                       switch(level_selection,  map@data$c0_edu_max_k8,map@data$c1_edu_max_k8,map@data$c2_edu_max_k8),
+                       switch(level_selection,  map@data$c0_edu_max_k9,map@data$c1_edu_max_k9,map@data$c2_edu_max_k9)
+    )
+    c_edu_dropout = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$c0_edu_dropout_k1,map@data$c1_edu_dropout_k1,map@data$c2_edu_dropout_k1),
+                           switch(level_selection,  map@data$c0_edu_dropout_k2,map@data$c1_edu_dropout_k2,map@data$c2_edu_dropout_k2),
+                           switch(level_selection,  map@data$c0_edu_dropout_k3,map@data$c1_edu_dropout_k3,map@data$c2_edu_dropout_k3),
+                           switch(level_selection,  map@data$c0_edu_dropout_k4,map@data$c1_edu_dropout_k4,map@data$c2_edu_dropout_k4),
+                           switch(level_selection,  map@data$c0_edu_dropout_k5,map@data$c1_edu_dropout_k5,map@data$c2_edu_dropout_k5),
+                           switch(level_selection,  map@data$c0_edu_dropout_k6,map@data$c1_edu_dropout_k6,map@data$c2_edu_dropout_k6),
+                           switch(level_selection,  map@data$c0_edu_dropout_k7,map@data$c1_edu_dropout_k7,map@data$c2_edu_dropout_k7),
+                           switch(level_selection,  map@data$c0_edu_dropout_k8,map@data$c1_edu_dropout_k8,map@data$c2_edu_dropout_k8),
+                           switch(level_selection,  map@data$c0_edu_dropout_k9,map@data$c1_edu_dropout_k9,map@data$c2_edu_dropout_k9)
+    )
+    
+    c_hea_chronic = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$c0_hea_chronic_k1,map@data$c1_hea_chronic_k1,map@data$c2_hea_chronic_k1),
+                           switch(level_selection,  map@data$c0_hea_chronic_k2,map@data$c1_hea_chronic_k2,map@data$c2_hea_chronic_k2),
+                           switch(level_selection,  map@data$c0_hea_chronic_k3,map@data$c1_hea_chronic_k3,map@data$c2_hea_chronic_k3),
+                           switch(level_selection,  map@data$c0_hea_chronic_k4,map@data$c1_hea_chronic_k4,map@data$c2_hea_chronic_k4),
+                           switch(level_selection,  map@data$c0_hea_chronic_k5,map@data$c1_hea_chronic_k5,map@data$c2_hea_chronic_k5),
+                           switch(level_selection,  map@data$c0_hea_chronic_k6,map@data$c1_hea_chronic_k6,map@data$c2_hea_chronic_k6),
+                           switch(level_selection,  map@data$c0_hea_chronic_k7,map@data$c1_hea_chronic_k7,map@data$c2_hea_chronic_k7),
+                           switch(level_selection,  map@data$c0_hea_chronic_k8,map@data$c1_hea_chronic_k8,map@data$c2_hea_chronic_k8),
+                           switch(level_selection,  map@data$c0_hea_chronic_k9,map@data$c1_hea_chronic_k9,map@data$c2_hea_chronic_k9)
+    )
+    
+    c_hea_visit = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  map@data$c0_hea_visit_k1,map@data$c1_hea_visit_k1,map@data$c2_hea_visit_k1),
+                         switch(level_selection,  map@data$c0_hea_visit_k2,map@data$c1_hea_visit_k2,map@data$c2_hea_visit_k2),
+                         switch(level_selection,  map@data$c0_hea_visit_k3,map@data$c1_hea_visit_k3,map@data$c2_hea_visit_k3),
+                         switch(level_selection,  map@data$c0_hea_visit_k4,map@data$c1_hea_visit_k4,map@data$c2_hea_visit_k4),
+                         switch(level_selection,  map@data$c0_hea_visit_k5,map@data$c1_hea_visit_k5,map@data$c2_hea_visit_k5),
+                         switch(level_selection,  map@data$c0_hea_visit_k6,map@data$c1_hea_visit_k6,map@data$c2_hea_visit_k6),
+                         switch(level_selection,  map@data$c0_hea_visit_k7,map@data$c1_hea_visit_k7,map@data$c2_hea_visit_k7),
+                         switch(level_selection,  map@data$c0_hea_visit_k8,map@data$c1_hea_visit_k8,map@data$c2_hea_visit_k8),
+                         switch(level_selection,  map@data$c0_hea_visit_k9,map@data$c1_hea_visit_k9,map@data$c2_hea_visit_k9)
+    )
+    
+    c_employment = switch(input$slider_Prov_Decomp,
+                          switch(level_selection,  map@data$c0_employment_k1,map@data$c1_employment_k1,map@data$c2_employment_k1),
+                          switch(level_selection,  map@data$c0_employment_k2,map@data$c1_employment_k2,map@data$c2_employment_k2),
+                          switch(level_selection,  map@data$c0_employment_k3,map@data$c1_employment_k3,map@data$c2_employment_k3),
+                          switch(level_selection,  map@data$c0_employment_k4,map@data$c1_employment_k4,map@data$c2_employment_k4),
+                          switch(level_selection,  map@data$c0_employment_k5,map@data$c1_employment_k5,map@data$c2_employment_k5),
+                          switch(level_selection,  map@data$c0_employment_k6,map@data$c1_employment_k6,map@data$c2_employment_k6),
+                          switch(level_selection,  map@data$c0_employment_k7,map@data$c1_employment_k7,map@data$c2_employment_k7),
+                          switch(level_selection,  map@data$c0_employment_k8,map@data$c1_employment_k8,map@data$c2_employment_k8),
+                          switch(level_selection,  map@data$c0_employment_k9,map@data$c1_employment_k9,map@data$c2_employment_k9)
+    )
+    
+    c_assets = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  map@data$c0_assets_k1,map@data$c1_assets_k1,map@data$c2_assets_k1),
+                      switch(level_selection,  map@data$c0_assets_k2,map@data$c1_assets_k2,map@data$c2_assets_k2),
+                      switch(level_selection,  map@data$c0_assets_k3,map@data$c1_assets_k3,map@data$c2_assets_k3),
+                      switch(level_selection,  map@data$c0_assets_k4,map@data$c1_assets_k4,map@data$c2_assets_k4),
+                      switch(level_selection,  map@data$c0_assets_k5,map@data$c1_assets_k5,map@data$c2_assets_k5),
+                      switch(level_selection,  map@data$c0_assets_k6,map@data$c1_assets_k6,map@data$c2_assets_k6),
+                      switch(level_selection,  map@data$c0_assets_k7,map@data$c1_assets_k7,map@data$c2_assets_k7),
+                      switch(level_selection,  map@data$c0_assets_k8,map@data$c1_assets_k8,map@data$c2_assets_k8),
+                      switch(level_selection,  map@data$c0_assets_k9,map@data$c1_assets_k9,map@data$c2_assets_k9)
+    )
+    
+    c_services = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  map@data$c0_services_k1,map@data$c1_services_k1,map@data$c2_services_k1),
+                        switch(level_selection,  map@data$c0_services_k2,map@data$c1_services_k2,map@data$c2_services_k2),
+                        switch(level_selection,  map@data$c0_services_k3,map@data$c1_services_k3,map@data$c2_services_k3),
+                        switch(level_selection,  map@data$c0_services_k4,map@data$c1_services_k4,map@data$c2_services_k4),
+                        switch(level_selection,  map@data$c0_services_k5,map@data$c1_services_k5,map@data$c2_services_k5),
+                        switch(level_selection,  map@data$c0_services_k6,map@data$c1_services_k6,map@data$c2_services_k6),
+                        switch(level_selection,  map@data$c0_services_k7,map@data$c1_services_k7,map@data$c2_services_k7),
+                        switch(level_selection,  map@data$c0_services_k8,map@data$c1_services_k8,map@data$c2_services_k8),
+                        switch(level_selection,  map@data$c0_services_k9,map@data$c1_services_k9,map@data$c2_services_k9)
+    )
+    
+    c_electricity = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$c0_electricity_k1,map@data$c1_electricity_k1,map@data$c2_electricity_k1),
+                           switch(level_selection,  map@data$c0_electricity_k2,map@data$c1_electricity_k2,map@data$c2_electricity_k2),
+                           switch(level_selection,  map@data$c0_electricity_k3,map@data$c1_electricity_k3,map@data$c2_electricity_k3),
+                           switch(level_selection,  map@data$c0_electricity_k4,map@data$c1_electricity_k4,map@data$c2_electricity_k4),
+                           switch(level_selection,  map@data$c0_electricity_k5,map@data$c1_electricity_k5,map@data$c2_electricity_k5),
+                           switch(level_selection,  map@data$c0_electricity_k6,map@data$c1_electricity_k6,map@data$c2_electricity_k6),
+                           switch(level_selection,  map@data$c0_electricity_k7,map@data$c1_electricity_k7,map@data$c2_electricity_k7),
+                           switch(level_selection,  map@data$c0_electricity_k8,map@data$c1_electricity_k8,map@data$c2_electricity_k8),
+                           switch(level_selection,  map@data$c0_electricity_k9,map@data$c1_electricity_k9,map@data$c2_electricity_k9)
+    )
+    
+    c_cooking_fuel = switch(input$slider_Prov_Decomp,
+                            switch(level_selection,  map@data$c0_cooking_fuel_k1,map@data$c1_cooking_fuel_k1,map@data$c2_cooking_fuel_k1),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k2,map@data$c1_cooking_fuel_k2,map@data$c2_cooking_fuel_k2),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k3,map@data$c1_cooking_fuel_k3,map@data$c2_cooking_fuel_k3),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k4,map@data$c1_cooking_fuel_k4,map@data$c2_cooking_fuel_k4),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k5,map@data$c1_cooking_fuel_k5,map@data$c2_cooking_fuel_k5),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k6,map@data$c1_cooking_fuel_k6,map@data$c2_cooking_fuel_k6),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k7,map@data$c1_cooking_fuel_k7,map@data$c2_cooking_fuel_k7),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k8,map@data$c1_cooking_fuel_k8,map@data$c2_cooking_fuel_k8),
+                            switch(level_selection,  map@data$c0_cooking_fuel_k9,map@data$c1_cooking_fuel_k9,map@data$c2_cooking_fuel_k9)
+    )
+    
+    c_water = switch(input$slider_Prov_Decomp,
+                     switch(level_selection,  map@data$c0_water_k1,map@data$c1_water_k1,map@data$c2_water_k1),
+                     switch(level_selection,  map@data$c0_water_k2,map@data$c1_water_k2,map@data$c2_water_k2),
+                     switch(level_selection,  map@data$c0_water_k3,map@data$c1_water_k3,map@data$c2_water_k3),
+                     switch(level_selection,  map@data$c0_water_k4,map@data$c1_water_k4,map@data$c2_water_k4),
+                     switch(level_selection,  map@data$c0_water_k5,map@data$c1_water_k5,map@data$c2_water_k5),
+                     switch(level_selection,  map@data$c0_water_k6,map@data$c1_water_k6,map@data$c2_water_k6),
+                     switch(level_selection,  map@data$c0_water_k7,map@data$c1_water_k7,map@data$c2_water_k7),
+                     switch(level_selection,  map@data$c0_water_k8,map@data$c1_water_k8,map@data$c2_water_k8),
+                     switch(level_selection,  map@data$c0_water_k9,map@data$c1_water_k9,map@data$c2_water_k9)
+    )
+    
+    c_toilet = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  map@data$c0_toilet_k1,map@data$c1_toilet_k1,map@data$c2_toilet_k1),
+                      switch(level_selection,  map@data$c0_toilet_k2,map@data$c1_toilet_k2,map@data$c2_toilet_k2),
+                      switch(level_selection,  map@data$c0_toilet_k3,map@data$c1_toilet_k3,map@data$c2_toilet_k3),
+                      switch(level_selection,  map@data$c0_toilet_k4,map@data$c1_toilet_k4,map@data$c2_toilet_k4),
+                      switch(level_selection,  map@data$c0_toilet_k5,map@data$c1_toilet_k5,map@data$c2_toilet_k5),
+                      switch(level_selection,  map@data$c0_toilet_k6,map@data$c1_toilet_k6,map@data$c2_toilet_k6),
+                      switch(level_selection,  map@data$c0_toilet_k7,map@data$c1_toilet_k7,map@data$c2_toilet_k7),
+                      switch(level_selection,  map@data$c0_toilet_k8,map@data$c1_toilet_k8,map@data$c2_toilet_k8),
+                      switch(level_selection,  map@data$c0_toilet_k9,map@data$c1_toilet_k9,map@data$c2_toilet_k9)
+    )
+    
+    c_land = switch(input$slider_Prov_Decomp,
+                    switch(level_selection,  map@data$c0_land_k1,map@data$c1_land_k1,map@data$c2_land_k1),
+                    switch(level_selection,  map@data$c0_land_k2,map@data$c1_land_k2,map@data$c2_land_k2),
+                    switch(level_selection,  map@data$c0_land_k3,map@data$c1_land_k3,map@data$c2_land_k3),
+                    switch(level_selection,  map@data$c0_land_k4,map@data$c1_land_k4,map@data$c2_land_k4),
+                    switch(level_selection,  map@data$c0_land_k5,map@data$c1_land_k5,map@data$c2_land_k5),
+                    switch(level_selection,  map@data$c0_land_k6,map@data$c1_land_k6,map@data$c2_land_k6),
+                    switch(level_selection,  map@data$c0_land_k7,map@data$c1_land_k7,map@data$c2_land_k7),
+                    switch(level_selection,  map@data$c0_land_k8,map@data$c1_land_k8,map@data$c2_land_k8),
+                    switch(level_selection,  map@data$c0_land_k9,map@data$c1_land_k9,map@data$c2_land_k9)
+    )
+    
+    c_livestock = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  map@data$c0_livestock_k1,map@data$c1_livestock_k1,map@data$c2_livestock_k1),
+                         switch(level_selection,  map@data$c0_livestock_k2,map@data$c1_livestock_k2,map@data$c2_livestock_k2),
+                         switch(level_selection,  map@data$c0_livestock_k3,map@data$c1_livestock_k3,map@data$c2_livestock_k3),
+                         switch(level_selection,  map@data$c0_livestock_k4,map@data$c1_livestock_k4,map@data$c2_livestock_k4),
+                         switch(level_selection,  map@data$c0_livestock_k5,map@data$c1_livestock_k5,map@data$c2_livestock_k5),
+                         switch(level_selection,  map@data$c0_livestock_k6,map@data$c1_livestock_k6,map@data$c2_livestock_k6),
+                         switch(level_selection,  map@data$c0_livestock_k7,map@data$c1_livestock_k7,map@data$c2_livestock_k7),
+                         switch(level_selection,  map@data$c0_livestock_k8,map@data$c1_livestock_k8,map@data$c2_livestock_k8),
+                         switch(level_selection,  map@data$c0_livestock_k9,map@data$c1_livestock_k9,map@data$c2_livestock_k9)
+    )
+    
+    c_rural_equip = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  map@data$c0_rural_equip_k1,map@data$c1_rural_equip_k1,map@data$c2_rural_equip_k1),
+                           switch(level_selection,  map@data$c0_rural_equip_k2,map@data$c1_rural_equip_k2,map@data$c2_rural_equip_k2),
+                           switch(level_selection,  map@data$c0_rural_equip_k3,map@data$c1_rural_equip_k3,map@data$c2_rural_equip_k3),
+                           switch(level_selection,  map@data$c0_rural_equip_k4,map@data$c1_rural_equip_k4,map@data$c2_rural_equip_k4),
+                           switch(level_selection,  map@data$c0_rural_equip_k5,map@data$c1_rural_equip_k5,map@data$c2_rural_equip_k5),
+                           switch(level_selection,  map@data$c0_rural_equip_k6,map@data$c1_rural_equip_k6,map@data$c2_rural_equip_k6),
+                           switch(level_selection,  map@data$c0_rural_equip_k7,map@data$c1_rural_equip_k7,map@data$c2_rural_equip_k7),
+                           switch(level_selection,  map@data$c0_rural_equip_k8,map@data$c1_rural_equip_k8,map@data$c2_rural_equip_k8),
+                           switch(level_selection,  map@data$c0_rural_equip_k9,map@data$c1_rural_equip_k9,map@data$c2_rural_equip_k9)
+    )
+    
+    
+    
+    n_c_edu_max = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  nat_data$c0_edu_max_k1,nat_data$c1_edu_max_k1,nat_data$c2_edu_max_k1),
+                         switch(level_selection,  nat_data$c0_edu_max_k2,nat_data$c1_edu_max_k2,nat_data$c2_edu_max_k2),
+                         switch(level_selection,  nat_data$c0_edu_max_k3,nat_data$c1_edu_max_k3,nat_data$c2_edu_max_k3),
+                         switch(level_selection,  nat_data$c0_edu_max_k4,nat_data$c1_edu_max_k4,nat_data$c2_edu_max_k4),
+                         switch(level_selection,  nat_data$c0_edu_max_k5,nat_data$c1_edu_max_k5,nat_data$c2_edu_max_k5),
+                         switch(level_selection,  nat_data$c0_edu_max_k6,nat_data$c1_edu_max_k6,nat_data$c2_edu_max_k6),
+                         switch(level_selection,  nat_data$c0_edu_max_k7,nat_data$c1_edu_max_k7,nat_data$c2_edu_max_k7),
+                         switch(level_selection,  nat_data$c0_edu_max_k8,nat_data$c1_edu_max_k8,nat_data$c2_edu_max_k8),
+                         switch(level_selection,  nat_data$c0_edu_max_k9,nat_data$c1_edu_max_k9,nat_data$c2_edu_max_k9)
+    )
+    n_c_edu_dropout = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$c0_edu_dropout_k1,nat_data$c1_edu_dropout_k1,nat_data$c2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k2,nat_data$c1_edu_dropout_k2,nat_data$c2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k3,nat_data$c1_edu_dropout_k3,nat_data$c2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k4,nat_data$c1_edu_dropout_k4,nat_data$c2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k5,nat_data$c1_edu_dropout_k5,nat_data$c2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k6,nat_data$c1_edu_dropout_k6,nat_data$c2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k7,nat_data$c1_edu_dropout_k7,nat_data$c2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k8,nat_data$c1_edu_dropout_k8,nat_data$c2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$c0_edu_dropout_k9,nat_data$c1_edu_dropout_k9,nat_data$c2_edu_dropout_k9)
+    )
+    
+    n_c_hea_chronic = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$c0_hea_chronic_k1,nat_data$c1_hea_chronic_k1,nat_data$c2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k2,nat_data$c1_hea_chronic_k2,nat_data$c2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k3,nat_data$c1_hea_chronic_k3,nat_data$c2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k4,nat_data$c1_hea_chronic_k4,nat_data$c2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k5,nat_data$c1_hea_chronic_k5,nat_data$c2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k6,nat_data$c1_hea_chronic_k6,nat_data$c2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k7,nat_data$c1_hea_chronic_k7,nat_data$c2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k8,nat_data$c1_hea_chronic_k8,nat_data$c2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$c0_hea_chronic_k9,nat_data$c1_hea_chronic_k9,nat_data$c2_hea_chronic_k9)
+    )
+    
+    n_c_hea_visit = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  nat_data$c0_hea_visit_k1,nat_data$c1_hea_visit_k1,nat_data$c2_hea_visit_k1),
+                           switch(level_selection,  nat_data$c0_hea_visit_k2,nat_data$c1_hea_visit_k2,nat_data$c2_hea_visit_k2),
+                           switch(level_selection,  nat_data$c0_hea_visit_k3,nat_data$c1_hea_visit_k3,nat_data$c2_hea_visit_k3),
+                           switch(level_selection,  nat_data$c0_hea_visit_k4,nat_data$c1_hea_visit_k4,nat_data$c2_hea_visit_k4),
+                           switch(level_selection,  nat_data$c0_hea_visit_k5,nat_data$c1_hea_visit_k5,nat_data$c2_hea_visit_k5),
+                           switch(level_selection,  nat_data$c0_hea_visit_k6,nat_data$c1_hea_visit_k6,nat_data$c2_hea_visit_k6),
+                           switch(level_selection,  nat_data$c0_hea_visit_k7,nat_data$c1_hea_visit_k7,nat_data$c2_hea_visit_k7),
+                           switch(level_selection,  nat_data$c0_hea_visit_k8,nat_data$c1_hea_visit_k8,nat_data$c2_hea_visit_k8),
+                           switch(level_selection,  nat_data$c0_hea_visit_k9,nat_data$c1_hea_visit_k9,nat_data$c2_hea_visit_k9)
+    )
+    
+    n_c_employment = switch(input$slider_Prov_Decomp,
+                            switch(level_selection,  nat_data$c0_employment_k1,nat_data$c1_employment_k1,nat_data$c2_employment_k1),
+                            switch(level_selection,  nat_data$c0_employment_k2,nat_data$c1_employment_k2,nat_data$c2_employment_k2),
+                            switch(level_selection,  nat_data$c0_employment_k3,nat_data$c1_employment_k3,nat_data$c2_employment_k3),
+                            switch(level_selection,  nat_data$c0_employment_k4,nat_data$c1_employment_k4,nat_data$c2_employment_k4),
+                            switch(level_selection,  nat_data$c0_employment_k5,nat_data$c1_employment_k5,nat_data$c2_employment_k5),
+                            switch(level_selection,  nat_data$c0_employment_k6,nat_data$c1_employment_k6,nat_data$c2_employment_k6),
+                            switch(level_selection,  nat_data$c0_employment_k7,nat_data$c1_employment_k7,nat_data$c2_employment_k7),
+                            switch(level_selection,  nat_data$c0_employment_k8,nat_data$c1_employment_k8,nat_data$c2_employment_k8),
+                            switch(level_selection,  nat_data$c0_employment_k9,nat_data$c1_employment_k9,nat_data$c2_employment_k9)
+    )
+    
+    n_c_assets = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  nat_data$c0_assets_k1,nat_data$c1_assets_k1,nat_data$c2_assets_k1),
+                        switch(level_selection,  nat_data$c0_assets_k2,nat_data$c1_assets_k2,nat_data$c2_assets_k2),
+                        switch(level_selection,  nat_data$c0_assets_k3,nat_data$c1_assets_k3,nat_data$c2_assets_k3),
+                        switch(level_selection,  nat_data$c0_assets_k4,nat_data$c1_assets_k4,nat_data$c2_assets_k4),
+                        switch(level_selection,  nat_data$c0_assets_k5,nat_data$c1_assets_k5,nat_data$c2_assets_k5),
+                        switch(level_selection,  nat_data$c0_assets_k6,nat_data$c1_assets_k6,nat_data$c2_assets_k6),
+                        switch(level_selection,  nat_data$c0_assets_k7,nat_data$c1_assets_k7,nat_data$c2_assets_k7),
+                        switch(level_selection,  nat_data$c0_assets_k8,nat_data$c1_assets_k8,nat_data$c2_assets_k8),
+                        switch(level_selection,  nat_data$c0_assets_k9,nat_data$c1_assets_k9,nat_data$c2_assets_k9)
+    )
+    
+    n_c_services = switch(input$slider_Prov_Decomp,
+                          switch(level_selection,  nat_data$c0_services_k1,nat_data$c1_services_k1,nat_data$c2_services_k1),
+                          switch(level_selection,  nat_data$c0_services_k2,nat_data$c1_services_k2,nat_data$c2_services_k2),
+                          switch(level_selection,  nat_data$c0_services_k3,nat_data$c1_services_k3,nat_data$c2_services_k3),
+                          switch(level_selection,  nat_data$c0_services_k4,nat_data$c1_services_k4,nat_data$c2_services_k4),
+                          switch(level_selection,  nat_data$c0_services_k5,nat_data$c1_services_k5,nat_data$c2_services_k5),
+                          switch(level_selection,  nat_data$c0_services_k6,nat_data$c1_services_k6,nat_data$c2_services_k6),
+                          switch(level_selection,  nat_data$c0_services_k7,nat_data$c1_services_k7,nat_data$c2_services_k7),
+                          switch(level_selection,  nat_data$c0_services_k8,nat_data$c1_services_k8,nat_data$c2_services_k8),
+                          switch(level_selection,  nat_data$c0_services_k9,nat_data$c1_services_k9,nat_data$c2_services_k9)
+    )
+    
+    n_c_electricity = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$c0_electricity_k1,nat_data$c1_electricity_k1,nat_data$c2_electricity_k1),
+                             switch(level_selection,  nat_data$c0_electricity_k2,nat_data$c1_electricity_k2,nat_data$c2_electricity_k2),
+                             switch(level_selection,  nat_data$c0_electricity_k3,nat_data$c1_electricity_k3,nat_data$c2_electricity_k3),
+                             switch(level_selection,  nat_data$c0_electricity_k4,nat_data$c1_electricity_k4,nat_data$c2_electricity_k4),
+                             switch(level_selection,  nat_data$c0_electricity_k5,nat_data$c1_electricity_k5,nat_data$c2_electricity_k5),
+                             switch(level_selection,  nat_data$c0_electricity_k6,nat_data$c1_electricity_k6,nat_data$c2_electricity_k6),
+                             switch(level_selection,  nat_data$c0_electricity_k7,nat_data$c1_electricity_k7,nat_data$c2_electricity_k7),
+                             switch(level_selection,  nat_data$c0_electricity_k8,nat_data$c1_electricity_k8,nat_data$c2_electricity_k8),
+                             switch(level_selection,  nat_data$c0_electricity_k9,nat_data$c1_electricity_k9,nat_data$c2_electricity_k9)
+    )
+    
+    n_c_cooking_fuel = switch(input$slider_Prov_Decomp,
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k1,nat_data$c1_cooking_fuel_k1,nat_data$c2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k2,nat_data$c1_cooking_fuel_k2,nat_data$c2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k3,nat_data$c1_cooking_fuel_k3,nat_data$c2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k4,nat_data$c1_cooking_fuel_k4,nat_data$c2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k5,nat_data$c1_cooking_fuel_k5,nat_data$c2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k6,nat_data$c1_cooking_fuel_k6,nat_data$c2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k7,nat_data$c1_cooking_fuel_k7,nat_data$c2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k8,nat_data$c1_cooking_fuel_k8,nat_data$c2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$c0_cooking_fuel_k9,nat_data$c1_cooking_fuel_k9,nat_data$c2_cooking_fuel_k9)
+    )
+    
+    n_c_water = switch(input$slider_Prov_Decomp,
+                       switch(level_selection,  nat_data$c0_water_k1,nat_data$c1_water_k1,nat_data$c2_water_k1),
+                       switch(level_selection,  nat_data$c0_water_k2,nat_data$c1_water_k2,nat_data$c2_water_k2),
+                       switch(level_selection,  nat_data$c0_water_k3,nat_data$c1_water_k3,nat_data$c2_water_k3),
+                       switch(level_selection,  nat_data$c0_water_k4,nat_data$c1_water_k4,nat_data$c2_water_k4),
+                       switch(level_selection,  nat_data$c0_water_k5,nat_data$c1_water_k5,nat_data$c2_water_k5),
+                       switch(level_selection,  nat_data$c0_water_k6,nat_data$c1_water_k6,nat_data$c2_water_k6),
+                       switch(level_selection,  nat_data$c0_water_k7,nat_data$c1_water_k7,nat_data$c2_water_k7),
+                       switch(level_selection,  nat_data$c0_water_k8,nat_data$c1_water_k8,nat_data$c2_water_k8),
+                       switch(level_selection,  nat_data$c0_water_k9,nat_data$c1_water_k9,nat_data$c2_water_k9)
+    )
+    
+    n_c_toilet = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  nat_data$c0_toilet_k1,nat_data$c1_toilet_k1,nat_data$c2_toilet_k1),
+                        switch(level_selection,  nat_data$c0_toilet_k2,nat_data$c1_toilet_k2,nat_data$c2_toilet_k2),
+                        switch(level_selection,  nat_data$c0_toilet_k3,nat_data$c1_toilet_k3,nat_data$c2_toilet_k3),
+                        switch(level_selection,  nat_data$c0_toilet_k4,nat_data$c1_toilet_k4,nat_data$c2_toilet_k4),
+                        switch(level_selection,  nat_data$c0_toilet_k5,nat_data$c1_toilet_k5,nat_data$c2_toilet_k5),
+                        switch(level_selection,  nat_data$c0_toilet_k6,nat_data$c1_toilet_k6,nat_data$c2_toilet_k6),
+                        switch(level_selection,  nat_data$c0_toilet_k7,nat_data$c1_toilet_k7,nat_data$c2_toilet_k7),
+                        switch(level_selection,  nat_data$c0_toilet_k8,nat_data$c1_toilet_k8,nat_data$c2_toilet_k8),
+                        switch(level_selection,  nat_data$c0_toilet_k9,nat_data$c1_toilet_k9,nat_data$c2_toilet_k9)
+    )
+    
+    n_c_land = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  nat_data$c0_land_k1,nat_data$c1_land_k1,nat_data$c2_land_k1),
+                      switch(level_selection,  nat_data$c0_land_k2,nat_data$c1_land_k2,nat_data$c2_land_k2),
+                      switch(level_selection,  nat_data$c0_land_k3,nat_data$c1_land_k3,nat_data$c2_land_k3),
+                      switch(level_selection,  nat_data$c0_land_k4,nat_data$c1_land_k4,nat_data$c2_land_k4),
+                      switch(level_selection,  nat_data$c0_land_k5,nat_data$c1_land_k5,nat_data$c2_land_k5),
+                      switch(level_selection,  nat_data$c0_land_k6,nat_data$c1_land_k6,nat_data$c2_land_k6),
+                      switch(level_selection,  nat_data$c0_land_k7,nat_data$c1_land_k7,nat_data$c2_land_k7),
+                      switch(level_selection,  nat_data$c0_land_k8,nat_data$c1_land_k8,nat_data$c2_land_k8),
+                      switch(level_selection,  nat_data$c0_land_k9,nat_data$c1_land_k9,nat_data$c2_land_k9)
+    )
+    
+    n_c_livestock = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  nat_data$c0_livestock_k1,nat_data$c1_livestock_k1,nat_data$c2_livestock_k1),
+                           switch(level_selection,  nat_data$c0_livestock_k2,nat_data$c1_livestock_k2,nat_data$c2_livestock_k2),
+                           switch(level_selection,  nat_data$c0_livestock_k3,nat_data$c1_livestock_k3,nat_data$c2_livestock_k3),
+                           switch(level_selection,  nat_data$c0_livestock_k4,nat_data$c1_livestock_k4,nat_data$c2_livestock_k4),
+                           switch(level_selection,  nat_data$c0_livestock_k5,nat_data$c1_livestock_k5,nat_data$c2_livestock_k5),
+                           switch(level_selection,  nat_data$c0_livestock_k6,nat_data$c1_livestock_k6,nat_data$c2_livestock_k6),
+                           switch(level_selection,  nat_data$c0_livestock_k7,nat_data$c1_livestock_k7,nat_data$c2_livestock_k7),
+                           switch(level_selection,  nat_data$c0_livestock_k8,nat_data$c1_livestock_k8,nat_data$c2_livestock_k8),
+                           switch(level_selection,  nat_data$c0_livestock_k9,nat_data$c1_livestock_k9,nat_data$c2_livestock_k9)
+    )
+    
+    n_c_rural_equip = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$c0_rural_equip_k1,nat_data$c1_rural_equip_k1,nat_data$c2_rural_equip_k1),
+                             switch(level_selection,  nat_data$c0_rural_equip_k2,nat_data$c1_rural_equip_k2,nat_data$c2_rural_equip_k2),
+                             switch(level_selection,  nat_data$c0_rural_equip_k3,nat_data$c1_rural_equip_k3,nat_data$c2_rural_equip_k3),
+                             switch(level_selection,  nat_data$c0_rural_equip_k4,nat_data$c1_rural_equip_k4,nat_data$c2_rural_equip_k4),
+                             switch(level_selection,  nat_data$c0_rural_equip_k5,nat_data$c1_rural_equip_k5,nat_data$c2_rural_equip_k5),
+                             switch(level_selection,  nat_data$c0_rural_equip_k6,nat_data$c1_rural_equip_k6,nat_data$c2_rural_equip_k6),
+                             switch(level_selection,  nat_data$c0_rural_equip_k7,nat_data$c1_rural_equip_k7,nat_data$c2_rural_equip_k7),
+                             switch(level_selection,  nat_data$c0_rural_equip_k8,nat_data$c1_rural_equip_k8,nat_data$c2_rural_equip_k8),
+                             switch(level_selection,  nat_data$c0_rural_equip_k9,nat_data$c1_rural_equip_k9,nat_data$c2_rural_equip_k9)
+    )
+    
+    n_g_edu_max = switch(input$slider_Prov_Decomp,
+                         switch(level_selection,  nat_data$g0_edu_max_k1,nat_data$g1_edu_max_k1,nat_data$g2_edu_max_k1),
+                         switch(level_selection,  nat_data$g0_edu_max_k2,nat_data$g1_edu_max_k2,nat_data$g2_edu_max_k2),
+                         switch(level_selection,  nat_data$g0_edu_max_k3,nat_data$g1_edu_max_k3,nat_data$g2_edu_max_k3),
+                         switch(level_selection,  nat_data$g0_edu_max_k4,nat_data$g1_edu_max_k4,nat_data$g2_edu_max_k4),
+                         switch(level_selection,  nat_data$g0_edu_max_k5,nat_data$g1_edu_max_k5,nat_data$g2_edu_max_k5),
+                         switch(level_selection,  nat_data$g0_edu_max_k6,nat_data$g1_edu_max_k6,nat_data$g2_edu_max_k6),
+                         switch(level_selection,  nat_data$g0_edu_max_k7,nat_data$g1_edu_max_k7,nat_data$g2_edu_max_k7),
+                         switch(level_selection,  nat_data$g0_edu_max_k8,nat_data$g1_edu_max_k8,nat_data$g2_edu_max_k8),
+                         switch(level_selection,  nat_data$g0_edu_max_k9,nat_data$g1_edu_max_k9,nat_data$g2_edu_max_k9)
+    )
+    n_g_edu_dropout = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$g0_edu_dropout_k1,nat_data$g1_edu_dropout_k1,nat_data$g2_edu_dropout_k1),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k2,nat_data$g1_edu_dropout_k2,nat_data$g2_edu_dropout_k2),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k3,nat_data$g1_edu_dropout_k3,nat_data$g2_edu_dropout_k3),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k4,nat_data$g1_edu_dropout_k4,nat_data$g2_edu_dropout_k4),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k5,nat_data$g1_edu_dropout_k5,nat_data$g2_edu_dropout_k5),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k6,nat_data$g1_edu_dropout_k6,nat_data$g2_edu_dropout_k6),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k7,nat_data$g1_edu_dropout_k7,nat_data$g2_edu_dropout_k7),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k8,nat_data$g1_edu_dropout_k8,nat_data$g2_edu_dropout_k8),
+                             switch(level_selection,  nat_data$g0_edu_dropout_k9,nat_data$g1_edu_dropout_k9,nat_data$g2_edu_dropout_k9)
+    )
+    
+    n_g_hea_chronic = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$g0_hea_chronic_k1,nat_data$g1_hea_chronic_k1,nat_data$g2_hea_chronic_k1),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k2,nat_data$g1_hea_chronic_k2,nat_data$g2_hea_chronic_k2),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k3,nat_data$g1_hea_chronic_k3,nat_data$g2_hea_chronic_k3),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k4,nat_data$g1_hea_chronic_k4,nat_data$g2_hea_chronic_k4),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k5,nat_data$g1_hea_chronic_k5,nat_data$g2_hea_chronic_k5),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k6,nat_data$g1_hea_chronic_k6,nat_data$g2_hea_chronic_k6),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k7,nat_data$g1_hea_chronic_k7,nat_data$g2_hea_chronic_k7),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k8,nat_data$g1_hea_chronic_k8,nat_data$g2_hea_chronic_k8),
+                             switch(level_selection,  nat_data$g0_hea_chronic_k9,nat_data$g1_hea_chronic_k9,nat_data$g2_hea_chronic_k9)
+    )
+    
+    n_g_hea_visit = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  nat_data$g0_hea_visit_k1,nat_data$g1_hea_visit_k1,nat_data$g2_hea_visit_k1),
+                           switch(level_selection,  nat_data$g0_hea_visit_k2,nat_data$g1_hea_visit_k2,nat_data$g2_hea_visit_k2),
+                           switch(level_selection,  nat_data$g0_hea_visit_k3,nat_data$g1_hea_visit_k3,nat_data$g2_hea_visit_k3),
+                           switch(level_selection,  nat_data$g0_hea_visit_k4,nat_data$g1_hea_visit_k4,nat_data$g2_hea_visit_k4),
+                           switch(level_selection,  nat_data$g0_hea_visit_k5,nat_data$g1_hea_visit_k5,nat_data$g2_hea_visit_k5),
+                           switch(level_selection,  nat_data$g0_hea_visit_k6,nat_data$g1_hea_visit_k6,nat_data$g2_hea_visit_k6),
+                           switch(level_selection,  nat_data$g0_hea_visit_k7,nat_data$g1_hea_visit_k7,nat_data$g2_hea_visit_k7),
+                           switch(level_selection,  nat_data$g0_hea_visit_k8,nat_data$g1_hea_visit_k8,nat_data$g2_hea_visit_k8),
+                           switch(level_selection,  nat_data$g0_hea_visit_k9,nat_data$g1_hea_visit_k9,nat_data$g2_hea_visit_k9)
+    )
+    
+    n_g_employment = switch(input$slider_Prov_Decomp,
+                            switch(level_selection,  nat_data$g0_employment_k1,nat_data$g1_employment_k1,nat_data$g2_employment_k1),
+                            switch(level_selection,  nat_data$g0_employment_k2,nat_data$g1_employment_k2,nat_data$g2_employment_k2),
+                            switch(level_selection,  nat_data$g0_employment_k3,nat_data$g1_employment_k3,nat_data$g2_employment_k3),
+                            switch(level_selection,  nat_data$g0_employment_k4,nat_data$g1_employment_k4,nat_data$g2_employment_k4),
+                            switch(level_selection,  nat_data$g0_employment_k5,nat_data$g1_employment_k5,nat_data$g2_employment_k5),
+                            switch(level_selection,  nat_data$g0_employment_k6,nat_data$g1_employment_k6,nat_data$g2_employment_k6),
+                            switch(level_selection,  nat_data$g0_employment_k7,nat_data$g1_employment_k7,nat_data$g2_employment_k7),
+                            switch(level_selection,  nat_data$g0_employment_k8,nat_data$g1_employment_k8,nat_data$g2_employment_k8),
+                            switch(level_selection,  nat_data$g0_employment_k9,nat_data$g1_employment_k9,nat_data$g2_employment_k9)
+    )
+    
+    n_g_assets = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  nat_data$g0_assets_k1,nat_data$g1_assets_k1,nat_data$g2_assets_k1),
+                        switch(level_selection,  nat_data$g0_assets_k2,nat_data$g1_assets_k2,nat_data$g2_assets_k2),
+                        switch(level_selection,  nat_data$g0_assets_k3,nat_data$g1_assets_k3,nat_data$g2_assets_k3),
+                        switch(level_selection,  nat_data$g0_assets_k4,nat_data$g1_assets_k4,nat_data$g2_assets_k4),
+                        switch(level_selection,  nat_data$g0_assets_k5,nat_data$g1_assets_k5,nat_data$g2_assets_k5),
+                        switch(level_selection,  nat_data$g0_assets_k6,nat_data$g1_assets_k6,nat_data$g2_assets_k6),
+                        switch(level_selection,  nat_data$g0_assets_k7,nat_data$g1_assets_k7,nat_data$g2_assets_k7),
+                        switch(level_selection,  nat_data$g0_assets_k8,nat_data$g1_assets_k8,nat_data$g2_assets_k8),
+                        switch(level_selection,  nat_data$g0_assets_k9,nat_data$g1_assets_k9,nat_data$g2_assets_k9)
+    )
+    
+    n_g_services = switch(input$slider_Prov_Decomp,
+                          switch(level_selection,  nat_data$g0_services_k1,nat_data$g1_services_k1,nat_data$g2_services_k1),
+                          switch(level_selection,  nat_data$g0_services_k2,nat_data$g1_services_k2,nat_data$g2_services_k2),
+                          switch(level_selection,  nat_data$g0_services_k3,nat_data$g1_services_k3,nat_data$g2_services_k3),
+                          switch(level_selection,  nat_data$g0_services_k4,nat_data$g1_services_k4,nat_data$g2_services_k4),
+                          switch(level_selection,  nat_data$g0_services_k5,nat_data$g1_services_k5,nat_data$g2_services_k5),
+                          switch(level_selection,  nat_data$g0_services_k6,nat_data$g1_services_k6,nat_data$g2_services_k6),
+                          switch(level_selection,  nat_data$g0_services_k7,nat_data$g1_services_k7,nat_data$g2_services_k7),
+                          switch(level_selection,  nat_data$g0_services_k8,nat_data$g1_services_k8,nat_data$g2_services_k8),
+                          switch(level_selection,  nat_data$g0_services_k9,nat_data$g1_services_k9,nat_data$g2_services_k9)
+    )
+    
+    n_g_electricity = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$g0_electricity_k1,nat_data$g1_electricity_k1,nat_data$g2_electricity_k1),
+                             switch(level_selection,  nat_data$g0_electricity_k2,nat_data$g1_electricity_k2,nat_data$g2_electricity_k2),
+                             switch(level_selection,  nat_data$g0_electricity_k3,nat_data$g1_electricity_k3,nat_data$g2_electricity_k3),
+                             switch(level_selection,  nat_data$g0_electricity_k4,nat_data$g1_electricity_k4,nat_data$g2_electricity_k4),
+                             switch(level_selection,  nat_data$g0_electricity_k5,nat_data$g1_electricity_k5,nat_data$g2_electricity_k5),
+                             switch(level_selection,  nat_data$g0_electricity_k6,nat_data$g1_electricity_k6,nat_data$g2_electricity_k6),
+                             switch(level_selection,  nat_data$g0_electricity_k7,nat_data$g1_electricity_k7,nat_data$g2_electricity_k7),
+                             switch(level_selection,  nat_data$g0_electricity_k8,nat_data$g1_electricity_k8,nat_data$g2_electricity_k8),
+                             switch(level_selection,  nat_data$g0_electricity_k9,nat_data$g1_electricity_k9,nat_data$g2_electricity_k9)
+    )
+    
+    n_g_cooking_fuel = switch(input$slider_Prov_Decomp,
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k1,nat_data$g1_cooking_fuel_k1,nat_data$g2_cooking_fuel_k1),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k2,nat_data$g1_cooking_fuel_k2,nat_data$g2_cooking_fuel_k2),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k3,nat_data$g1_cooking_fuel_k3,nat_data$g2_cooking_fuel_k3),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k4,nat_data$g1_cooking_fuel_k4,nat_data$g2_cooking_fuel_k4),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k5,nat_data$g1_cooking_fuel_k5,nat_data$g2_cooking_fuel_k5),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k6,nat_data$g1_cooking_fuel_k6,nat_data$g2_cooking_fuel_k6),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k7,nat_data$g1_cooking_fuel_k7,nat_data$g2_cooking_fuel_k7),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k8,nat_data$g1_cooking_fuel_k8,nat_data$g2_cooking_fuel_k8),
+                              switch(level_selection,  nat_data$g0_cooking_fuel_k9,nat_data$g1_cooking_fuel_k9,nat_data$g2_cooking_fuel_k9)
+    )
+    
+    n_g_water = switch(input$slider_Prov_Decomp,
+                       switch(level_selection,  nat_data$g0_water_k1,nat_data$g1_water_k1,nat_data$g2_water_k1),
+                       switch(level_selection,  nat_data$g0_water_k2,nat_data$g1_water_k2,nat_data$g2_water_k2),
+                       switch(level_selection,  nat_data$g0_water_k3,nat_data$g1_water_k3,nat_data$g2_water_k3),
+                       switch(level_selection,  nat_data$g0_water_k4,nat_data$g1_water_k4,nat_data$g2_water_k4),
+                       switch(level_selection,  nat_data$g0_water_k5,nat_data$g1_water_k5,nat_data$g2_water_k5),
+                       switch(level_selection,  nat_data$g0_water_k6,nat_data$g1_water_k6,nat_data$g2_water_k6),
+                       switch(level_selection,  nat_data$g0_water_k7,nat_data$g1_water_k7,nat_data$g2_water_k7),
+                       switch(level_selection,  nat_data$g0_water_k8,nat_data$g1_water_k8,nat_data$g2_water_k8),
+                       switch(level_selection,  nat_data$g0_water_k9,nat_data$g1_water_k9,nat_data$g2_water_k9)
+    )
+    
+    n_g_toilet = switch(input$slider_Prov_Decomp,
+                        switch(level_selection,  nat_data$g0_toilet_k1,nat_data$g1_toilet_k1,nat_data$g2_toilet_k1),
+                        switch(level_selection,  nat_data$g0_toilet_k2,nat_data$g1_toilet_k2,nat_data$g2_toilet_k2),
+                        switch(level_selection,  nat_data$g0_toilet_k3,nat_data$g1_toilet_k3,nat_data$g2_toilet_k3),
+                        switch(level_selection,  nat_data$g0_toilet_k4,nat_data$g1_toilet_k4,nat_data$g2_toilet_k4),
+                        switch(level_selection,  nat_data$g0_toilet_k5,nat_data$g1_toilet_k5,nat_data$g2_toilet_k5),
+                        switch(level_selection,  nat_data$g0_toilet_k6,nat_data$g1_toilet_k6,nat_data$g2_toilet_k6),
+                        switch(level_selection,  nat_data$g0_toilet_k7,nat_data$g1_toilet_k7,nat_data$g2_toilet_k7),
+                        switch(level_selection,  nat_data$g0_toilet_k8,nat_data$g1_toilet_k8,nat_data$g2_toilet_k8),
+                        switch(level_selection,  nat_data$g0_toilet_k9,nat_data$g1_toilet_k9,nat_data$g2_toilet_k9)
+    )
+    
+    n_g_land = switch(input$slider_Prov_Decomp,
+                      switch(level_selection,  nat_data$g0_land_k1,nat_data$g1_land_k1,nat_data$g2_land_k1),
+                      switch(level_selection,  nat_data$g0_land_k2,nat_data$g1_land_k2,nat_data$g2_land_k2),
+                      switch(level_selection,  nat_data$g0_land_k3,nat_data$g1_land_k3,nat_data$g2_land_k3),
+                      switch(level_selection,  nat_data$g0_land_k4,nat_data$g1_land_k4,nat_data$g2_land_k4),
+                      switch(level_selection,  nat_data$g0_land_k5,nat_data$g1_land_k5,nat_data$g2_land_k5),
+                      switch(level_selection,  nat_data$g0_land_k6,nat_data$g1_land_k6,nat_data$g2_land_k6),
+                      switch(level_selection,  nat_data$g0_land_k7,nat_data$g1_land_k7,nat_data$g2_land_k7),
+                      switch(level_selection,  nat_data$g0_land_k8,nat_data$g1_land_k8,nat_data$g2_land_k8),
+                      switch(level_selection,  nat_data$g0_land_k9,nat_data$g1_land_k9,nat_data$g2_land_k9)
+    )
+    
+    n_g_livestock = switch(input$slider_Prov_Decomp,
+                           switch(level_selection,  nat_data$g0_livestock_k1,nat_data$g1_livestock_k1,nat_data$g2_livestock_k1),
+                           switch(level_selection,  nat_data$g0_livestock_k2,nat_data$g1_livestock_k2,nat_data$g2_livestock_k2),
+                           switch(level_selection,  nat_data$g0_livestock_k3,nat_data$g1_livestock_k3,nat_data$g2_livestock_k3),
+                           switch(level_selection,  nat_data$g0_livestock_k4,nat_data$g1_livestock_k4,nat_data$g2_livestock_k4),
+                           switch(level_selection,  nat_data$g0_livestock_k5,nat_data$g1_livestock_k5,nat_data$g2_livestock_k5),
+                           switch(level_selection,  nat_data$g0_livestock_k6,nat_data$g1_livestock_k6,nat_data$g2_livestock_k6),
+                           switch(level_selection,  nat_data$g0_livestock_k7,nat_data$g1_livestock_k7,nat_data$g2_livestock_k7),
+                           switch(level_selection,  nat_data$g0_livestock_k8,nat_data$g1_livestock_k8,nat_data$g2_livestock_k8),
+                           switch(level_selection,  nat_data$g0_livestock_k9,nat_data$g1_livestock_k9,nat_data$g2_livestock_k9)
+    )
+    
+    n_g_rural_equip = switch(input$slider_Prov_Decomp,
+                             switch(level_selection,  nat_data$g0_rural_equip_k1,nat_data$g1_rural_equip_k1,nat_data$g2_rural_equip_k1),
+                             switch(level_selection,  nat_data$g0_rural_equip_k2,nat_data$g1_rural_equip_k2,nat_data$g2_rural_equip_k2),
+                             switch(level_selection,  nat_data$g0_rural_equip_k3,nat_data$g1_rural_equip_k3,nat_data$g2_rural_equip_k3),
+                             switch(level_selection,  nat_data$g0_rural_equip_k4,nat_data$g1_rural_equip_k4,nat_data$g2_rural_equip_k4),
+                             switch(level_selection,  nat_data$g0_rural_equip_k5,nat_data$g1_rural_equip_k5,nat_data$g2_rural_equip_k5),
+                             switch(level_selection,  nat_data$g0_rural_equip_k6,nat_data$g1_rural_equip_k6,nat_data$g2_rural_equip_k6),
+                             switch(level_selection,  nat_data$g0_rural_equip_k7,nat_data$g1_rural_equip_k7,nat_data$g2_rural_equip_k7),
+                             switch(level_selection,  nat_data$g0_rural_equip_k8,nat_data$g1_rural_equip_k8,nat_data$g2_rural_equip_k8),
+                             switch(level_selection,  nat_data$g0_rural_equip_k9,nat_data$g1_rural_equip_k9,nat_data$g2_rural_equip_k9)
+    )
+    
+    # 1 = c (percent contribution), 2 = g (gap)
+    c_g_selection = strtoi(input$c_g_Decomp_Prov)
+    
+    edu_max = switch(c_g_selection, c_edu_max, g_edu_max)
+    edu_dropout = switch(c_g_selection, c_edu_dropout, g_edu_dropout)
+    hea_chronic = switch(c_g_selection, c_hea_chronic, g_hea_chronic)
+    hea_visit = switch(c_g_selection, c_hea_visit, g_hea_visit)
+    employment = switch(c_g_selection, c_employment, g_employment)
+    assets = switch(c_g_selection, c_assets, g_assets)
+    services = switch(c_g_selection, c_services, g_services)
+    electricity = switch(c_g_selection, c_electricity, g_electricity)
+    cooking_fuel = switch(c_g_selection, c_cooking_fuel, g_cooking_fuel)
+    water = switch(c_g_selection, c_water, g_water)
+    toilet = switch(c_g_selection, c_toilet, g_toilet)
+    land = switch(c_g_selection, c_land, g_land)
+    livestock = switch(c_g_selection, c_livestock, g_livestock)
+    rural_equip = switch(c_g_selection, c_rural_equip, g_rural_equip)
+    
+    n_edu_max = switch(c_g_selection, n_c_edu_max, n_g_edu_max)
+    n_edu_dropout = switch(c_g_selection, n_c_edu_dropout, n_g_edu_dropout)
+    n_hea_chronic = switch(c_g_selection, n_c_hea_chronic, n_g_hea_chronic)
+    n_hea_visit = switch(c_g_selection, n_c_hea_visit, n_g_hea_visit)
+    n_employment = switch(c_g_selection, n_c_employment, n_g_employment)
+    n_assets = switch(c_g_selection, n_c_assets, n_g_assets)
+    n_services = switch(c_g_selection, n_c_services, n_g_services)
+    n_electricity = switch(c_g_selection, n_c_electricity, n_g_electricity)
+    n_cooking_fuel = switch(c_g_selection, n_c_cooking_fuel, n_g_cooking_fuel)
+    n_water = switch(c_g_selection, n_c_water, n_g_water)
+    n_toilet = switch(c_g_selection, n_c_toilet, n_g_toilet)
+    n_land = switch(c_g_selection, n_c_land, n_g_land)
+    n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
+    n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
+    
+    edu_max_labels <- get_label(map@data$ADM1_EN, "Max. Education", edu_max, n_edu_max)
+    edu_dropout_labels <- get_label(map@data$ADM1_EN, "Education Dropout", edu_dropout, n_edu_dropout)
+    hea_chronic_labels <- get_label(map@data$ADM1_EN, "Chronic Illness", hea_chronic, n_hea_chronic)
+    hea_visit_labels <- get_label(map@data$ADM1_EN, "Lack of Health Visit", hea_visit, n_hea_visit)
+    employment_labels <- get_label(map@data$ADM1_EN, "Unemployment", employment, n_employment)
+    assets_labels <- get_label(map@data$ADM1_EN, "Household Assets", assets, n_assets)
+    services_labels <- get_label(map@data$ADM1_EN, "Access to Services", services, n_services)
+    electricity_labels <- get_label(map@data$ADM1_EN, "Lack of Electricity", electricity, n_electricity)
+    cooking_fuel_labels <- get_label(map@data$ADM1_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
+    water_labels <- get_label(map@data$ADM1_EN, "Poor Water Source", water, n_water)
+    toilet_labels <- get_label(map@data$ADM1_EN, "Lack of Toilet", toilet, n_toilet)
+    land_labels <- get_label(map@data$ADM1_EN, "Lack of Land", land, n_land)
+    livestock_labels <- get_label(map@data$ADM1_EN, "Lack of Livestock", livestock, n_livestock)
+    rural_equip_labels <- get_label(map@data$ADM1_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip)
+    
+    
+    pal <- colorNumeric(
+      palette = "viridis",
+      domain = switch(c_g_selection,
+                      c(0, .6),
+                      c(0, 1)),
+      reverse = TRUE)
+    
+    ## MAPPING----------------------------------------------------------------------
+    # These lines of code fix the positioning of the "No Data" label. Previously, it
+    # was appearing to the right of the data instead of at the bottom where it was 
+    # supposed to. 
+    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
+    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
+    
+    # This is where the map gets plotted 
+    leaflet(
+      options = leafletOptions(
+        minZoom = 0, maxZoom= 18,
+        drag = FALSE)) %>% addTiles() %>%
+      setView(lng = 30, lat=-19, zoom=6) %>%
+      get_polygon(map, pal, edu_max, edu_max_labels, "Max. Education") %>%
+      get_polygon(map, pal, edu_dropout, edu_dropout_labels, "Education Dropout") %>%
+      get_polygon(map, pal, hea_chronic, hea_chronic_labels, "Chronic Illness") %>%
+      get_polygon(map, pal, hea_visit, hea_visit_labels, "Lack of Health Visit") %>%
+      get_polygon(map, pal, employment, employment_labels, "Unemployment") %>%
+      get_polygon(map, pal, assets, assets_labels, "Lack of Household Assets") %>%
+      get_polygon(map, pal, services, services_labels, "Lack of Access to Services") %>%
+      get_polygon(map, pal, electricity, electricity_labels, "Lack of Electricity") %>%
+      get_polygon(map, pal, cooking_fuel, cooking_fuel_labels, "Poor Cooking Fuel") %>%
+      get_polygon(map, pal, water, water_labels, "Poor Water Source") %>%
+      get_polygon(map, pal, toilet, toilet_labels, "Lack of Toilet") %>%
+      get_polygon(map, pal, land, land_labels, "Lack of Land") %>%
+      get_polygon(map, pal, livestock, livestock_labels, "Lack of Livestock") %>%
+      get_polygon(map, pal, rural_equip, rural_equip_labels, "Lack of Rural Equipment") %>%
+      clearControls() %>%
+      addLayersControl(
+        baseGroups = c("Max. Education", 
+                       "Education Dropout", 
+                       "Chronic Illness", 
+                       "Lack of Health Visit", 
+                       "Unemployment", 
+                       "Lack of Household Assets", 
+                       "Lack of Access to Services", 
+                       "Lack of Electricity", 
+                       "Poor Cooking Fuel",
+                       "Poor Water Source",
+                       "Lack of Toilet",
+                       "Lack of Land",
+                       "Lack of Livestock",
+                       "Lack of Rural Equipment"),
+        options = layersControlOptions(collapsed = TRUE)) %>%
+      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_Prov_Decomp, ")"),
+                na.label = "No Data",
+                group = c("Poverty Index", "Max. Education"),
+                position = "bottomleft") %>%
+      htmlwidgets::prependContent(html_fix)
+  })
+  }
 
 # Run the App--------------------------
 shinyApp(ui = ui, server = server)
