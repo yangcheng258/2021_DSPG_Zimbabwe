@@ -1,6 +1,3 @@
-#Yang's seeting WD
-setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/ShinyApp")
-
 library(shiny)
 library(leaflet)
 library(tidyverse)
@@ -73,19 +70,19 @@ jscode <- "function getUrlVars() {
 
 ## National Data
 
-National_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National.csv")
-National_Urban_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Urban.csv")
-National_Rural_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Rural.csv")
+National_2017 = read.csv(file = "./data/MappingData/OriginalMPI/2017/2017_National.csv")
+National_Urban_2017 = read.csv(file = "./data/MappingData/OriginalMPI/2017/2017_National_Urban.csv")
+National_Rural_2017 = read.csv(file = "./data/MappingData/OriginalMPI/2017/2017_National_Rural.csv")
 
 ## Province Data
 
 # Loads the shapefile
-Prov_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/ProvinceShapefiles"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+Prov_Map <- readOGR(dsn = "./data/shapefiles/ProvinceShapefiles", layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
 
 # Loads the district data
-Prov_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province.csv")
-Prov_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Urban.csv")
-Prov_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Rural.csv")
+Prov_Total_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_Province.csv")
+Prov_Urban_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_Province_Urban.csv")
+Prov_Rural_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_Province_Rural.csv")
 
 
 # Renames the columns in the data to merge
@@ -107,12 +104,12 @@ Prov_Rural_Map@data = merge(Prov_Rural_Map@data, Prov_Urban_2017, by = c("ADM1_E
 ## 60 District Data
 
 # Loads the shapefile
-Dist_60_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/60DistrictShapefiles"), layer="gadm36_ZWE_2")
+Dist_60_Map <- readOGR(dsn = "./data/shapefiles/60DistrictShapefiles", layer="gadm36_ZWE_2")
 
 # Loads the district data
-Dist_60_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District.csv")
-Dist_60_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Urban.csv")
-Dist_60_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Rural.csv")
+Dist_60_Total_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_District.csv")
+Dist_60_Urban_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_District_Urban.csv")
+Dist_60_Rural_2017 = read.csv("./data/MappingData/OriginalMPI/2017/2017_District_Rural.csv")
 
 # Fixes four spelling changes in the shapefile
 Dist_60_Map@data$NAME_2[47] = "Bulilima"
@@ -139,12 +136,12 @@ Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Rural_2017, by = 
 ## 91 District Data
 
 # Loading the shapefile
-Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
+Dist_91_Map <-  readOGR(dsn = "./data/shapefiles/91DistrictShapefiles", layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
 
 # Loading the MPI data at the district level
-Dist_91_Total_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District.csv')
-Dist_91_Urban_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
-Dist_91_Rural_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
+Dist_91_Total_2017 = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District.csv')
+Dist_91_Urban_2017 = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
+Dist_91_Rural_2017 = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
 
 # This is to fix naming discrepancies between the shapefile
 # and the MPI file. We renamed the shapefile districts to the 
@@ -262,6 +259,33 @@ Dist_91_Total_Map@data = merge(Dist_91_Total_Map@data, Dist_91_Total_2017, by = 
 Dist_91_Urban_Map@data = merge(Dist_91_Urban_Map@data, Dist_91_Urban_2017, by = c("ADM2_EN"), sort = FALSE)
 Dist_91_Rural_Map@data = merge(Dist_91_Rural_Map@data, Dist_91_Rural_2017, by = c("ADM2_EN"), sort = FALSE)
 
+## Loading 2011 PICES Data------------------------------------------------------
+# Loads the district data
+Dist_60_Total_2011 = read.csv("./data/MappingData/OriginalMPI/2011/2011_District.csv")
+Dist_60_Urban_2011 = read.csv("./data/MappingData/OriginalMPI/2011/2011_District_Urban.csv")
+Dist_60_Rural_2011 = read.csv("./data/MappingData/OriginalMPI/2011/2011_District_Rural.csv")
+
+# Fixes four spelling changes in the shapefile
+Dist_60_Map@data$NAME_2[47] = "Bulilima"
+Dist_60_Map@data$NAME_2[50] = "Mangwe"
+Dist_60_Map@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
+Dist_60_Map@data$NAME_2[25] = "Hwedza"
+
+# Renames the columns in the data to merge
+colnames(Dist_60_Total_2011)[2] <- "NAME_2"
+colnames(Dist_60_Urban_2011)[2] <- "NAME_2"
+colnames(Dist_60_Rural_2011)[2] <- "NAME_2"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Dist_60_Total_Map_2011 = Dist_60_Map
+Dist_60_Urban_Map_2011 = Dist_60_Map
+Dist_60_Rural_Map_2011 = Dist_60_Map
+
+# Merges the shapefiles with the data csv files 
+Dist_60_Total_Map_2011@data = merge(Dist_60_Total_Map_2011@data, Dist_60_Total_2011, by = c("NAME_2"), sort = FALSE)
+Dist_60_Urban_Map_2011@data = merge(Dist_60_Urban_Map_2011@data, Dist_60_Urban_2011, by = c("NAME_2"), sort = FALSE)
+Dist_60_Rural_Map_2011@data = merge(Dist_60_Rural_Map_2011@data, Dist_60_Rural_2011, by = c("NAME_2"), sort = FALSE)
 
 ## CAPTIONS---------------------------------------------------------------------
 
@@ -303,8 +327,27 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
     <strong>" , metric_name , ":</strong> %g<br/>
     <strong>National " , metric_name , ":</strong> %g"),
     name_data, metric, national_metric) %>% lapply(htmltools::HTML)
-  print(label)
   return(label)
+}
+
+create_scatter <- function(x_data, y_data, x_label, y_label, title) {
+  return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) +
+            geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
+                             
+                             min.segment.length = unit(0, 'lines'),
+                             nudge_y = 0.01) +
+            geom_point(
+              color= M0_2011,
+              fill="#69b3a2",
+              shape=22,
+              alpha=1,
+              size=2,
+              stroke = 1
+            ) +
+            ggtitle(title) +
+            xlab(x_label) +
+            ylab(y_label) +
+            theme_ipsum())
 }
 
 
@@ -1171,8 +1214,7 @@ server <- function(input, output, session) {
     
     # 1 = Total, 2 = Urban, 3 = Rural
     UrbRurSelection = strtoi(input$UrbRurSelection_MPI_60)
-    
-    print(UrbRurSelection)
+
     
     M0 = switch(UrbRurSelection,
                 M0_Total,
