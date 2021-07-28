@@ -1,5 +1,5 @@
 # Set Working Directory
-setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/ShinyApp")
+setwd("D:/Virginia Tech/DSPG/2021_DSPG_Zimbabwe/ShinyApp/data")
 
 
 ## 60 District Data
@@ -118,7 +118,10 @@ create_scatter <- function(x_data, y_data, x_label, y_label, title) {
             ggtitle(title) +
             xlab(x_label) +
             ylab(y_label) +
-            theme_ipsum())
+            theme_ipsum() +
+            geom_abline()) 
+  
+
 }
 
 create_scatter(M0_2011, M0_2017, "M0_2011", "M0_2017", "2017 to 2011 MPI Comparison")
