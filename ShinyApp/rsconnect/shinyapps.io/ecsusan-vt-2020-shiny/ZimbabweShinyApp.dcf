@@ -5,9 +5,10 @@ account: ecsusan-vt-2020-shiny
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4434411
-bundleId: 4866291
+bundleId: 4866332
 url: https://ecsusan-vt-2020-shiny.shinyapps.io/ZimbabweShinyApp/
-when: 1627511812.69678
-lastSyncTime: 1627511812.69678
+when: 1627512764.51072
+lastSyncTime: 1627512764.51072
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: 91Sensitivity.R|DataLoading.R

@@ -21,6 +21,9 @@ library(gpclib)
 library(maptools)
 library(shinydashboard)
 library(ggpolypath)
+library(ggplot2)
+library(ggrepel)
+library(hrbrthemes)
 gpclibPermit()
 #rsconnect::configureApp("ShinyApp", account = "ecsusan-vt-2020-shiny", size="xxlarge")
 
@@ -4168,7 +4171,7 @@ server <- function(input, output, session) {
     change_labels <- sprintf(
       paste0("<strong>%s</strong><br/>
     <strong>" , "M<sub>1</sub> Change" , ":</strong> %g<br/>"),
-      names, M0_change) %>% lapply(htmltools::HTML)
+      names, M1_change) %>% lapply(htmltools::HTML)
     
     css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
     html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
