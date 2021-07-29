@@ -1,9 +1,6 @@
-<<<<<<< Updated upstream
-=======
 #Yang's seeting WD
-# setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/ShinyApp")
+#setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/ShinyApp")
 
->>>>>>> Stashed changes
 library(shiny)
 library(leaflet)
 library(tidyverse)
@@ -27,12 +24,7 @@ library(gpclib)
 library(maptools)
 library(shinydashboard)
 library(ggpolypath)
-library(ggplot2)
-library(ggrepel)
-library(hrbrthemes)
 gpclibPermit()
-#rsconnect::configureApp("ShinyApp", account = "ecsusan-vt-2020-shiny", size="xxlarge")
-
 
 ## FORMATTING-------------------------------------------------------------------
 prettyblue <- "#232D4B"
@@ -79,60 +71,84 @@ jscode <- "function getUrlVars() {
            }
            "
 
-## LOADING DATA-----------------------------------------------------------------
-# MAPS
-MAP_2017_91_T_o <- readOGR(dsn = "./data/shapefiles/91DistrictShapefiles", layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
-MAP_2017_60_T_o <- readOGR(dsn = "./data/shapefiles/60DistrictShapefiles", layer="gadm36_ZWE_2")
-MAP_2017_10_T_o <- readOGR(dsn = "./data/shapefiles/ProvinceShapefiles", layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+## National Data
 
-# MPI Data
+National_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National.csv")
+National_Urban_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Urban.csv")
+National_Rural_2017 = read.csv(file = "MappingData/OriginalMPI/2017/2017_National_Rural.csv")
 
-# 2017 Data
-MPI_2017_91_T_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District.csv')
-MPI_2017_91_U_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
-MPI_2017_91_R_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
-MPI_2017_91_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_91_District.csv')
-MPI_2017_91_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_91_District_Urban.csv')
-MPI_2017_91_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_91_District_Rural.csv')
-MPI_2017_60_T_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_District.csv')
-MPI_2017_60_U_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_District_Urban.csv')
-MPI_2017_60_R_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_District_Rural.csv')
-MPI_2017_60_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_District.csv')
-MPI_2017_60_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_District_Urban.csv')
-MPI_2017_60_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_District_Rural.csv')
-MPI_2017_10_T_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_Province.csv')
-MPI_2017_10_U_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_Province_Urban.csv')
-MPI_2017_10_R_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_Province_Rural.csv')
-MPI_2017_10_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_Province.csv')
-MPI_2017_10_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_Province_Urban.csv')
-MPI_2017_10_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_Province_Rural.csv')
-MPI_2017_1_T_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_National.csv')
-MPI_2017_1_U_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_National_Urban.csv')
-MPI_2017_1_R_o = read.csv(file = './data/MappingData/OriginalMPI/2017/2017_National_Rural.csv')
-MPI_2017_1_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_National.csv')
-MPI_2017_1_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_National_Urban.csv')
-MPI_2017_1_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2017/2017_National_Rural.csv')
-# 2011 Data
-MPI_2011_60_T_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_District.csv')
-MPI_2011_60_U_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_District_Urban.csv')
-MPI_2011_60_R_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_District_Rural.csv')
-MPI_2011_60_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_District.csv')
-MPI_2011_60_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_District_Urban.csv')
-MPI_2011_60_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_District_Rural.csv')
-MPI_2011_10_T_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_Province.csv')
-MPI_2011_10_U_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_Province_Urban.csv')
-MPI_2011_10_R_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_Province_Rural.csv')
-MPI_2011_10_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_Province.csv')
-MPI_2011_10_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_Province_Urban.csv')
-MPI_2011_10_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_Province_Rural.csv')
-MPI_2011_1_T_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_National.csv')
-MPI_2011_1_U_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_National_Urban.csv')
-MPI_2011_1_R_o = read.csv(file = './data/MappingData/OriginalMPI/2011/2011_National_Rural.csv')
-MPI_2011_1_T_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_National.csv')
-MPI_2011_1_U_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_National_Urban.csv')
-MPI_2011_1_R_n = read.csv(file = './data/MappingData/AdjustedMPI/2011/2011_National_Rural.csv')
+## Province Data
 
-## 91 District Processing
+# Loads the shapefile
+Prov_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/ProvinceShapefiles"), layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+
+# Loads the district data
+Prov_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province.csv")
+Prov_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Urban.csv")
+Prov_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_Province_Rural.csv")
+
+
+# Renames the columns in the data to merge
+colnames(Prov_Total_2017)[2] <- "ADM1_EN"
+colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
+colnames(Prov_Urban_2017)[2] <- "ADM1_EN"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Prov_Total_Map = Prov_Map
+Prov_Urban_Map = Prov_Map
+Prov_Rural_Map = Prov_Map
+
+# Merges the shapefiles with the data csv files 
+Prov_Total_Map@data = merge(Prov_Total_Map@data, Prov_Total_2017, by = c("ADM1_EN"), sort = FALSE)
+Prov_Urban_Map@data = merge(Prov_Urban_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
+Prov_Rural_Map@data = merge(Prov_Rural_Map@data, Prov_Urban_2017, by = c("ADM1_EN"), sort = FALSE)
+
+## 60 District Data
+
+# Loads the shapefile
+Dist_60_Map <- readOGR(dsn = paste0(getwd(),"/Shapefiles/60DistrictShapefiles"), layer="gadm36_ZWE_2")
+
+# Loads the district data
+Dist_60_Total_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District.csv")
+Dist_60_Urban_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Urban.csv")
+Dist_60_Rural_2017 = read.csv("MappingData/OriginalMPI/2017/2017_District_Rural.csv")
+
+# Fixes four spelling changes in the shapefile
+Dist_60_Map@data$NAME_2[47] = "Bulilima"
+Dist_60_Map@data$NAME_2[50] = "Mangwe"
+Dist_60_Map@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
+Dist_60_Map@data$NAME_2[25] = "Hwedza"
+
+# Renames the columns in the data to merge
+colnames(Dist_60_Total_2017)[2] <- "NAME_2"
+colnames(Dist_60_Urban_2017)[2] <- "NAME_2"
+colnames(Dist_60_Rural_2017)[2] <- "NAME_2"
+
+# To avoid overlap in data, three different maps are created to host the rural, 
+# urban and total MPI Data and decompositions 
+Dist_60_Total_Map = Dist_60_Map
+Dist_60_Urban_Map = Dist_60_Map
+Dist_60_Rural_Map = Dist_60_Map
+
+# Merges the shapefiles with the data csv files 
+Dist_60_Total_Map@data = merge(Dist_60_Total_Map@data, Dist_60_Total_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Urban_Map@data = merge(Dist_60_Urban_Map@data, Dist_60_Urban_2017, by = c("NAME_2"), sort = FALSE)
+Dist_60_Rural_Map@data = merge(Dist_60_Rural_Map@data, Dist_60_Rural_2017, by = c("NAME_2"), sort = FALSE)
+
+## 91 District Data
+
+# Loading the shapefile
+Dist_91_Map <-  readOGR(dsn = paste0(getwd(),"/Shapefiles/91DistrictShapefiles"), layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
+
+# Loading the MPI data at the district level
+Dist_91_Total_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District.csv')
+Dist_91_Urban_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Urban.csv')
+Dist_91_Rural_2017 = read.csv(file = 'MappingData/OriginalMPI/2017/2017_91_District_Rural.csv')
+
+# This is to fix naming discrepancies between the shapefile
+# and the MPI file. We renamed the shapefile districts to the 
+# districts used in the PICES Survey
 names = c("Beitbridge Rural"	,
           "Beitbridge Urban"	,
           "Bikita"          	,
@@ -225,124 +241,26 @@ names = c("Beitbridge Rural"	,
           "Zvishavane Rural"	,
           "Zvishavane Urban")
 
-MAP_2017_91_T_o@data[["ADM2_EN"]] <- names
+# Saves the new names to the shapefile
+Dist_91_Map@data[["ADM2_EN"]] <- names
+
+## MERGING DATA-----------------------------------------------------------------
 
 # Renames the columns in the data to merge
-colnames(MPI_2017_91_T_o)[2] <- "ADM2_EN"
-colnames(MPI_2017_91_U_o)[2] <- "ADM2_EN"
-colnames(MPI_2017_91_R_o)[2] <- "ADM2_EN"
-colnames(MPI_2017_91_T_n)[2] <- "ADM2_EN"
-colnames(MPI_2017_91_U_n)[2] <- "ADM2_EN"
-colnames(MPI_2017_91_R_n)[2] <- "ADM2_EN"
-
+colnames(Dist_91_Total_2017)[2] <- "ADM2_EN"
+colnames(Dist_91_Urban_2017)[2] <- "ADM2_EN"
+colnames(Dist_91_Rural_2017)[2] <- "ADM2_EN"
 
 # To avoid overlap in data, three different maps are created to host the rural, 
 # urban and total MPI Data and decompositions 
-MAP_2017_91_U_o = MAP_2017_91_T_o
-MAP_2017_91_R_o = MAP_2017_91_T_o
-MAP_2017_91_T_n = MAP_2017_91_T_o
-MAP_2017_91_U_n = MAP_2017_91_T_o
-MAP_2017_91_R_n = MAP_2017_91_T_o
+Dist_91_Total_Map = Dist_91_Map
+Dist_91_Urban_Map = Dist_91_Map
+Dist_91_Rural_Map = Dist_91_Map
 
-# Merges the Map data together
-MAP_2017_91_T_o@data = merge(MAP_2017_91_T_o@data, MPI_2017_91_T_o, by = c("ADM2_EN"), sort = FALSE)
-MAP_2017_91_U_o@data = merge(MAP_2017_91_U_o@data, MPI_2017_91_U_o, by = c("ADM2_EN"), sort = FALSE)
-MAP_2017_91_R_o@data = merge(MAP_2017_91_R_o@data, MPI_2017_91_R_o, by = c("ADM2_EN"), sort = FALSE)
-MAP_2017_91_T_n@data = merge(MAP_2017_91_T_n@data, MPI_2017_91_T_n, by = c("ADM2_EN"), sort = FALSE)
-MAP_2017_91_U_n@data = merge(MAP_2017_91_U_n@data, MPI_2017_91_U_n, by = c("ADM2_EN"), sort = FALSE)
-MAP_2017_91_R_n@data = merge(MAP_2017_91_R_n@data, MPI_2017_91_R_n, by = c("ADM2_EN"), sort = FALSE)
-
-## 60 District Maps
-
-# Renames the columns in the data to merge
-colnames(MPI_2017_60_T_o)[2] <- "NAME_2"
-colnames(MPI_2017_60_U_o)[2] <- "NAME_2"
-colnames(MPI_2017_60_R_o)[2] <- "NAME_2"
-colnames(MPI_2017_60_T_n)[2] <- "NAME_2"
-colnames(MPI_2017_60_U_n)[2] <- "NAME_2"
-colnames(MPI_2017_60_R_n)[2] <- "NAME_2"
-
-colnames(MPI_2011_60_T_o)[2] <- "NAME_2"
-colnames(MPI_2011_60_U_o)[2] <- "NAME_2"
-colnames(MPI_2011_60_R_o)[2] <- "NAME_2"
-colnames(MPI_2011_60_T_n)[2] <- "NAME_2"
-colnames(MPI_2011_60_U_n)[2] <- "NAME_2"
-colnames(MPI_2011_60_R_n)[2] <- "NAME_2"
-
-MAP_2017_60_T_o@data$NAME_2[47] = "Bulilima"
-MAP_2017_60_T_o@data$NAME_2[50] = "Mangwe"
-MAP_2017_60_T_o@data$NAME_2[24] = "Uzumba Maramba Pfungwe (UMP)"
-MAP_2017_60_T_o@data$NAME_2[25] = "Hwedza"
-
-MAP_2017_60_U_o = MAP_2017_60_T_o
-MAP_2017_60_R_o = MAP_2017_60_T_o
-MAP_2017_60_T_n = MAP_2017_60_T_o
-MAP_2017_60_U_n = MAP_2017_60_T_o
-MAP_2017_60_R_n = MAP_2017_60_T_o
-
-MAP_2011_60_T_o = MAP_2017_60_T_o
-MAP_2011_60_U_o = MAP_2017_60_T_o
-MAP_2011_60_R_o = MAP_2017_60_T_o
-MAP_2011_60_T_n = MAP_2017_60_T_o
-MAP_2011_60_U_n = MAP_2017_60_T_o
-MAP_2011_60_R_n = MAP_2017_60_T_o
-
-MAP_2017_60_T_o@data = merge(MAP_2017_60_T_o@data, MPI_2017_60_T_o, by = c("NAME_2"), sort = FALSE)
-MAP_2017_60_U_o@data = merge(MAP_2017_60_U_o@data, MPI_2017_60_U_o, by = c("NAME_2"), sort = FALSE)
-MAP_2017_60_R_o@data = merge(MAP_2017_60_R_o@data, MPI_2017_60_R_o, by = c("NAME_2"), sort = FALSE)
-MAP_2017_60_T_n@data = merge(MAP_2017_60_T_n@data, MPI_2017_60_T_n, by = c("NAME_2"), sort = FALSE)
-MAP_2017_60_U_n@data = merge(MAP_2017_60_U_n@data, MPI_2017_60_U_n, by = c("NAME_2"), sort = FALSE)
-MAP_2017_60_R_n@data = merge(MAP_2017_60_R_n@data, MPI_2017_60_R_n, by = c("NAME_2"), sort = FALSE)
-
-MAP_2011_60_T_o@data = merge(MAP_2011_60_T_o@data, MPI_2011_60_T_o, by = c("NAME_2"), sort = FALSE)
-MAP_2011_60_U_o@data = merge(MAP_2011_60_U_o@data, MPI_2011_60_U_o, by = c("NAME_2"), sort = FALSE)
-MAP_2011_60_R_o@data = merge(MAP_2011_60_R_o@data, MPI_2011_60_R_o, by = c("NAME_2"), sort = FALSE)
-MAP_2011_60_T_n@data = merge(MAP_2011_60_T_n@data, MPI_2011_60_T_n, by = c("NAME_2"), sort = FALSE)
-MAP_2011_60_U_n@data = merge(MAP_2011_60_U_n@data, MPI_2011_60_U_n, by = c("NAME_2"), sort = FALSE)
-MAP_2011_60_R_n@data = merge(MAP_2011_60_R_n@data, MPI_2011_60_R_n, by = c("NAME_2"), sort = FALSE)
-
-## Province Data
-
-colnames(MPI_2017_10_T_o)[2] <- "ADM1_EN"
-colnames(MPI_2017_10_U_o)[2] <- "ADM1_EN"
-colnames(MPI_2017_10_R_o)[2] <- "ADM1_EN"
-colnames(MPI_2017_10_T_n)[2] <- "ADM1_EN"
-colnames(MPI_2017_10_U_n)[2] <- "ADM1_EN"
-colnames(MPI_2017_10_R_n)[2] <- "ADM1_EN"
-
-colnames(MPI_2011_10_T_o)[2] <- "ADM1_EN"
-colnames(MPI_2011_10_U_o)[2] <- "ADM1_EN"
-colnames(MPI_2011_10_R_o)[2] <- "ADM1_EN"
-colnames(MPI_2011_10_T_n)[2] <- "ADM1_EN"
-colnames(MPI_2011_10_U_n)[2] <- "ADM1_EN"
-colnames(MPI_2011_10_R_n)[2] <- "ADM1_EN"
-
-MAP_2017_10_U_o = MAP_2017_10_T_o
-MAP_2017_10_R_o = MAP_2017_10_T_o
-MAP_2017_10_T_n = MAP_2017_10_T_o
-MAP_2017_10_U_n = MAP_2017_10_T_o
-MAP_2017_10_R_n = MAP_2017_10_T_o
-
-MAP_2011_10_T_o = MAP_2017_10_T_o
-MAP_2011_10_U_o = MAP_2017_10_T_o
-MAP_2011_10_R_o = MAP_2017_10_T_o
-MAP_2011_10_T_n = MAP_2017_10_T_o
-MAP_2011_10_U_n = MAP_2017_10_T_o
-MAP_2011_10_R_n = MAP_2017_10_T_o
-
-MAP_2017_10_T_o@data = merge(MAP_2017_10_T_o@data, MPI_2017_10_T_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2017_10_U_o@data = merge(MAP_2017_10_U_o@data, MPI_2017_10_U_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2017_10_R_o@data = merge(MAP_2017_10_R_o@data, MPI_2017_10_R_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2017_10_T_n@data = merge(MAP_2017_10_T_n@data, MPI_2017_10_T_n, by = c("ADM1_EN"), sort = FALSE)
-MAP_2017_10_U_n@data = merge(MAP_2017_10_U_n@data, MPI_2017_10_U_n, by = c("ADM1_EN"), sort = FALSE)
-MAP_2017_10_R_n@data = merge(MAP_2017_10_R_n@data, MPI_2017_10_R_n, by = c("ADM1_EN"), sort = FALSE)
-
-MAP_2011_10_T_o@data = merge(MAP_2011_10_T_o@data, MPI_2011_10_T_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2011_10_U_o@data = merge(MAP_2011_10_U_o@data, MPI_2011_10_U_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2011_10_R_o@data = merge(MAP_2011_10_R_o@data, MPI_2011_10_R_o, by = c("ADM1_EN"), sort = FALSE)
-MAP_2011_10_T_n@data = merge(MAP_2011_10_T_n@data, MPI_2011_10_T_n, by = c("ADM1_EN"), sort = FALSE)
-MAP_2011_10_U_n@data = merge(MAP_2011_10_U_n@data, MPI_2011_10_U_n, by = c("ADM1_EN"), sort = FALSE)
-MAP_2011_10_R_n@data = merge(MAP_2011_10_R_n@data, MPI_2011_10_R_n, by = c("ADM1_EN"), sort = FALSE)
+# Merges the shapefiles with the data csv files 
+Dist_91_Total_Map@data = merge(Dist_91_Total_Map@data, Dist_91_Total_2017, by = c("ADM2_EN"), sort = FALSE)
+Dist_91_Urban_Map@data = merge(Dist_91_Urban_Map@data, Dist_91_Urban_2017, by = c("ADM2_EN"), sort = FALSE)
+Dist_91_Rural_Map@data = merge(Dist_91_Rural_Map@data, Dist_91_Rural_2017, by = c("ADM2_EN"), sort = FALSE)
 
 
 ## CAPTIONS---------------------------------------------------------------------
@@ -385,34 +303,9 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
     <strong>" , metric_name , ":</strong> %g<br/>
     <strong>National " , metric_name , ":</strong> %g"),
     name_data, metric, national_metric) %>% lapply(htmltools::HTML)
+  print(label)
   return(label)
 }
-
-create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
-  M0_Comparison = data.frame(names, x_data, y_data)
-  colnames(M0_Comparison)[1] = "Name"
-  return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) +
-            geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
-                             
-                             min.segment.length = unit(0, 'lines'),
-                             nudge_y = 0.01) +
-            geom_point(
-              color= x_data,
-              fill="#69b3a2",
-              shape=22,
-              alpha=1,
-              size=2,
-              stroke = 1
-            ) +
-            ggtitle(title) +
-            xlab(x_label) +
-            ylab(y_label) +
-            theme_ipsum() +
-            geom_abline()) 
-  
-  
-}
-
 
 
 # UI -------------------------------------------------------------
@@ -429,13 +322,18 @@ ui <- navbarPage(title = "Zimbabwe",
                                    # br("", style = "padding-top:2px;"),
                                    # img(src = "VTDSPG Logo.png", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                    br(""),
-                                   h1(strong("Using 2017 PICES Data to Create a Multidimensional Poverty Index of Zimbabwe")),
-                                   fluidRow(style = "margin: 2px;",
-                                            img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")),
+                                   h1(strong("Using 2017 PICES Data to Create a Multidimensional Poverty Index of Zimbabwe"),
+                                      br(""),
                                       h4("Data Science for the Public Good Program"),
                                       h4("Virginia Tech"),
-                                      h4("Department of Agriculture")
-                                   
+                                      h4("Department of Agriculture"),
+                                      br()
+                                   )
+                          ),
+                          
+                          fluidRow(style = "margin: 2px;",
+                                   align = "left",
+                                   img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")
                           ),
                           
                           fluidRow(style = "margin: 6px;",
@@ -446,40 +344,40 @@ ui <- navbarPage(title = "Zimbabwe",
                                             its 10 provinces and 59 further subdivided districts. Zimbabwe’s terrain consists mostly of plateau upon which forests thrive and arable land is plenty. Because of this, 67.5% of the labor force works in agriculture growing sugar cane, tobacco, fruits, and vegetables among other things. Another 7.3% of the labor force 
                                             takes advantage of the Zimbabwe’s rich natural resources and participates in the industry sector mining and exporting coal, gold, platinum copper, and other metals as well as manufacturing wood products, cement, chemicals, fertilizer, and food. Despite being relatively well-educated and extremely literate, the population 
                                             suffers from both unemployment and severe underemployment in which individuals are overqualified for the jobs they have or are not given adequate work hours. In combination with ubiquitous low wages, this creates an obstacle for economic growth. Monetary poverty measures in 2017 revealed roughly 63% of Zimbabwean households 
-                                            lived in poverty. This is reflected in income inequality, overall low standards of living, malnourishment, low life expectancy, high rates of infant/maternal mortality, and difficulty accessing health and education resources.")),
+                                            lived in poverty. This is reflected in income inequality, overall low standards of living, malnourishment, low life expectancy, high rates of infant/maternal mortality, and difficulty accessing health and education resources."),
 
-                                   column(12,
+                                 
                                           h2(strong("Recent History")),
                                           p("After gaining independence in 1980, there was widespread hope that the economic and labor exploitation Africans suffered at the hands of an imperial Great Britain would diminish. While initial trends were encouraging, this hope dwindled as a multitude of factors sent the Zimbabwean economy into decline. Most prominent among 
                                             these factors was inconsistent policy put forth by the central government which resulted in vague and evolving strategies on combatting poverty. An initial scientific socialist policy was applied between 1980 and 1990 to address poverty but was ineffective and thus abandoned due to financial downturn and prolonged drought which 
                                             forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which meant an adoption of more capitalistic policy. The costs of necessities including food, water, and 
                                             education went up as a result, harming and expanding the already existing poor population. The late 1990’s and 2000’s brought ever greater poverty and financial distress to Zimbabwe as a continuing government budget deficit mixed with a fiscal policy focused on increasing the amount of money in circulation resulted in hyperinflation. 
                                             In turn, this increased the economic crisis as foreign investment dropped and Zimbabwean currency crashed. During this time, unemployment skyrocketed and a massive informal sector of the economy emerged. In 2009, Zimbabwe adopted the U.S. dollar along with a handful of other currencies. Though this move somewhat stabilized the 
-                                            economy at first, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly as did overall economic crisis and poverty.")),
+                                            economy at first, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly as did overall economic crisis and poverty."),
                                    
                                 
-                                          # h2(strong("Application of a Multidimensional Poverty Index")),
-                                          # p("A brief introduction to Zimbabwe makes clear the severity and the urgency of the poverty situation. Although a money metric approach to measuring poverty is historically prevalent, this sort of strategy is unable to accurately paint an accurate picture of poverty in Zimbabwe. This is most notably due to the extreme hyperinflation the 
-                                          #   country suffers from. Because the actual value of money is constantly evolving, the importance of monetary wealth accumulation in determining poverty is questionable. Additionally, variations in consumption tendencies, prices of goods and necessities, and household income distribution can make it difficult to provide an accurate account 
-                                          #   of money metric poverty as the value of money is hardly standardized. This volatility also renders money metric comparisons of poverty over time futile as the modern value of currency is incomparable to that of years past. As the practicality of a monetary poverty measure becomes increasingly suspect, the value of alternative poverty measure 
-                                          #   methods is revealed. "),
-                                          # p("An Alkire Foster (AF) method, developed by Sabina Alkire and James Foster, will be utilized in this project to measure poverty in Zimbabwe. The AF method first denotes the different kinds of deprivations households experience simultaneously. These deprivations make clear who is impoverished in a population and are then used to construct a non-monetary 
-                                          #   Multidimensional Poverty Index (MPI). MPI’s are powerful insofar as they provide a non-monetary measure poverty as it exists in its various manifestations. In this way, an MPI accounts for the hyperinflation in Zimbabwe by defining poverty as the inability to satisfy a certain list of needs or capabilities rather than the accumulation of money 
-                                          #   that may or may not fulfill such needs. The list, as pictured below, is comprised of variables that indicate deprivation. Each variable corresponds to a broader dimension of poverty. These variables and dimensions are normatively chosen to be applicable in the context of Zimbabwe. The MPI created by the 2021 DSPG Zimbabwe team can be utilized to decompose
-                                          #   multidimensional poverty as it exists in different subgroups including the national, provincial, and district level. Additionally, the MPI can be deconstructed to analyze at what strength each deprivation is contributing to poverty within groups. By emulating the work of Stoeffler, et al., this MPI can also be used to track changes in multifaceted poverty 
-                                          #   over time. The combination of these unique aspects of the MPI allows it to be used not only to accurately measure poverty as it exists today, but to evaluate the effectiveness of policy going forward.")
+                                          h2(strong("Application of a Multidimensional Poverty Index")),
+                                          p("A brief introduction to Zimbabwe makes clear the severity and the urgency of the poverty situation. Although a money metric approach to measuring poverty is historically prevalent, this sort of strategy is unable to accurately paint an accurate picture of poverty in Zimbabwe. This is most notably due to the extreme hyperinflation the 
+                                            country suffers from. Because the actual value of money is constantly evolving, the importance of monetary wealth accumulation in determining poverty is questionable. Additionally, variations in consumption tendencies, prices of goods and necessities, and household income distribution can make it difficult to provide an accurate account 
+                                            of money metric poverty as the value of money is hardly standardized. This volatility also renders money metric comparisons of poverty over time futile as the modern value of currency is incomparable to that of years past. As the practicality of a monetary poverty measure becomes increasingly suspect, the value of alternative poverty measure 
+                                            methods is revealed. "),
+                                          p("An Alkire Foster method, developed by Sabina Alkire and James Foster, will be utilized in this project to measure poverty in Zimbabwe. The AF method first denotes the different kinds of deprivations households experience simultaneously. These deprivations make clear who is impoverished in a population and are then used to construct a non-monetary 
+                                            Multidimensional Poverty Index (MPI). MPI’s are powerful insofar as they provide a picture of non-monetary poverty as it exists in its various manifestations. In this way, an MPI accounts for the hyperinflation in Zimbabwe by defining poverty as the inability to satisfy a certain list of needs or capabilities rather than the accumulation of money 
+                                            that may or may not fulfill such needs. The list, as pictured below, is comprised of variables that indicate deprivation. Each variable corresponds to a broader dimension of poverty. These variables and dimensions are normatively chosen to be applicable in the context of Zimbabwe. The MPI created by the 2021 DSPG Zimbabwe team can be utilized to decompose
+                                            multidimensional poverty as it exists in different subgroups including the national, provincial, and district level. Additionally, the MPI can be deconstructed to analyze at what strength each deprivation is contributing to poverty within groups. By emulating the work of Stoeffler, et al., this MPI can also be used to track changes in multifaceted poverty 
+                                            over time. The combination of these unique aspects of the MPI allows it to be used not only to accurately measure poverty as it exists today, but to evaluate the effectiveness of policy going forward.")
                                    
-                          ),
+                          )),
                           fluidRow(align = "center",
                                    p(tags$small(em('Last updated: July 2021'))))
                  ),
 
                  ## Tab data and methodology ----------------------------------------------------
                  tabPanel("Data & Methodology", value = "dm",
-                             tabsetPanel(
-                               tabPanel("Data", value = "data"),
-                               tabPanel("Methodology", value = "methodology",
+                         
                                         fluidPage(
+                                          h1(strong("Data")),
+                                          h1(strong("Methodology")),
                                           box(
                                             withMathJax(),
                                             title = h3(strong("MPI Methodology")),
@@ -555,8 +453,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                             h4("Else \\(g^{2}_{i} = 0\\)")
                                             
                                           )
-                                        ))
-                             )),
+                                        )
+                             ),
 
                  ## Tab maps --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
@@ -591,7 +489,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "91 District MPI Map of Zimbabwe",
-                                    leafletOutput("Dist_91_MPI_Map"),
+                                    withSpinner(leafletOutput("Dist_91_MPI_Map")),
+
                                     width = 8,
                                     height = 500
                                   ),
@@ -623,20 +522,13 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Rural"),
                                                  choiceValues = c(1, 2, 3)),
                                     footer = urban_rural_caption
-                                  ),
-                                  box(
-                                    radioButtons("SensitivitySelection_91", "Select Which MPI to Use:",
-                                                 choiceNames = c("Original MPI",
-                                                                 "Education-Adjusted MPI"),
-                                                 choiceValues = c(1, 2))
-                                    
                                   ))),
                               tabItem(
                                 tabName = "60_Dist",
                                 fluidPage(
                                   box(
                                     title = "60 District MPI Map of Zimbabwe",
-                                    leafletOutput("Dist_60_MPI_Map"),
+                                    withSpinner(leafletOutput("Dist_60_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -668,13 +560,6 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Rural"),
                                                  choiceValues = c(1, 2, 3)),
                                     footer = urban_rural_caption
-                                  ),
-                                  box(
-                                    radioButtons("SensitivitySelection_60", "Select Which MPI to Use:",
-                                                 choiceNames = c("Original MPI",
-                                                                 "Education-Adjusted MPI"),
-                                                 choiceValues = c(1, 2))
-                                    
                                   )
                                 )
                               ),
@@ -683,7 +568,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "Province-Level MPI Map of Zimbabwe",
-                                    leafletOutput("Prov_MPI_Map"),
+                                    withSpinner(leafletOutput("Prov_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -704,29 +589,22 @@ ui <- navbarPage(title = "Zimbabwe",
                                     width = 4
                                   ),
                                   box(
-                                    sliderInput("slider_10_MPI", "K-Threshold Value", 1, 9, 3),
+                                    sliderInput("slider_Prov_MPI", "K-Threshold Value", 1, 9, 3),
                                     width = 6,
                                     footer = slider_caption
                                   ),
                                   box(
-                                    radioButtons("UrbRurSelection_MPI_10", "Select Urban/Rural Filter", 
+                                    radioButtons("UrbRurSelection_MPI_Prov", "Select Urban/Rural Filter", 
                                                  choiceNames = c("All",
                                                                  "Urban",
                                                                  "Rural"),
                                                  choiceValues = c(1, 2, 3)),
                                     footer = urban_rural_caption
-                                  ),
-                                  box(
-                                    radioButtons("SensitivitySelection_10", "Select Which MPI to Use:",
-                                                 choiceNames = c("Original MPI",
-                                                                 "Education-Adjusted MPI"),
-                                                 choiceValues = c(1, 2))
-                                    
                                   )
                                 )
                               )
                             )))),
-                 
+                 ## Tab Decomposition------------------------
                  tabPanel("MPI Decomposition", value = "decomposition",
                           dashboardPage(
                             skin = 'blue',
@@ -759,7 +637,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "91 District Decomposition Map of Zimbabwe",
-                                    leafletOutput("Dist_91_Decomp_Map"),
+                                    withSpinner(leafletOutput("Dist_91_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -816,7 +694,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "60 District Decomposition Map of Zimbabwe",
-                                    leafletOutput("Dist_60_Decomp_Map"),
+                                    withSpinner(leafletOutput("Dist_60_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -873,7 +751,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "Province Decomposition Map of Zimbabwe",
-                                    leafletOutput("Prov_Decomp_Map"),
+                                    withSpinner(leafletOutput("Prov_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -928,159 +806,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             ))
                             )
                           ),
-                tabPanel("2011 to 2017 Data", value = "Comparison",
-                         dashboardPage(
-                           skin = 'blue',
-                           dashboardHeader(
-                             title = 'MPI Decomposition'
-                           ),
-                           
-                           
-                           dashboardSidebar(
-                             sidebarMenu(
-                               menuItem(
-                                 "M0 Comparison Map",
-                                 tabName = 'M0_Comp'
-                               ),
-                               menuItem(
-                                 "M1 Comparison",
-                                 tabName = "M1_Comp"
-                               ),
-                               menuItem(
-                                 "M2 Comparison Map",
-                                 tabName = 'M2_Comp'
-                               )
-                             )
-                           ),
-                           
-                           dashboardBody(
-                             tabItems(
-                               tabItem(
-                                 tabName = "M0_Comp",
-                                 # Everything has to be put in a row or column
-                                 fluidPage(
-                                   box(
-                                     title = "Comparison of M0 in Zimbabwe",
-                                     leafletOutput("M0_Comparison_Map"),
-                                     width = 6,
-                                     height = 500
-                                   ),
-                                   box(
-                                     withMathJax(),
-                                     title = "Scatterplot",
-                                     plotOutput("M0_Scatterplot"),
-                                     width = 6,
-                                     height = 500
-                                   ),
-                                   box(
-                                     sliderInput("slider_M0_Comparison", "K-Threshold Value", 1, 9, 3),
-                                     footer = slider_caption
-                                   ),
-                                   box(
-                                     radioButtons("UrbRurSelection_M0", "Select Urban/Rural Filter", 
-                                                  choiceNames = c("All",
-                                                                  "Urban",
-                                                                  "Rural"),
-                                                  choiceValues = c(1, 2, 3)),
-                                     footer = urban_rural_caption
-                                   ),
-                                   box(
-                                     radioButtons("RegionSelection_M0", "Select Boundaries to Display", 
-                                                  choiceNames = c("Districts",
-                                                                  "Provinces"),
-                                                  choiceValues = c(1, 2)),
-                                     footer = urban_rural_caption
-                                   )
-                                 )
-                               )
-                             ,
-                               tabItem(
-                                 tabName = "M1_Comp",
-                                 # Everything has to be put in a row or column
-                                 fluidPage(
-                                   box(
-                                     title = "Comparison of M1 in Zimbabwe",
-                                     leafletOutput("M1_Comparison_Map"),
-                                     width = 6,
-                                     height = 500
-                                   ),
-                                   box(
-                                     withMathJax(),
-                                     title = "Scatterplot",
-                                     plotOutput("M1_Scatterplot"),
-                                     width = 6,
-                                     height = 500
-                                   ),
-                                   box(
-                                     sliderInput("slider_M1_Comparison", "K-Threshold Value", 1, 9, 3),
-                                     footer = slider_caption
-                                   ),
-                                   box(
-                                     radioButtons("UrbRurSelection_M1", "Select Urban/Rural Filter", 
-                                                  choiceNames = c("All",
-                                                                  "Urban",
-                                                                  "Rural"),
-                                                  choiceValues = c(1, 2, 3)),
-                                     footer = urban_rural_caption
-                                   ),
-                                   box(
-                                     radioButtons("RegionSelection_M1", "Select Boundaries to Display", 
-                                                  choiceNames = c("Districts",
-                                                                  "Provinces"),
-                                                  choiceValues = c(1, 2)),
-                                     footer = urban_rural_caption
-                                   )
-                                 )
-                               ),
-                             tabItem(
-                               tabName = "M2_Comp",
-                               # Everything has to be put in a row or column
-                               fluidPage(
-                                 box(
-                                   title = "Comparison of M2 in Zimbabwe",
-                                   leafletOutput("M2_Comparison_Map"),
-                                   width = 6,
-                                   height = 500
-                                 ),
-                                 box(
-                                   withMathJax(),
-                                   title = "Scatterplot",
-                                   plotOutput("M2_Scatterplot"),
-                                   width = 6,
-                                   height = 500
-                                 ),
-                                 box(
-                                   sliderInput("slider_M2_Comparison", "K-Threshold Value", 1, 9, 3),
-                                   footer = slider_caption
-                                 ),
-                                 box(
-                                   radioButtons("UrbRurSelection_M2", "Select Urban/Rural Filter", 
-                                                choiceNames = c("All",
-                                                                "Urban",
-                                                                "Rural"),
-                                                choiceValues = c(1, 2, 3)),
-                                   footer = urban_rural_caption
-                                 ),
-                                 box(
-                                   radioButtons("RegionSelection_M2", "Select Boundaries to Display", 
-                                                choiceNames = c("Districts",
-                                                                "Provinces"),
-                                                choiceValues = c(1, 2)),
-                                   footer = urban_rural_caption
-                                 )
-                               )
-                             )
-                             )
-                           )
-                         )
-                         ),
-                                   
-
-                  
-        
-                  ## Tab Temporal COmparison--------------------------------------
-                ## Tab DSPG Team------------------------------------------------
-                tabPanel("Our Team", value = "team",
+                          tabPanel("DSPG Team", value = "team",
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                                             h1(strong("Zimbabwe Team"), align = "center"),
                                             br(),
@@ -1144,50 +870,130 @@ server <- function(input, output, session) {
   
   
   output$Dist_91_MPI_Map <- renderLeaflet({
-    k_threshold = input$slider_91_MPI
+    # Creating variables for M0, M1 and M2
+    M0_Total <- switch(input$slider_91_MPI,
+                       Dist_91_Total_Map@data$M0_k1,
+                       Dist_91_Total_Map@data$M0_k2,
+                       Dist_91_Total_Map@data$M0_k3,
+                       Dist_91_Total_Map@data$M0_k4,
+                       Dist_91_Total_Map@data$M0_k5,
+                       Dist_91_Total_Map@data$M0_k6,
+                       Dist_91_Total_Map@data$M0_k7,
+                       Dist_91_Total_Map@data$M0_k8,
+                       Dist_91_Total_Map@data$M0_k9
+    )
+    
+    M1_Total = switch(input$slider_91_MPI,
+                      Dist_91_Total_Map@data$M1_k1,
+                      Dist_91_Total_Map@data$M1_k2,
+                      Dist_91_Total_Map@data$M1_k3,
+                      Dist_91_Total_Map@data$M1_k4,
+                      Dist_91_Total_Map@data$M1_k5,
+                      Dist_91_Total_Map@data$M1_k6,
+                      Dist_91_Total_Map@data$M1_k7,
+                      Dist_91_Total_Map@data$M1_k8,
+                      Dist_91_Total_Map@data$M1_k9)
+    
+    M2_Total = switch(input$slider_91_MPI,
+                      Dist_91_Total_Map@data$M2_k1,
+                      Dist_91_Total_Map@data$M2_k2,
+                      Dist_91_Total_Map@data$M2_k3,
+                      Dist_91_Total_Map@data$M2_k4,
+                      Dist_91_Total_Map@data$M2_k5,
+                      Dist_91_Total_Map@data$M2_k6,
+                      Dist_91_Total_Map@data$M2_k7,
+                      Dist_91_Total_Map@data$M2_k8,
+                      Dist_91_Total_Map@data$M2_k9)
+    
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_91_MPI,
+                       Dist_91_Urban_Map@data$M0_k1,
+                       Dist_91_Urban_Map@data$M0_k2,
+                       Dist_91_Urban_Map@data$M0_k3,
+                       Dist_91_Urban_Map@data$M0_k4,
+                       Dist_91_Urban_Map@data$M0_k5,
+                       Dist_91_Urban_Map@data$M0_k6,
+                       Dist_91_Urban_Map@data$M0_k7,
+                       Dist_91_Urban_Map@data$M0_k8,
+                       Dist_91_Urban_Map@data$M0_k9
+    )
+    
+    M1_Urban = switch(input$slider_91_MPI,
+                      Dist_91_Urban_Map@data$M1_k1,
+                      Dist_91_Urban_Map@data$M1_k2,
+                      Dist_91_Urban_Map@data$M1_k3,
+                      Dist_91_Urban_Map@data$M1_k4,
+                      Dist_91_Urban_Map@data$M1_k5,
+                      Dist_91_Urban_Map@data$M1_k6,
+                      Dist_91_Urban_Map@data$M1_k7,
+                      Dist_91_Urban_Map@data$M1_k8,
+                      Dist_91_Urban_Map@data$M1_k9)
+    
+    M2_Urban = switch(input$slider_91_MPI,
+                      Dist_91_Urban_Map@data$M2_k1,
+                      Dist_91_Urban_Map@data$M2_k2,
+                      Dist_91_Urban_Map@data$M2_k3,
+                      Dist_91_Urban_Map@data$M2_k4,
+                      Dist_91_Urban_Map@data$M2_k5,
+                      Dist_91_Urban_Map@data$M2_k6,
+                      Dist_91_Urban_Map@data$M2_k7,
+                      Dist_91_Urban_Map@data$M2_k8,
+                      Dist_91_Urban_Map@data$M2_k9)
+    
+    # Rural MPI Variables
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_91_MPI,
+                       Dist_91_Rural_Map@data$M0_k1,
+                       Dist_91_Rural_Map@data$M0_k2,
+                       Dist_91_Rural_Map@data$M0_k3,
+                       Dist_91_Rural_Map@data$M0_k4,
+                       Dist_91_Rural_Map@data$M0_k5,
+                       Dist_91_Rural_Map@data$M0_k6,
+                       Dist_91_Rural_Map@data$M0_k7,
+                       Dist_91_Rural_Map@data$M0_k8,
+                       Dist_91_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_91_MPI,
+                      Dist_91_Rural_Map@data$M1_k1,
+                      Dist_91_Rural_Map@data$M1_k2,
+                      Dist_91_Rural_Map@data$M1_k3,
+                      Dist_91_Rural_Map@data$M1_k4,
+                      Dist_91_Rural_Map@data$M1_k5,
+                      Dist_91_Rural_Map@data$M1_k6,
+                      Dist_91_Rural_Map@data$M1_k7,
+                      Dist_91_Rural_Map@data$M1_k8,
+                      Dist_91_Rural_Map@data$M1_k9)
+    
+    M2_Rural = switch(input$slider_91_MPI,
+                      Dist_91_Rural_Map@data$M2_k1,
+                      Dist_91_Rural_Map@data$M2_k2,
+                      Dist_91_Rural_Map@data$M2_k3,
+                      Dist_91_Rural_Map@data$M2_k4,
+                      Dist_91_Rural_Map@data$M2_k5,
+                      Dist_91_Rural_Map@data$M2_k6,
+                      Dist_91_Rural_Map@data$M2_k7,
+                      Dist_91_Rural_Map@data$M2_k8,
+                      Dist_91_Rural_Map@data$M2_k9)
+    
     UrbRurSelection = strtoi(input$UrbRurSelection_MPI_91)
-    SensitivitySelection = strtoi(input$SensitivitySelection_91)
     
-    map = switch(SensitivitySelection, switch(UrbRurSelection,
-                                               MAP_2017_91_T_o,
-                                               MAP_2017_91_U_o,
-                                               MAP_2017_91_R_o), switch(UrbRurSelection,
-                                                                        MAP_2017_91_T_n,
-                                                                        MAP_2017_91_U_n,
-                                                                        MAP_2017_91_U_n))
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
     
-    M0 = switch(k_threshold,
-                map@data$M0_k1,
-                map@data$M0_k2,
-                map@data$M0_k3,
-                map@data$M0_k4,
-                map@data$M0_k5,
-                map@data$M0_k6,
-                map@data$M0_k7,
-                map@data$M0_k8,
-                map@data$M0_k9)
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
     
-    M1 = switch(k_threshold,
-                map@data$M1_k1,
-                map@data$M1_k2,
-                map@data$M1_k3,
-                map@data$M1_k4,
-                map@data$M1_k5,
-                map@data$M1_k6,
-                map@data$M1_k7,
-                map@data$M1_k8,
-                map@data$M1_k9)
-    
-    M2 = switch(k_threshold,
-                map@data$M2_k1,
-                map@data$M2_k2,
-                map@data$M2_k3,
-                map@data$M2_k4,
-                map@data$M2_k5,
-                map@data$M2_k6,
-                map@data$M2_k7,
-                map@data$M2_k8,
-                map@data$M2_k9)
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
@@ -1196,38 +1002,38 @@ server <- function(input, output, session) {
       reverse = TRUE)
     
     # This creates labels for M0, M1 and M2 
-    M0_labels <- get_label(MAP_2017_91_T_o@data$ADM2_EN, "M<sub>0</sub>", M0, switch(input$slider_91_MPI,
-                                                                                 MPI_2017_1_T_o$M0_k1[1],
-                                                                                 MPI_2017_1_T_o$M0_k2[1],
-                                                                                 MPI_2017_1_T_o$M0_k3[1],
-                                                                                 MPI_2017_1_T_o$M0_k4[1],
-                                                                                 MPI_2017_1_T_o$M0_k5[1],
-                                                                                 MPI_2017_1_T_o$M0_k6[1],
-                                                                                 MPI_2017_1_T_o$M0_k7[1],
-                                                                                 MPI_2017_1_T_o$M0_k8[1],
-                                                                                 MPI_2017_1_T_o$M0_k9[1]))
+    M0_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>0</sub>", M0, switch(input$slider_91_MPI,
+                                                                                 National_2017$M0_k1[1],
+                                                                                 National_2017$M0_k2[1],
+                                                                                 National_2017$M0_k3[1],
+                                                                                 National_2017$M0_k4[1],
+                                                                                 National_2017$M0_k5[1],
+                                                                                 National_2017$M0_k6[1],
+                                                                                 National_2017$M0_k7[1],
+                                                                                 National_2017$M0_k8[1],
+                                                                                 National_2017$M0_k9[1]))
     
-    M1_labels <- get_label(MAP_2017_91_T_o@data$ADM2_EN, "M<sub>1</sub>", M1, switch(input$slider_91_MPI,
-                                                                                 MPI_2017_1_T_o$M1_k1[1],
-                                                                                 MPI_2017_1_T_o$M1_k2[1],
-                                                                                 MPI_2017_1_T_o$M1_k3[1],
-                                                                                 MPI_2017_1_T_o$M1_k4[1],
-                                                                                 MPI_2017_1_T_o$M1_k5[1],
-                                                                                 MPI_2017_1_T_o$M1_k6[1],
-                                                                                 MPI_2017_1_T_o$M1_k7[1],
-                                                                                 MPI_2017_1_T_o$M1_k8[1],
-                                                                                 MPI_2017_1_T_o$M1_k9[1]))
+    M1_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>1</sub>", M1, switch(input$slider_91_MPI,
+                                                                                 National_2017$M1_k1[1],
+                                                                                 National_2017$M1_k2[1],
+                                                                                 National_2017$M1_k3[1],
+                                                                                 National_2017$M1_k4[1],
+                                                                                 National_2017$M1_k5[1],
+                                                                                 National_2017$M1_k6[1],
+                                                                                 National_2017$M1_k7[1],
+                                                                                 National_2017$M1_k8[1],
+                                                                                 National_2017$M1_k9[1]))
     
-    M2_labels <- get_label(MAP_2017_91_T_o@data$ADM2_EN, "M<sub>2</sub>", M2, switch(input$slider_91_MPI,
-                                                                                 MPI_2017_1_T_o$M2_k1[1],
-                                                                                 MPI_2017_1_T_o$M2_k2[1],
-                                                                                 MPI_2017_1_T_o$M2_k3[1],
-                                                                                 MPI_2017_1_T_o$M2_k4[1],
-                                                                                 MPI_2017_1_T_o$M2_k5[1],
-                                                                                 MPI_2017_1_T_o$M2_k6[1],
-                                                                                 MPI_2017_1_T_o$M2_k7[1],
-                                                                                 MPI_2017_1_T_o$M2_k8[1],
-                                                                                 MPI_2017_1_T_o$M2_k9[1]))
+    M2_labels <- get_label(Dist_91_Map@data$ADM2_EN, "M<sub>2</sub>", M2, switch(input$slider_91_MPI,
+                                                                                 National_2017$M2_k1[1],
+                                                                                 National_2017$M2_k2[1],
+                                                                                 National_2017$M2_k3[1],
+                                                                                 National_2017$M2_k4[1],
+                                                                                 National_2017$M2_k5[1],
+                                                                                 National_2017$M2_k6[1],
+                                                                                 National_2017$M2_k7[1],
+                                                                                 National_2017$M2_k8[1],
+                                                                                 National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -1242,9 +1048,9 @@ server <- function(input, output, session) {
         minZoom = 0, maxZoom= 18,
         drag = FALSE)) %>% addTiles() %>%
       setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(MAP_2017_91_T_o, pal, M0, M0_labels, "M0") %>%
-      get_polygon(MAP_2017_91_T_o, pal, M1, M1_labels, "M1") %>%
-      get_polygon(MAP_2017_91_T_o, pal, M2, M2_labels, "M2") %>%
+      get_polygon(Dist_91_Map, pal, M0, M0_labels, "M0") %>%
+      get_polygon(Dist_91_Map, pal, M1, M1_labels, "M1") %>%
+      get_polygon(Dist_91_Map, pal, M2, M2_labels, "M2") %>%
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
@@ -1256,53 +1062,133 @@ server <- function(input, output, session) {
   })
   
   output$Dist_60_MPI_Map <- renderLeaflet({
-    k_threshold = input$slider_60_MPI
+    # Creating variables for M0, M1 and M2
+    M0_Total <- switch(input$slider_60_MPI,
+                       Dist_60_Total_Map@data$M0_k1,
+                       Dist_60_Total_Map@data$M0_k2,
+                       Dist_60_Total_Map@data$M0_k3,
+                       Dist_60_Total_Map@data$M0_k4,
+                       Dist_60_Total_Map@data$M0_k5,
+                       Dist_60_Total_Map@data$M0_k6,
+                       Dist_60_Total_Map@data$M0_k7,
+                       Dist_60_Total_Map@data$M0_k8,
+                       Dist_60_Total_Map@data$M0_k9
+    )
+    
+    M1_Total = switch(input$slider_60_MPI,
+                      Dist_60_Total_Map@data$M1_k1,
+                      Dist_60_Total_Map@data$M1_k2,
+                      Dist_60_Total_Map@data$M1_k3,
+                      Dist_60_Total_Map@data$M1_k4,
+                      Dist_60_Total_Map@data$M1_k5,
+                      Dist_60_Total_Map@data$M1_k6,
+                      Dist_60_Total_Map@data$M1_k7,
+                      Dist_60_Total_Map@data$M1_k8,
+                      Dist_60_Total_Map@data$M1_k9)
+    
+    M2_Total = switch(input$slider_60_MPI,
+                      Dist_60_Total_Map@data$M2_k1,
+                      Dist_60_Total_Map@data$M2_k2,
+                      Dist_60_Total_Map@data$M2_k3,
+                      Dist_60_Total_Map@data$M2_k4,
+                      Dist_60_Total_Map@data$M2_k5,
+                      Dist_60_Total_Map@data$M2_k6,
+                      Dist_60_Total_Map@data$M2_k7,
+                      Dist_60_Total_Map@data$M2_k8,
+                      Dist_60_Total_Map@data$M2_k9)
+    
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_60_MPI,
+                       Dist_60_Urban_Map@data$M0_k1,
+                       Dist_60_Urban_Map@data$M0_k2,
+                       Dist_60_Urban_Map@data$M0_k3,
+                       Dist_60_Urban_Map@data$M0_k4,
+                       Dist_60_Urban_Map@data$M0_k5,
+                       Dist_60_Urban_Map@data$M0_k6,
+                       Dist_60_Urban_Map@data$M0_k7,
+                       Dist_60_Urban_Map@data$M0_k8,
+                       Dist_60_Urban_Map@data$M0_k9
+    )
+    
+    M1_Urban = switch(input$slider_60_MPI,
+                      Dist_60_Urban_Map@data$M1_k1,
+                      Dist_60_Urban_Map@data$M1_k2,
+                      Dist_60_Urban_Map@data$M1_k3,
+                      Dist_60_Urban_Map@data$M1_k4,
+                      Dist_60_Urban_Map@data$M1_k5,
+                      Dist_60_Urban_Map@data$M1_k6,
+                      Dist_60_Urban_Map@data$M1_k7,
+                      Dist_60_Urban_Map@data$M1_k8,
+                      Dist_60_Urban_Map@data$M1_k9)
+    
+    M2_Urban = switch(input$slider_60_MPI,
+                      Dist_60_Urban_Map@data$M2_k1,
+                      Dist_60_Urban_Map@data$M2_k2,
+                      Dist_60_Urban_Map@data$M2_k3,
+                      Dist_60_Urban_Map@data$M2_k4,
+                      Dist_60_Urban_Map@data$M2_k5,
+                      Dist_60_Urban_Map@data$M2_k6,
+                      Dist_60_Urban_Map@data$M2_k7,
+                      Dist_60_Urban_Map@data$M2_k8,
+                      Dist_60_Urban_Map@data$M2_k9)
+    
+    # Rural MPI Variables
+    
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_60_MPI,
+                       Dist_60_Rural_Map@data$M0_k1,
+                       Dist_60_Rural_Map@data$M0_k2,
+                       Dist_60_Rural_Map@data$M0_k3,
+                       Dist_60_Rural_Map@data$M0_k4,
+                       Dist_60_Rural_Map@data$M0_k5,
+                       Dist_60_Rural_Map@data$M0_k6,
+                       Dist_60_Rural_Map@data$M0_k7,
+                       Dist_60_Rural_Map@data$M0_k8,
+                       Dist_60_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_60_MPI,
+                      Dist_60_Rural_Map@data$M1_k1,
+                      Dist_60_Rural_Map@data$M1_k2,
+                      Dist_60_Rural_Map@data$M1_k3,
+                      Dist_60_Rural_Map@data$M1_k4,
+                      Dist_60_Rural_Map@data$M1_k5,
+                      Dist_60_Rural_Map@data$M1_k6,
+                      Dist_60_Rural_Map@data$M1_k7,
+                      Dist_60_Rural_Map@data$M1_k8,
+                      Dist_60_Rural_Map@data$M1_k9)
+    
+    M2_Rural = switch(input$slider_60_MPI,
+                      Dist_60_Rural_Map@data$M2_k1,
+                      Dist_60_Rural_Map@data$M2_k2,
+                      Dist_60_Rural_Map@data$M2_k3,
+                      Dist_60_Rural_Map@data$M2_k4,
+                      Dist_60_Rural_Map@data$M2_k5,
+                      Dist_60_Rural_Map@data$M2_k6,
+                      Dist_60_Rural_Map@data$M2_k7,
+                      Dist_60_Rural_Map@data$M2_k8,
+                      Dist_60_Rural_Map@data$M2_k9)
+    
+    # 1 = Total, 2 = Urban, 3 = Rural
     UrbRurSelection = strtoi(input$UrbRurSelection_MPI_60)
-    SensitivitySelection = strtoi(input$SensitivitySelection_60)
     
+    print(UrbRurSelection)
     
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
     
-    map = switch(SensitivitySelection, switch(UrbRurSelection,
-                                              MAP_2017_60_T_o,
-                                              MAP_2017_60_U_o,
-                                              MAP_2017_60_R_o), switch(UrbRurSelection,
-                                                                       MAP_2017_60_T_n,
-                                                                       MAP_2017_60_U_n,
-                                                                       MAP_2017_60_U_n))
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
     
-    M0 = switch(k_threshold,
-                map@data$M0_k1,
-                map@data$M0_k2,
-                map@data$M0_k3,
-                map@data$M0_k4,
-                map@data$M0_k5,
-                map@data$M0_k6,
-                map@data$M0_k7,
-                map@data$M0_k8,
-                map@data$M0_k9)
-    
-    M1 = switch(k_threshold,
-                map@data$M1_k1,
-                map@data$M1_k2,
-                map@data$M1_k3,
-                map@data$M1_k4,
-                map@data$M1_k5,
-                map@data$M1_k6,
-                map@data$M1_k7,
-                map@data$M1_k8,
-                map@data$M1_k9)
-    
-    M2 = switch(k_threshold,
-                map@data$M2_k1,
-                map@data$M2_k2,
-                map@data$M2_k3,
-                map@data$M2_k4,
-                map@data$M2_k5,
-                map@data$M2_k6,
-                map@data$M2_k7,
-                map@data$M2_k8,
-                map@data$M2_k9)
-
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
@@ -1311,38 +1197,38 @@ server <- function(input, output, session) {
       reverse = TRUE)
     
     # This creates labels for M0, M1 and M2 
-    M0_labels <- get_label(MAP_2017_60_T_o@data$NAME_2, "M<sub>0</sub>", M0, switch(input$slider_60_MPI,
-                                                                                MPI_2017_1_T_o$M0_k1[1],
-                                                                                MPI_2017_1_T_o$M0_k2[1],
-                                                                                MPI_2017_1_T_o$M0_k3[1],
-                                                                                MPI_2017_1_T_o$M0_k4[1],
-                                                                                MPI_2017_1_T_o$M0_k5[1],
-                                                                                MPI_2017_1_T_o$M0_k6[1],
-                                                                                MPI_2017_1_T_o$M0_k7[1],
-                                                                                MPI_2017_1_T_o$M0_k8[1],
-                                                                                MPI_2017_1_T_o$M0_k9[1]))
+    M0_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>0</sub>", M0, switch(input$slider_60_MPI,
+                                                                                National_2017$M0_k1[1],
+                                                                                National_2017$M0_k2[1],
+                                                                                National_2017$M0_k3[1],
+                                                                                National_2017$M0_k4[1],
+                                                                                National_2017$M0_k5[1],
+                                                                                National_2017$M0_k6[1],
+                                                                                National_2017$M0_k7[1],
+                                                                                National_2017$M0_k8[1],
+                                                                                National_2017$M0_k9[1]))
     
-    M1_labels <- get_label(MAP_2017_60_T_o@data$NAME_2, "M<sub>1</sub>", M1, switch(input$slider_60_MPI,
-                                                                                MPI_2017_1_T_o$M1_k1[1],
-                                                                                MPI_2017_1_T_o$M1_k2[1],
-                                                                                MPI_2017_1_T_o$M1_k3[1],
-                                                                                MPI_2017_1_T_o$M1_k4[1],
-                                                                                MPI_2017_1_T_o$M1_k5[1],
-                                                                                MPI_2017_1_T_o$M1_k6[1],
-                                                                                MPI_2017_1_T_o$M1_k7[1],
-                                                                                MPI_2017_1_T_o$M1_k8[1],
-                                                                                MPI_2017_1_T_o$M1_k9[1]))
+    M1_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>1</sub>", M1, switch(input$slider_60_MPI,
+                                                                                National_2017$M1_k1[1],
+                                                                                National_2017$M1_k2[1],
+                                                                                National_2017$M1_k3[1],
+                                                                                National_2017$M1_k4[1],
+                                                                                National_2017$M1_k5[1],
+                                                                                National_2017$M1_k6[1],
+                                                                                National_2017$M1_k7[1],
+                                                                                National_2017$M1_k8[1],
+                                                                                National_2017$M1_k9[1]))
     
-    M2_labels <- get_label(MAP_2017_60_T_o@data$NAME_2, "M<sub>2</sub>", M2, switch(input$slider_60_MPI,
-                                                                                MPI_2017_1_T_o$M2_k1[1],
-                                                                                MPI_2017_1_T_o$M2_k2[1],
-                                                                                MPI_2017_1_T_o$M2_k3[1],
-                                                                                MPI_2017_1_T_o$M2_k4[1],
-                                                                                MPI_2017_1_T_o$M2_k5[1],
-                                                                                MPI_2017_1_T_o$M2_k6[1],
-                                                                                MPI_2017_1_T_o$M2_k7[1],
-                                                                                MPI_2017_1_T_o$M2_k8[1],
-                                                                                MPI_2017_1_T_o$M2_k9[1]))
+    M2_labels <- get_label(Dist_60_Map@data$NAME_2, "M<sub>2</sub>", M2, switch(input$slider_60_MPI,
+                                                                                National_2017$M2_k1[1],
+                                                                                National_2017$M2_k2[1],
+                                                                                National_2017$M2_k3[1],
+                                                                                National_2017$M2_k4[1],
+                                                                                National_2017$M2_k5[1],
+                                                                                National_2017$M2_k6[1],
+                                                                                National_2017$M2_k7[1],
+                                                                                National_2017$M2_k8[1],
+                                                                                National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -1357,9 +1243,9 @@ server <- function(input, output, session) {
         minZoom = 0, maxZoom= 18,
         drag = FALSE)) %>% addTiles() %>%
       setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(MAP_2017_60_T_o, pal, M0, M0_labels, "M0") %>%
-      get_polygon(MAP_2017_60_T_o, pal, M1, M1_labels, "M1") %>%
-      get_polygon(MAP_2017_60_T_o, pal, M2, M2_labels, "M2") %>%
+      get_polygon(Dist_60_Map, pal, M0, M0_labels, "M0") %>%
+      get_polygon(Dist_60_Map, pal, M1, M1_labels, "M1") %>%
+      get_polygon(Dist_60_Map, pal, M2, M2_labels, "M2") %>%
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
@@ -1372,53 +1258,131 @@ server <- function(input, output, session) {
   
   output$Prov_MPI_Map <- renderLeaflet({
     
-    k_threshold = input$slider_10_MPI
-    UrbRurSelection = strtoi(input$UrbRurSelection_MPI_10)
-    SensitivitySelection = strtoi(input$SensitivitySelection_10)
+    # Creating variables for M0, M1 and M2
+    M0_Total <- switch(input$slider_Prov_MPI,
+                       Prov_Total_Map@data$M0_k1,
+                       Prov_Total_Map@data$M0_k2,
+                       Prov_Total_Map@data$M0_k3,
+                       Prov_Total_Map@data$M0_k4,
+                       Prov_Total_Map@data$M0_k5,
+                       Prov_Total_Map@data$M0_k6,
+                       Prov_Total_Map@data$M0_k7,
+                       Prov_Total_Map@data$M0_k8,
+                       Prov_Total_Map@data$M0_k9
+    )
+    
+    M1_Total = switch(input$slider_Prov_MPI,
+                      Prov_Total_Map@data$M1_k1,
+                      Prov_Total_Map@data$M1_k2,
+                      Prov_Total_Map@data$M1_k3,
+                      Prov_Total_Map@data$M1_k4,
+                      Prov_Total_Map@data$M1_k5,
+                      Prov_Total_Map@data$M1_k6,
+                      Prov_Total_Map@data$M1_k7,
+                      Prov_Total_Map@data$M1_k8,
+                      Prov_Total_Map@data$M1_k9)
+    
+    M2_Total = switch(input$slider_Prov_MPI,
+                      Prov_Total_Map@data$M2_k1,
+                      Prov_Total_Map@data$M2_k2,
+                      Prov_Total_Map@data$M2_k3,
+                      Prov_Total_Map@data$M2_k4,
+                      Prov_Total_Map@data$M2_k5,
+                      Prov_Total_Map@data$M2_k6,
+                      Prov_Total_Map@data$M2_k7,
+                      Prov_Total_Map@data$M2_k8,
+                      Prov_Total_Map@data$M2_k9)
     
     
+    # Urban variables for M0, M1 and M2 
+    M0_Urban <- switch(input$slider_Prov_MPI,
+                       Prov_Urban_Map@data$M0_k1,
+                       Prov_Urban_Map@data$M0_k2,
+                       Prov_Urban_Map@data$M0_k3,
+                       Prov_Urban_Map@data$M0_k4,
+                       Prov_Urban_Map@data$M0_k5,
+                       Prov_Urban_Map@data$M0_k6,
+                       Prov_Urban_Map@data$M0_k7,
+                       Prov_Urban_Map@data$M0_k8,
+                       Prov_Urban_Map@data$M0_k9
+    )
     
-    map = switch(SensitivitySelection, switch(UrbRurSelection,
-                                              MAP_2017_10_T_o,
-                                              MAP_2017_10_U_o,
-                                              MAP_2017_10_R_o), switch(UrbRurSelection,
-                                                                       MAP_2017_10_T_n,
-                                                                       MAP_2017_10_U_n,
-                                                                       MAP_2017_10_U_n))
+    M1_Urban = switch(input$slider_Prov_MPI,
+                      Prov_Urban_Map@data$M1_k1,
+                      Prov_Urban_Map@data$M1_k2,
+                      Prov_Urban_Map@data$M1_k3,
+                      Prov_Urban_Map@data$M1_k4,
+                      Prov_Urban_Map@data$M1_k5,
+                      Prov_Urban_Map@data$M1_k6,
+                      Prov_Urban_Map@data$M1_k7,
+                      Prov_Urban_Map@data$M1_k8,
+                      Prov_Urban_Map@data$M1_k9)
     
-
-    M0 = switch(k_threshold,
-                map@data$M0_k1,
-                map@data$M0_k2,
-                map@data$M0_k3,
-                map@data$M0_k4,
-                map@data$M0_k5,
-                map@data$M0_k6,
-                map@data$M0_k7,
-                map@data$M0_k8,
-                map@data$M0_k9)
+    M2_Urban = switch(input$slider_Prov_MPI,
+                      Prov_Urban_Map@data$M2_k1,
+                      Prov_Urban_Map@data$M2_k2,
+                      Prov_Urban_Map@data$M2_k3,
+                      Prov_Urban_Map@data$M2_k4,
+                      Prov_Urban_Map@data$M2_k5,
+                      Prov_Urban_Map@data$M2_k6,
+                      Prov_Urban_Map@data$M2_k7,
+                      Prov_Urban_Map@data$M2_k8,
+                      Prov_Urban_Map@data$M2_k9)
     
-    M1 = switch(k_threshold,
-                map@data$M1_k1,
-                map@data$M1_k2,
-                map@data$M1_k3,
-                map@data$M1_k4,
-                map@data$M1_k5,
-                map@data$M1_k6,
-                map@data$M1_k7,
-                map@data$M1_k8,
-                map@data$M1_k9)
+    # Rural MPI Variables
     
-    M2 = switch(k_threshold,
-                map@data$M2_k1,
-                map@data$M2_k2,
-                map@data$M2_k3,
-                map@data$M2_k4,
-                map@data$M2_k5,
-                map@data$M2_k6,
-                map@data$M2_k7,
-                map@data$M2_k8,
-                map@data$M2_k9)
+    # Urban variables for M0, M1 and M2 
+    M0_Rural <- switch(input$slider_Prov_MPI,
+                       Prov_Rural_Map@data$M0_k1,
+                       Prov_Rural_Map@data$M0_k2,
+                       Prov_Rural_Map@data$M0_k3,
+                       Prov_Rural_Map@data$M0_k4,
+                       Prov_Rural_Map@data$M0_k5,
+                       Prov_Rural_Map@data$M0_k6,
+                       Prov_Rural_Map@data$M0_k7,
+                       Prov_Rural_Map@data$M0_k8,
+                       Prov_Rural_Map@data$M0_k9
+    )
+    
+    M1_Rural = switch(input$slider_Prov_MPI,
+                      Prov_Rural_Map@data$M1_k1,
+                      Prov_Rural_Map@data$M1_k2,
+                      Prov_Rural_Map@data$M1_k3,
+                      Prov_Rural_Map@data$M1_k4,
+                      Prov_Rural_Map@data$M1_k5,
+                      Prov_Rural_Map@data$M1_k6,
+                      Prov_Rural_Map@data$M1_k7,
+                      Prov_Rural_Map@data$M1_k8,
+                      Prov_Rural_Map@data$M1_k9)
+    
+    M2_Rural = switch(input$slider_Prov_MPI,
+                      Prov_Rural_Map@data$M2_k1,
+                      Prov_Rural_Map@data$M2_k2,
+                      Prov_Rural_Map@data$M2_k3,
+                      Prov_Rural_Map@data$M2_k4,
+                      Prov_Rural_Map@data$M2_k5,
+                      Prov_Rural_Map@data$M2_k6,
+                      Prov_Rural_Map@data$M2_k7,
+                      Prov_Rural_Map@data$M2_k8,
+                      Prov_Rural_Map@data$M2_k9)
+    
+    # 1 = Total, 2 = Urban, 3 = Rural
+    UrbRurSelection = strtoi(input$UrbRurSelection_MPI_Prov)
+    
+    M0 = switch(UrbRurSelection,
+                M0_Total,
+                M0_Urban,
+                M0_Rural)
+    
+    M1 = switch(UrbRurSelection,
+                M1_Total,
+                M1_Urban,
+                M1_Rural)
+    
+    M2 = switch(UrbRurSelection,
+                M2_Total,
+                M2_Urban,
+                M2_Rural)
     
     # This is the color palette used in the graphs
     pal <- colorNumeric(
@@ -1426,40 +1390,39 @@ server <- function(input, output, session) {
       domain = c(0, max(M0, na.rm = TRUE)),
       reverse = TRUE)
     
-    
     # This creates labels for M0, M1 and M2 
-    M0_labels <- get_label(MAP_2017_10_T_o@data$ADM1_EN, "M<sub>0</sub>", M0, switch(k_threshold,
-                                                                              MPI_2017_1_T_o$M0_k1[1],
-                                                                              MPI_2017_1_T_o$M0_k2[1],
-                                                                              MPI_2017_1_T_o$M0_k3[1],
-                                                                              MPI_2017_1_T_o$M0_k4[1],
-                                                                              MPI_2017_1_T_o$M0_k5[1],
-                                                                              MPI_2017_1_T_o$M0_k6[1],
-                                                                              MPI_2017_1_T_o$M0_k7[1],
-                                                                              MPI_2017_1_T_o$M0_k8[1],
-                                                                              MPI_2017_1_T_o$M0_k9[1]))
+    M0_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>0</sub>", M0, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M0_k1[1],
+                                                                              National_2017$M0_k2[1],
+                                                                              National_2017$M0_k3[1],
+                                                                              National_2017$M0_k4[1],
+                                                                              National_2017$M0_k5[1],
+                                                                              National_2017$M0_k6[1],
+                                                                              National_2017$M0_k7[1],
+                                                                              National_2017$M0_k8[1],
+                                                                              National_2017$M0_k9[1]))
     
-    M1_labels <- get_label(MAP_2017_10_T_o@data$ADM1_EN, "M<sub>1</sub>", M1, switch(k_threshold,
-                                                                              MPI_2017_1_T_o$M1_k1[1],
-                                                                              MPI_2017_1_T_o$M1_k2[1],
-                                                                              MPI_2017_1_T_o$M1_k3[1],
-                                                                              MPI_2017_1_T_o$M1_k4[1],
-                                                                              MPI_2017_1_T_o$M1_k5[1],
-                                                                              MPI_2017_1_T_o$M1_k6[1],
-                                                                              MPI_2017_1_T_o$M1_k7[1],
-                                                                              MPI_2017_1_T_o$M1_k8[1],
-                                                                              MPI_2017_1_T_o$M1_k9[1]))
+    M1_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>1</sub>", M1, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M1_k1[1],
+                                                                              National_2017$M1_k2[1],
+                                                                              National_2017$M1_k3[1],
+                                                                              National_2017$M1_k4[1],
+                                                                              National_2017$M1_k5[1],
+                                                                              National_2017$M1_k6[1],
+                                                                              National_2017$M1_k7[1],
+                                                                              National_2017$M1_k8[1],
+                                                                              National_2017$M1_k9[1]))
     
-    M2_labels <- get_label(MAP_2017_10_T_o@data$ADM1_EN, "M<sub>2</sub>", M2, switch(k_threshold,
-                                                                              MPI_2017_1_T_o$M2_k1[1],
-                                                                              MPI_2017_1_T_o$M2_k2[1],
-                                                                              MPI_2017_1_T_o$M2_k3[1],
-                                                                              MPI_2017_1_T_o$M2_k4[1],
-                                                                              MPI_2017_1_T_o$M2_k5[1],
-                                                                              MPI_2017_1_T_o$M2_k6[1],
-                                                                              MPI_2017_1_T_o$M2_k7[1],
-                                                                              MPI_2017_1_T_o$M2_k8[1],
-                                                                              MPI_2017_1_T_o$M2_k9[1]))
+    M2_labels <- get_label(Prov_Map@data$ADM1_EN, "M<sub>2</sub>", M2, switch(input$slider_Prov_MPI,
+                                                                              National_2017$M2_k1[1],
+                                                                              National_2017$M2_k2[1],
+                                                                              National_2017$M2_k3[1],
+                                                                              National_2017$M2_k4[1],
+                                                                              National_2017$M2_k5[1],
+                                                                              National_2017$M2_k6[1],
+                                                                              National_2017$M2_k7[1],
+                                                                              National_2017$M2_k8[1],
+                                                                              National_2017$M2_k9[1]))
     
     ## MAPPING----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -1474,9 +1437,9 @@ server <- function(input, output, session) {
         minZoom = 0, maxZoom= 18,
         drag = FALSE)) %>% addTiles() %>%
       setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(MAP_2017_10_T_o, pal, M0, M0_labels, "M0") %>%
-      get_polygon(MAP_2017_10_T_o, pal, M1, M1_labels, "M1") %>%
-      get_polygon(MAP_2017_10_T_o, pal, M2, M2_labels, "M2") %>%
+      get_polygon(Prov_Map, pal, M0, M0_labels, "M0") %>%
+      get_polygon(Prov_Map, pal, M1, M1_labels, "M1") %>%
+      get_polygon(Prov_Map, pal, M2, M2_labels, "M2") %>%
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
@@ -1496,13 +1459,13 @@ server <- function(input, output, session) {
     UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_91)
     
     map = switch(UrbRurSelection,
-                 MAP_2017_91_T_o,
-                 MAP_2017_91_U_o,
-                 MAP_2017_91_R_o)
+                 Dist_91_Total_Map,
+                 Dist_91_Urban_Map,
+                 Dist_91_Rural_Map)
     nat_data = switch(UrbRurSelection,
-                      MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
     
     
     g_edu_max = switch(input$slider_91_Decomp,
@@ -2297,13 +2260,13 @@ server <- function(input, output, session) {
     UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_60)
     
     map = switch(UrbRurSelection,
-                 MAP_2017_60_T_o,
-                 MAP_2017_60_U_o,
-                 MAP_2017_60_R_o)
+                 Dist_60_Total_Map,
+                 Dist_60_Urban_Map,
+                 Dist_60_Rural_Map)
     nat_data = switch(UrbRurSelection,
-                      MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
     
     
     g_edu_max = switch(input$slider_60_Decomp,
@@ -3096,13 +3059,13 @@ server <- function(input, output, session) {
     UrbRurSelection = strtoi(input$UrbRurSelection_Decomp_Prov)
     
     map = switch(UrbRurSelection,
-                 MAP_2017_10_T_o,
-                 MAP_2017_10_U_o,
-                 MAP_2017_10_R_o)
+                 Prov_Total_Map,
+                 Prov_Urban_Map,
+                 Prov_Rural_Map)
     nat_data = switch(UrbRurSelection,
-                      MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      National_2017,
+                      National_Urban_2017,
+                      National_Rural_2017)
     
     g_edu_max = switch(input$slider_Prov_Decomp,
                        switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
@@ -3882,473 +3845,6 @@ server <- function(input, output, session) {
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
                 position = "bottomleft") %>%
-      htmlwidgets::prependContent(html_fix)
-  })
-  
-  output$M0_Comparison_Map <- renderLeaflet({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M0)
-    
-    RegionSelection = strtoi(input$RegionSelection_M0)
-    
-    
-    
-    k_threshold = input$slider_M0_Comparison
-    
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M0_2017 = switch(k_threshold,
-                     map_2017@data$M0_k1,
-                     map_2017@data$M0_k2,
-                     map_2017@data$M0_k3,
-                     map_2017@data$M0_k4,
-                     map_2017@data$M0_k5,
-                     map_2017@data$M0_k6,
-                     map_2017@data$M0_k7,
-                     map_2017@data$M0_k8,
-                     map_2017@data$M0_k9)
-    
-    M0_2011 = switch(k_threshold,
-                     map_2011@data$M0_k1,
-                     map_2011@data$M0_k2,
-                     map_2011@data$M0_k3,
-                     map_2011@data$M0_k4,
-                     map_2011@data$M0_k5,
-                     map_2011@data$M0_k6,
-                     map_2011@data$M0_k7,
-                     map_2011@data$M0_k8,
-                     map_2011@data$M0_k9)
-    
-    M0_change = M0_2017 - M0_2011
-    
-    map_2017@data$M0_change = M0_change
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    change_labels <- sprintf(
-      paste0("<strong>%s</strong><br/>
-    <strong>" , "M<sub>0</sub> Change" , ":</strong> %g<br/>"),
-      names, M0_change) %>% lapply(htmltools::HTML)
-    
-    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
-    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
-    
-    pal <- colorNumeric(
-      palette = "viridis",
-      domain = M0_change,
-      reverse = TRUE)
-    
-    # This is where the map gets plotted 
-    leaflet(
-      options = leafletOptions(
-        minZoom = 0, maxZoom= 18,
-        drag = FALSE)) %>% addTiles() %>%
-      setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(map_2017, pal, M0_change, change_labels, "M0") %>%
-      clearControls() %>%
-      
-      addLegend(pal = pal, values = M0_change, opacity = 0.7, title = paste0("Index with k = ", k_threshold),
-                position = "bottomright") %>%
-      htmlwidgets::prependContent(html_fix)
-  })
-  
-  output$M0_Scatterplot <- renderPlot({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M0)
-    
-    RegionSelection = strtoi(input$RegionSelection_M0)
-    
-    
-    
-    k_threshold = input$slider_M0_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M0_2017 = switch(k_threshold,
-                     map_2017@data$M0_k1,
-                     map_2017@data$M0_k2,
-                     map_2017@data$M0_k3,
-                     map_2017@data$M0_k4,
-                     map_2017@data$M0_k5,
-                     map_2017@data$M0_k6,
-                     map_2017@data$M0_k7,
-                     map_2017@data$M0_k8,
-                     map_2017@data$M0_k9)
-    
-    M0_2011 = switch(k_threshold,
-                     map_2011@data$M0_k1,
-                     map_2011@data$M0_k2,
-                     map_2011@data$M0_k3,
-                     map_2011@data$M0_k4,
-                     map_2011@data$M0_k5,
-                     map_2011@data$M0_k6,
-                     map_2011@data$M0_k7,
-                     map_2011@data$M0_k8,
-                     map_2011@data$M0_k9)
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    print(length(names))
-    create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017")
-  })
-  
-  output$M1_Scatterplot <- renderPlot({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M1)
-    
-    RegionSelection = strtoi(input$RegionSelection_M1)
-    
-    
-    
-    k_threshold = input$slider_M1_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M1_2017 = switch(k_threshold,
-                     map_2017@data$M1_k1,
-                     map_2017@data$M1_k2,
-                     map_2017@data$M1_k3,
-                     map_2017@data$M1_k4,
-                     map_2017@data$M1_k5,
-                     map_2017@data$M1_k6,
-                     map_2017@data$M1_k7,
-                     map_2017@data$M1_k8,
-                     map_2017@data$M1_k9)
-    
-    M1_2011 = switch(k_threshold,
-                     map_2011@data$M1_k1,
-                     map_2011@data$M1_k2,
-                     map_2011@data$M1_k3,
-                     map_2011@data$M1_k4,
-                     map_2011@data$M1_k5,
-                     map_2011@data$M1_k6,
-                     map_2011@data$M1_k7,
-                     map_2011@data$M1_k8,
-                     map_2011@data$M1_k9)
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    print(length(names))
-    create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017")
-  })
-  
-  output$M1_Comparison_Map <- renderLeaflet({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M1)
-    
-    RegionSelection = strtoi(input$RegionSelection_M1)
-    
-    
-    
-    k_threshold = input$slider_M1_Comparison
-    
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M1_2017 = switch(k_threshold,
-                     map_2017@data$M1_k1,
-                     map_2017@data$M1_k2,
-                     map_2017@data$M1_k3,
-                     map_2017@data$M1_k4,
-                     map_2017@data$M1_k5,
-                     map_2017@data$M1_k6,
-                     map_2017@data$M1_k7,
-                     map_2017@data$M1_k8,
-                     map_2017@data$M1_k9)
-    
-    M1_2011 = switch(k_threshold,
-                     map_2011@data$M1_k1,
-                     map_2011@data$M1_k2,
-                     map_2011@data$M1_k3,
-                     map_2011@data$M1_k4,
-                     map_2011@data$M1_k5,
-                     map_2011@data$M1_k6,
-                     map_2011@data$M1_k7,
-                     map_2011@data$M1_k8,
-                     map_2011@data$M1_k9)
-    
-    M1_change = M1_2017 - M1_2011
-    
-    map_2017@data$M1_change = M1_change
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    change_labels <- sprintf(
-      paste0("<strong>%s</strong><br/>
-    <strong>" , "M<sub>1</sub> Change" , ":</strong> %g<br/>"),
-      names, M1_change) %>% lapply(htmltools::HTML)
-    
-    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
-    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
-    
-    pal <- colorNumeric(
-      palette = "viridis",
-      domain = M1_change,
-      reverse = TRUE)
-    
-    # This is where the map gets plotted 
-    leaflet(
-      options = leafletOptions(
-        minZoom = 0, maxZoom= 18,
-        drag = FALSE)) %>% addTiles() %>%
-      setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(map_2017, pal, M1_change, change_labels, "M1") %>%
-      clearControls() %>%
-      
-      addLegend(pal = pal, values = M1_change, opacity = 0.7, title = paste0("Index with k = ", k_threshold),
-                position = "bottomright") %>%
-      htmlwidgets::prependContent(html_fix)
-  })
-  
-  output$M2_Scatterplot <- renderPlot({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M2)
-    
-    RegionSelection = strtoi(input$RegionSelection_M2)
-    
-    
-    
-    k_threshold = input$slider_M2_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M2_2017 = switch(k_threshold,
-                     map_2017@data$M2_k1,
-                     map_2017@data$M2_k2,
-                     map_2017@data$M2_k3,
-                     map_2017@data$M2_k4,
-                     map_2017@data$M2_k5,
-                     map_2017@data$M2_k6,
-                     map_2017@data$M2_k7,
-                     map_2017@data$M2_k8,
-                     map_2017@data$M2_k9)
-    
-    M2_2011 = switch(k_threshold,
-                     map_2011@data$M2_k1,
-                     map_2011@data$M2_k2,
-                     map_2011@data$M2_k3,
-                     map_2011@data$M2_k4,
-                     map_2011@data$M2_k5,
-                     map_2011@data$M2_k6,
-                     map_2011@data$M2_k7,
-                     map_2011@data$M2_k8,
-                     map_2011@data$M2_k9)
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    create_scatter(names, M2_2011, M2_2017, "M2 for 2011", "M2 for 2017", "Comparison of M2 from 2011 to 2017")
-  })
-  
-  output$M2_Comparison_Map <- renderLeaflet({
-    UrbRurSelection = strtoi(input$UrbRurSelection_M2)
-    
-    RegionSelection = strtoi(input$RegionSelection_M2)
-    
-    
-    
-    k_threshold = input$slider_M2_Comparison
-    
-    
-    map_2017 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2017_60_T_o,
-                             MAP_2017_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_U_o, 
-                             MAP_2017_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2017_60_R_o,
-                             MAP_2017_10_R_o))
-    
-    
-    map_2011 = switch(UrbRurSelection, 
-                      switch(RegionSelection,
-                             MAP_2011_60_T_o,
-                             MAP_2011_10_T_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_U_o, 
-                             MAP_2011_10_U_o),
-                      switch(RegionSelection,
-                             MAP_2011_60_R_o,
-                             MAP_2011_10_R_o))
-    
-    M2_2017 = switch(k_threshold,
-                     map_2017@data$M2_k1,
-                     map_2017@data$M2_k2,
-                     map_2017@data$M2_k3,
-                     map_2017@data$M2_k4,
-                     map_2017@data$M2_k5,
-                     map_2017@data$M2_k6,
-                     map_2017@data$M2_k7,
-                     map_2017@data$M2_k8,
-                     map_2017@data$M2_k9)
-    
-    M2_2011 = switch(k_threshold,
-                     map_2011@data$M2_k1,
-                     map_2011@data$M2_k2,
-                     map_2011@data$M2_k3,
-                     map_2011@data$M2_k4,
-                     map_2011@data$M2_k5,
-                     map_2011@data$M2_k6,
-                     map_2011@data$M2_k7,
-                     map_2011@data$M2_k8,
-                     map_2011@data$M2_k9)
-    
-    M2_change = M2_2017 - M2_2011
-    
-    map_2017@data$M2_change = M2_change
-    
-    names = switch(RegionSelection,
-                   map_2017@data$NAME_2,
-                   map_2017@data$ADM1_EN)
-    
-    change_labels <- sprintf(
-      paste0("<strong>%s</strong><br/>
-    <strong>" , "M<sub>1</sub> Change" , ":</strong> %g<br/>"),
-      names, M2_change) %>% lapply(htmltools::HTML)
-    
-    css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
-    html_fix <- htmltools::tags$style(type = "text/css", css_fix)  # Convert CSS to HTML
-    
-    pal <- colorNumeric(
-      palette = "viridis",
-      domain = M2_change,
-      reverse = TRUE)
-    
-    # This is where the map gets plotted 
-    leaflet(
-      options = leafletOptions(
-        minZoom = 0, maxZoom= 18,
-        drag = FALSE)) %>% addTiles() %>%
-      setView(lng = 30, lat=-19, zoom=6) %>% 
-      get_polygon(map_2017, pal, M2_change, change_labels, "M2") %>%
-      clearControls() %>%
-      
-      addLegend(pal = pal, values = M2_change, opacity = 0.7, title = paste0("Index with k = ", k_threshold),
-                position = "bottomright") %>%
       htmlwidgets::prependContent(html_fix)
   })
   }

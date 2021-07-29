@@ -1,0 +1,11 @@
+name: ShinyApp
+title: ShinyApp
+username:
+account: ecsusan-vt-2020-shiny
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4433544
+bundleId:
+url: https://ecsusan-vt-2020-shiny.shinyapps.io/ShinyApp/
+when: 1627495417.83976
+lastSyncTime: 1627495417.83976

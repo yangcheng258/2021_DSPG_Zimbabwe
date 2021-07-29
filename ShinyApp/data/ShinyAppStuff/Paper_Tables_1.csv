@@ -1,0 +1,15 @@
+﻿Dimension,Dimension Weight,Variable,Variable Weight Urban,Variable Weight Rural
+Education,2,Nobody in the household completed primary school ,1,1
+,,The household has one child between 6 and 12 not enrolled in school,1,1
+Health,2,One member of the household is chronically ill,1,1
+,,One member of the household has been ill but did not get healthcare in the previous 30 days,1,1
+Employment,1 urban,One member of the household was unemployed as main occupation in the last 12 months,1,-
+Housing Conditions,1 rural,The house does not have electricity,1,0.5
+,1.5 urban,"The house does not have toilets (pit, Blair, or flush toilets) in rural areas or flush toilets in urban areas",0.5,0.5
+Living Conditions,1,The source of water is an unprotected well (or worse) or is located farther than 1 km away in rural areas; the source of water is not piped water on premise in urban areas,0.5,0.5
+,,The household cooks with wood,0.5,0.5
+Assets,1,The asset index of the household is below a given threshold,1,1
+Agricultural assets,1.5 rural,The household has less than 0.25 hectares of land,-,0.5
+,,The animal index of the household is below a given threshold (<1 TLU),-,0.5
+,,The household has no agricultural equipment,-,0.5
+Access to services,1,The household is far from two essential services or more,1,1
