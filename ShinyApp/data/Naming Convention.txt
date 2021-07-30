@@ -15,8 +15,8 @@ Specify New or Old
 
 YEAR_BOUNDARY_URBANITY_TYPE_NEWOLD
 
-{2011, 2017}_{91, 60, 10}_{T, U, R}_{MPI, Map}_{N, O}
+{MPI, Map}_{2011, 2017}_{91, 60, 10, 1}_{T, U, R}_{n, o}
 
 Ex. 2017 91-District Urban MPI Data for New MPI = 
 
-2017_91_U_MPI_N
+MPI_2017_91_U_N

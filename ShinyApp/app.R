@@ -1184,7 +1184,7 @@ server <- function(input, output, session) {
                                                MAP_2017_91_R_o), switch(UrbRurSelection,
                                                                         MAP_2017_91_T_n,
                                                                         MAP_2017_91_U_n,
-                                                                        MAP_2017_91_U_n))
+                                                                        MAP_2017_91_R_n))
     
     M0 = switch(k_threshold,
                 map@data$M0_k1,
@@ -1298,7 +1298,7 @@ server <- function(input, output, session) {
                                               MAP_2017_60_R_o), switch(UrbRurSelection,
                                                                        MAP_2017_60_T_n,
                                                                        MAP_2017_60_U_n,
-                                                                       MAP_2017_60_U_n))
+                                                                       MAP_2017_60_R_n))
     
     M0 = switch(k_threshold,
                 map@data$M0_k1,
@@ -1414,7 +1414,7 @@ server <- function(input, output, session) {
                                               MAP_2017_10_R_o), switch(UrbRurSelection,
                                                                        MAP_2017_10_T_n,
                                                                        MAP_2017_10_U_n,
-                                                                       MAP_2017_10_U_n))
+                                                                       MAP_2017_10_R_n))
     
 
     M0 = switch(k_threshold,
@@ -1531,8 +1531,8 @@ server <- function(input, output, session) {
                  MAP_2017_91_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     
     g_edu_max = switch(input$slider_91_Decomp,
@@ -2332,8 +2332,8 @@ server <- function(input, output, session) {
                  MAP_2017_60_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     
     g_edu_max = switch(input$slider_60_Decomp,
@@ -3131,8 +3131,8 @@ server <- function(input, output, session) {
                  MAP_2017_10_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     g_edu_max = switch(input$slider_Prov_Decomp,
                        switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
