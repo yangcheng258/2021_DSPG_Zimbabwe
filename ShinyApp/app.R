@@ -390,6 +390,8 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
 create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
 
   M0_Comparison = data.frame(names, x_data, y_data)
+  print(x_data)
+  print(y_data)
  
   colnames(M0_Comparison)[1] = "Name"
   # return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) + #, text=~Name)) +
@@ -4014,10 +4016,6 @@ server <- function(input, output, session) {
     
     k_threshold = input$slider_M0_Comparison
     
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
-    
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
                              MAP_2017_60_T_o,
@@ -4067,7 +4065,6 @@ server <- function(input, output, session) {
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
     
-    print(length(names))
     create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017") 
   })
   
@@ -4079,10 +4076,7 @@ server <- function(input, output, session) {
     
     
     k_threshold = input$slider_M1_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
+
     
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
@@ -4133,7 +4127,6 @@ server <- function(input, output, session) {
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
     
-    print(length(names))
     create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017") 
   })
   
@@ -4235,10 +4228,6 @@ server <- function(input, output, session) {
     
     
     k_threshold = input$slider_M2_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
     
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
