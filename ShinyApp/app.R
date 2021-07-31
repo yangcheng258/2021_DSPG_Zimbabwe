@@ -615,7 +615,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                 menuItem(
                                   "Province MPI Map",
                                   tabName = "Prov"
-                                )
+                                ),
+                                menuSubItem("Province Rankings",
+                                            tabName = "rank_prov")
                               )
                             ),
                             
@@ -807,25 +809,47 @@ ui <- navbarPage(title = "Zimbabwe",
                               tabItem(tabName = "rank_60",
                                      tabsetPanel(
                                        tabPanel("M0",
-                                                fluidRow(
-                                                      plotlyOutput("M0_ranking", height = 750),
+                                                fluidPage(
+                                                  box(plotlyOutput("M0_ranking", height = 750)
+                                                      ),
                                                   box(sliderInput("M0_k_threshold", "K-Threshold Value", 1, 9, 3),
                                                       width = 6,
-                                                      footer = slider_caption))),
-     
+                                                      footer = slider_caption),
+                                                  box(
+                                                    withMathJax(),
+                                                    title = strong("Trends"),
+                                                    width = 6,
+                                                    h5("\\(M_{0}\\):"),
+                                                    #p("The ranked bar chart displayed above helps draw out where each district stands in relationship with one another on the basis of M0. Used in combination with the map, this graph helps make clear the existence (or lack) of multidimensional poverty clusters as well as areas that might have less poverty. At M0, it is clear that Binga (0.445) has the highest poverty incidence among all of Zimbabwe’s districts. Notably, Lupane (0.424) and Nkayi (0.417) respectively hold the second and third highest M0 values. This follows the shading on the map which indicates a cluster of multidimensional poverty located in the northwestern portion of the country. Included in this high poverty incidence cluster are Bubi (0.396), Gokwe North (M0 = 0.386), and Gokwe South (0.360), which all rank within the highest twenty-five districts. Another area of interest highlighted by this ranking is the clustered districts of Bulilima (0.406) and Matobo (0.398) which both rank within the top ten highest M0 values and neighbor each other in the southwestern region of Zimbabwe. The districts of Chivi (4.16) and Zvimba (0.411) also stand out due to their extremely high M0 values, but seem to be isolated pockets of poverty nestled within areas that otherwise rank relatively average. The other end of the ranked spectrum, low M0 values, highlights the low poverty incidence that exists in the two city-provinces of Zimbabwe, Harare (0.193) and Bulawayo (0.188). While the neighboring districts to the west of Harare, Kadoma (0.193) and Chegutu (0.195) also land in the top five lowest M0 values, other surrounding districts do not fare the same.")
+                                                  ))),
                                        tabPanel("M1",
                                                 fluidRow(
-                                                    plotlyOutput("M1_ranking", height = 750)),
+                                                box(plotlyOutput("M1_ranking", height = 750)
+                                                ),
                                                 box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
                                                     width = 6,
-                                                    footer = slider_caption)),
+                                                    footer = slider_caption),
+                                                box(withMathJax(),
+                                                    title = strong("Trends"),
+                                                    width = 6,
+                                                    h5("\\(M_{1}\\):"),
+                                                    p("")
+                                                    ))),
                                        tabPanel("M2",
                                                 fluidRow(
-                                                    plotlyOutput("M2_ranking", height = 750)),
-                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                box(
+                                                    plotlyOutput("M2_ranking", height = 750)
+                                                ),
+                                                box(sliderInput("M2_k_threshold", "K-Threshold Value", 1, 9, 3),
                                                     width = 6,
-                                                    footer = slider_caption))
-                                                )),
+                                                    footer = slider_caption),
+                                                box(withMathJax(),
+                                                    title = strong("Trends"),
+                                                    width = 6,
+                                                    h5("\\(M_{2}\\):"),
+                                                    p("")
+                                                    )))
+                                       )),
                                
                               tabItem(
                                 tabName = "Prov",
@@ -889,12 +913,58 @@ ui <- navbarPage(title = "Zimbabwe",
                                       show decreased M0 values throughout although Harare and Mashonaland East have relatively high values. The urban and rural 
                                       split reveals disparity among rural households when compared to their urban counterparts. "),
                                     h5("\\(M_{1}\\):"),
-                                    p(""),
+                                    p("	Looking at the map displayed above and selecting for M1 measures shows that moderate province level M1 values are evenly dispersed throughout Zimbabwe with slight disparities in Matabeleland North and Matabeleland South. An increase in k-threshold decreases M1 values at a greater rate in the southeastern region of Zimbabwe than in the western and northeastern portions. When urban households are accounted for, provinces tend to have lower M1 values than they do when population density is not represented, while rural households tend to have higher M1 values. Adjusting for the increased education threshold results in uniformly higher M1 values in all provinces, again with slight disparity in Matabeleland North and Matabeleland South. When provinces are divided by population density, urban households tend to have lower M1 values than rural households when the sensitivity analysis is incorporated."),
                                     h5("\\(M_{2}\\):"),
-                                    p("")
+                                    p("	Looking at the map displayed above and selecting M2, the poverty severity measure, we again see relatively consistent values throughout Zimbabwe’s provinces. Midlands, Mashonaland West, Manicaland, and the city provinces reflect lower poverty severity than the other provinces. Increasing the k-threshold value reveals relatively high M2 values in the city provinces, as expected, as well as the provinces that surround them. Poverty severity in rural households is higher than it is at the overall province level as well as the urban household level. When the sensitivity analysis is accounted for, M2 values increase across all provinces as more households become deprived in the education dimension. With this selection too, rural households exhibit higher M2 values than their urban counterparts.")
                                   )
                                 )
-                              )
+                              ),
+                              tabItem(tabName = "rank_prov",
+                                      tabsetPanel(
+                                        tabPanel("M0",
+                                                 fluidRow(
+                                                   box(
+                                                   plotlyOutput("M0_prov_ranking", height = 750)
+                                                   ),
+                                                   box(sliderInput("M0_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                       width = 6,
+                                                       footer = slider_caption),
+                                                   box(withMathJax(),
+                                                       title = strong("Trends"),
+                                                       width = 6,
+                                                       h5("\\(M_{0}\\):"),
+                                                       p("")
+                                                   )),
+                                                 ),
+                                        tabPanel("M1",
+                                                 fluidRow(
+                                                   box(
+                                                   plotlyOutput("M1_prov_ranking", height = 750)
+                                                   ),
+                                                   box(sliderInput("M1_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                       width = 6,
+                                                       footer = slider_caption),
+                                                   box(withMathJax(),
+                                                       title = strong("Trends"),
+                                                       width = 6,
+                                                       h5("\\(M_{1}\\):"),
+                                                       p("")
+                                                   ))),
+                                        tabPanel("M2",
+                                                 fluidRow(
+                                                   box(
+                                                   plotlyOutput("M2_prov_ranking", height = 750)
+                                                   ),
+                                                   box(sliderInput("M2_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                       width = 6,
+                                                       footer = slider_caption),
+                                                   box(withMathJax(),
+                                                       title = strong("Trends"),
+                                                       width = 6,
+                                                       h5("\\(M_{2}\\):"),
+                                                       p("")
+                                                   )))
+                                      ))
                             )))),
                  
                  tabPanel("MPI Decomposition", value = "decomposition",
@@ -978,6 +1048,26 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score."),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well."),
+                                    h5("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor."),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well."),
+                                    h5("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. ")
                                   )
                                   )),
                               tabItem(
@@ -1035,6 +1125,26 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score."),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    h5("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    h5("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. ")
                                   )
                                 )),
                               tabItem(
@@ -1092,6 +1202,26 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score. "),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    h5("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    h5("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. ")
                                   )
                                 ))
                               
@@ -1162,10 +1292,18 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                   "Provinces"),
                                                   choiceValues = c(1, 2)),
                                      footer = urban_rural_caption
+                                   ),
+                                   box(
+                                     withMathJax(),
+                                     title = strong("Trends"),
+                                     width = 12,
+                                     h5("\\(M_{0}\\):"),
+                                     p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted-headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of  the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labelled multidimensionally poor increases, more districts will not have increased in their headcount of the multidimensionally-poor. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
                                    )
                                  )
-                               )
-                             ,
+                               ),
                                tabItem(
                                  tabName = "M1_Comp",
                                  # Everything has to be put in a row or column
@@ -1201,9 +1339,17 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                   "Provinces"),
                                                   choiceValues = c(1, 2)),
                                      footer = urban_rural_caption
-                                   )
+                                   ),
+                                   box(
+                                     withMathJax(),
+                                     title = strong("Trends"),
+                                     width = 12,
+                                     h5("\\(M_{1}\\):"),
+                                     p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labelled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
                                  )
-                               ),
+                               )),
                              tabItem(
                                tabName = "M2_Comp",
                                # Everything has to be put in a row or column
@@ -1239,13 +1385,20 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                 "Provinces"),
                                                 choiceValues = c(1, 2)),
                                    footer = urban_rural_caption
+                                 ),
+                                 box(
+                                   withMathJax(),
+                                   title = strong("Trends"),
+                                   width = 12,
+                                   h5("\\(M_{2}\\):"),
+                                   p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
+                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labelled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                   p("Shifting focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
                                  )
-                               )
+                               ))
                              )
-                             )
-                           )
-                         )
-                         ),
+                           
+                         ))),
                                    
 
                   
@@ -2785,6 +2938,385 @@ server <- function(input, output, session) {
                       c(0, .6),
                       c(0, 1)),
       reverse = TRUE)
+    
+
+# Graphing Province Rankings ----------------------------------------------
+
+    prov_ranked <- read_csv("data/MappingData/OriginalMPI/2017/2017_Province.csv")
+    
+    M0_prov_k_threshold <- reactive({
+      input$M0_prov_k
+    })
+    
+    output$M0_prov_ranking <- renderPlotly({
+      if (M0_prov_k_threshold() == "1") {
+        M0_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k1_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "2") {
+        M0_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k2_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "3") {
+        M0_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k3_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "4") {
+        M0_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k4_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "5") {
+        M0_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k5_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "6") {
+        M0_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k6_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "7") {
+        M0_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k7_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "8") {
+        M0_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k8_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "9") {
+        M0_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M1_prov_k_threshold <- reactive({
+      input$M1_prov_k
+    })
+    
+    output$M1_prov_ranking <- renderPlotly({
+      if (M1_prov_k_threshold() == "1") {
+        M1_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k1_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "2") {
+        M1_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k2_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "3") {
+        M1_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k3_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "4") {
+        M1_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k4_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "5") {
+        M1_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k5_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "6") {
+        M1_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k6_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "7") {
+        M1_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k7_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "8") {
+        M1_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k8_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "9") {
+        M1_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M2_prov_k_threshold <- reactive({
+      input$M2_prov_k
+    })
+    
+    output$M2_prov_ranking <- renderPlotly({
+      if (M2_prov_k_threshold() == "1") {
+        M2_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k1_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "2") {
+        M2_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k2_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "3") {
+        M2_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k3_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "4") {
+        M2_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k4_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "5") {
+        M2_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k5_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "6") {
+        M2_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k6_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "7") {
+        M2_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k7_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "8") {
+        M2_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k8_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "9") {
+        M2_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k9_prov_ranking)
+        
+      }
+      
+    })    
     
     ## MAPPING MPI Decomposition 2017 60 Districs----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
