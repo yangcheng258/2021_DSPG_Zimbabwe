@@ -458,7 +458,7 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
   
 }
 
-
+## Ranking Function
 
 # UI -------------------------------------------------------------
 
@@ -1430,13 +1430,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                               a(href = 'https://aaec.vt.edu/content/aaec_vt_edu/en/academics/undergraduate/beyond-classroom/dspg.html#select=1.html', 'the official VT DSPG website.', target = "_blank")),
                                             p("", style = "padding-top:10px;")
                                    ),
-                                   fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                                   fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             column(6, align = "center",
                                                    h4(strong("DSPG Team Members")),
                                                    img(src = "team-yang.png", style = "display: inline;  border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-sambath.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-atticus.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-matt.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                                   p("", style = "padding-top:10px;"),
                                                    p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                      p(a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                        p(a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics)"),
@@ -1447,22 +1448,23 @@ ui <- navbarPage(title = "Zimbabwe",
                                             column(6, align = "center",
                                                    h4(strong("Virginia Tech Faculty Members")),
                                                    p("", style = "padding-top:10px;"),
-                                                   img(src = "faculty-chen.ipg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "faculty-chen.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "faculty-gupta.jpg", style = "display: inline;  border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "faculty-alwang.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
+                                                   p("", style = "padding-top:10px;"),
                                                    p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                    p(a(href = "https://aaec.vt.edu/people/faculty/gupta-anubhab.html", 'Dr. Anubhab Gupta', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                    p(a(href = "https://aaec.vt.edu/people/faculty/alwang-jeffrey.html", 'Dr. Jeffrey Alwang', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                    p("", style = "padding-top:10px;")
                                             )
                                    ),
-                                   fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                                   fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             h4(strong("Project Stakeholders"), align = "center"),
                                             p("Dhiraj Sharma (World Bank), "),
                                             p("Grown Chirongwe (Zimbabwe National Statistics Agency)")
 
                                    ),
-                                   fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                                   fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             h4(strong("Acknowledgement"), align = "center"),
                                             p("We would like to thank ",a(href="https://www.linkedin.com/in/quentin-stoeffler-7913a035/?originalSubdomain=tr","Dr. Quentin Stoeffler",target='_blank')," for providing us with code of the paper", a(href="https://www.researchgate.net/profile/Jeffrey-Alwang/publication/283241726_Multidimensional_Poverty_in_Crisis_Lessons_from_Zimbabwe/links/56b8978a08ae44bb330d32f2/Multidimensional-Poverty-in-Crisis-Lessons-from-Zimbabwe.pdf","Multidimensional Poverty in Crisis: Lessons from Zimbabwe",target='_blank'),". We also thank ZimStat for providing 2011 and 2017 PICES data for this project.")
                                             
