@@ -27,8 +27,10 @@ library(maptools)
 library(shinydashboard)
 library(ggpolypath)
 library(ggplot2)
+library(plotly)
 library(ggrepel)
 library(hrbrthemes)
+library(rmapshaper)
 gpclibPermit()
 #rsconnect::configureApp("ShinyApp", account = "ecsusan-vt-2020-shiny", size="xxlarge")
 
@@ -80,9 +82,11 @@ jscode <- "function getUrlVars() {
 
 ## LOADING DATA-----------------------------------------------------------------
 # MAPS
-MAP_2017_91_T_o <- readOGR(dsn = "./data/shapefiles/91DistrictShapefiles", layer="zwe_admbnda_adm2_zimstat_ocha_20180911")
-MAP_2017_60_T_o <- readOGR(dsn = "./data/shapefiles/60DistrictShapefiles", layer="gadm36_ZWE_2")
-MAP_2017_10_T_o <- readOGR(dsn = "./data/shapefiles/ProvinceShapefiles", layer="zwe_admbnda_adm1_zimstat_ocha_20180911")
+MAP_2017_91_T_o <- ms_simplify(readOGR(dsn = "./data/shapefiles/91DistrictShapefiles", layer="zwe_admbnda_adm2_zimstat_ocha_20180911"))
+
+MAP_2017_60_T_o <- ms_simplify(readOGR(dsn = "./data/shapefiles/60DistrictShapefiles", layer="gadm36_ZWE_2"))
+
+MAP_2017_10_T_o <- ms_simplify(readOGR(dsn = "./data/shapefiles/ProvinceShapefiles", layer="zwe_admbnda_adm1_zimstat_ocha_20180911"))
 
 # MPI Data
 
@@ -387,27 +391,55 @@ get_label <- function(name_data, metric_name, metric, national_metric) {
   return(label)
 }
 
+# create function to make the scatterplots
 create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
+
   M0_Comparison = data.frame(names, x_data, y_data)
+  print(x_data)
+  print(y_data)
+ 
   colnames(M0_Comparison)[1] = "Name"
-  return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) +
-            geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
-                             
-                             min.segment.length = unit(0, 'lines'),
-                             nudge_y = 0.01) +
-            geom_point(
-              color= x_data,
-              fill="#69b3a2",
-              shape=22,
-              alpha=1,
-              size=2,
-              stroke = 1
-            ) +
-            ggtitle(title) +
-            xlab(x_label) +
-            ylab(y_label) +
-            theme_ipsum() +
-            geom_abline()) 
+  # return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) + #, text=~Name)) +
+  #           geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
+  # 
+  #                            min.segment.length = unit(0, 'lines'),
+  #                            nudge_y = 0.01) +
+  #           geom_point(
+  #             color= x_data,
+  #             fill="#69b3a2",
+  #             shape=22,
+  #             alpha=1,
+  #             size=2,
+  #             stroke = 1
+  #           ) +
+  #           ggtitle(title) +
+  #           xlab(x_label) +
+  #           ylab(y_label) +
+  #           theme_bw() +
+  #           geom_abline()) %>% ggplotly()
+  #)
+          #a function to calculate your abline
+          
+    t <- list(
+            family = "sans serif",
+            size = 14,
+            color = toRGB("grey50"))
+    
+    return (plot_ly(M0_Comparison, x = ~x_data, y = ~y_data, text=~Name) %>%
+
+            # +
+            #             # # xlab(x_label) +
+            #             # # ylab(y_label) +
+            #             # theme_bw() +
+            #             geom_abline() %>%
+             
+            add_text(textfont = t, textposition = "top right")%>% 
+            add_markers()%>%
+            layout(shapes=list(type='line', x0=0, x1=(max(x_data,y_data)+0.01), y0=0, y1=(max(x_data,y_data)+0.01)), 
+                   showlegend = FALSE,
+                   xaxis=list(range.default(), title = x_label), 
+                   yaxis=list(range.default(),title=y_label) )  
+    )
   
   
 }
@@ -590,7 +622,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "91 District MPI Map of Zimbabwe",
-                                    leafletOutput("Dist_91_MPI_Map"),
+                                    withSpinner(leafletOutput("Dist_91_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -635,7 +667,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "60 District MPI Map of Zimbabwe",
-                                    leafletOutput("Dist_60_MPI_Map"),
+                                    withSpinner(leafletOutput("Dist_60_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -682,7 +714,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "Province-Level MPI Map of Zimbabwe",
-                                    leafletOutput("Prov_MPI_Map"),
+                                    withSpinner(leafletOutput("Prov_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -758,7 +790,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "91 District Decomposition Map of Zimbabwe",
-                                    leafletOutput("Dist_91_Decomp_Map"),
+                                    withSpinner(leafletOutput("Dist_91_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -815,7 +847,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "60 District Decomposition Map of Zimbabwe",
-                                    leafletOutput("Dist_60_Decomp_Map"),
+                                    withSpinner(leafletOutput("Dist_60_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -872,7 +904,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                 fluidPage(
                                   box(
                                     title = "Province Decomposition Map of Zimbabwe",
-                                    leafletOutput("Prov_Decomp_Map"),
+                                    withSpinner(leafletOutput("Prov_Decomp_Map")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -927,6 +959,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             ))
                             )
                           ),
+                ## Tab Temporal Comparison--------------------------------------
                 tabPanel("2011 to 2017 Data", value = "Comparison",
                          dashboardPage(
                            skin = 'blue',
@@ -960,14 +993,15 @@ ui <- navbarPage(title = "Zimbabwe",
                                  fluidPage(
                                    box(
                                      title = "Comparison of M0 in Zimbabwe",
-                                     leafletOutput("M0_Comparison_Map"),
+                                     withSpinner(leafletOutput("M0_Comparison_Map")),
                                      width = 6,
                                      height = 500
                                    ),
                                    box(
                                      withMathJax(),
                                      title = "Scatterplot",
-                                     plotOutput("M0_Scatterplot"),
+                                     #withSpinner(plotlyOutput("M0_Scatterplot"))
+                                     withSpinner(plotlyOutput("M0_Scatterplot")),
                                      width = 6,
                                      height = 500
                                    ),
@@ -999,14 +1033,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                  fluidPage(
                                    box(
                                      title = "Comparison of M1 in Zimbabwe",
-                                     leafletOutput("M1_Comparison_Map"),
+                                     withSpinner(leafletOutput("M1_Comparison_Map")),
                                      width = 6,
                                      height = 500
                                    ),
                                    box(
                                      withMathJax(),
                                      title = "Scatterplot",
-                                     plotOutput("M1_Scatterplot"),
+                                     withSpinner(plotlyOutput("M1_Scatterplot")),
                                      width = 6,
                                      height = 500
                                    ),
@@ -1037,14 +1071,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                fluidPage(
                                  box(
                                    title = "Comparison of M2 in Zimbabwe",
-                                   leafletOutput("M2_Comparison_Map"),
+                                   withSpinner(leafletOutput("M2_Comparison_Map")),
                                    width = 6,
                                    height = 500
                                  ),
                                  box(
                                    withMathJax(),
                                    title = "Scatterplot",
-                                   plotOutput("M2_Scatterplot"),
+                                   withSpinner(plotlyOutput("M2_Scatterplot")),
                                    width = 6,
                                    height = 500
                                  ),
@@ -1077,7 +1111,7 @@ ui <- navbarPage(title = "Zimbabwe",
 
                   
         
-                  ## Tab Temporal COmparison--------------------------------------
+
                 ## Tab DSPG Team------------------------------------------------
                 tabPanel("Our Team", value = "team",
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
@@ -1153,7 +1187,7 @@ server <- function(input, output, session) {
                                                MAP_2017_91_R_o), switch(UrbRurSelection,
                                                                         MAP_2017_91_T_n,
                                                                         MAP_2017_91_U_n,
-                                                                        MAP_2017_91_U_n))
+                                                                        MAP_2017_91_R_n))
     
     M0 = switch(k_threshold,
                 map@data$M0_k1,
@@ -1228,7 +1262,7 @@ server <- function(input, output, session) {
                                                                                  MPI_2017_1_T_o$M2_k8[1],
                                                                                  MPI_2017_1_T_o$M2_k9[1]))
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING MPI 2017 91districs----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -1267,7 +1301,7 @@ server <- function(input, output, session) {
                                               MAP_2017_60_R_o), switch(UrbRurSelection,
                                                                        MAP_2017_60_T_n,
                                                                        MAP_2017_60_U_n,
-                                                                       MAP_2017_60_U_n))
+                                                                       MAP_2017_60_R_n))
     
     M0 = switch(k_threshold,
                 map@data$M0_k1,
@@ -1343,7 +1377,7 @@ server <- function(input, output, session) {
                                                                                 MPI_2017_1_T_o$M2_k8[1],
                                                                                 MPI_2017_1_T_o$M2_k9[1]))
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING MPI 2017 60 districst----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -1383,7 +1417,7 @@ server <- function(input, output, session) {
                                               MAP_2017_10_R_o), switch(UrbRurSelection,
                                                                        MAP_2017_10_T_n,
                                                                        MAP_2017_10_U_n,
-                                                                       MAP_2017_10_U_n))
+                                                                       MAP_2017_10_R_n))
     
 
     M0 = switch(k_threshold,
@@ -1460,7 +1494,7 @@ server <- function(input, output, session) {
                                                                               MPI_2017_1_T_o$M2_k8[1],
                                                                               MPI_2017_1_T_o$M2_k9[1]))
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING MPI 2017 10 provinces----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -1500,8 +1534,8 @@ server <- function(input, output, session) {
                  MAP_2017_91_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     
     g_edu_max = switch(input$slider_91_Decomp,
@@ -2234,7 +2268,7 @@ server <- function(input, output, session) {
                       c(0, 1)),
       reverse = TRUE)
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING MPI Decomposition 2017 60 Districs----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -2301,8 +2335,8 @@ server <- function(input, output, session) {
                  MAP_2017_60_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     
     g_edu_max = switch(input$slider_60_Decomp,
@@ -3035,7 +3069,7 @@ server <- function(input, output, session) {
                       c(0, 1)),
       reverse = TRUE)
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING MPI Decomposition 2017 10 Province----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -3100,8 +3134,8 @@ server <- function(input, output, session) {
                  MAP_2017_10_R_o)
     nat_data = switch(UrbRurSelection,
                       MPI_2017_1_T_o,
-                      MAP_2017_1_U_o,
-                      MAP_2017_1_R_o)
+                      MPI_2017_1_U_o,
+                      MPI_2017_1_R_o)
     
     g_edu_max = switch(input$slider_Prov_Decomp,
                        switch(level_selection,  map@data$g0_edu_max_k1,map@data$g1_edu_max_k1,map@data$g2_edu_max_k1),
@@ -3833,7 +3867,7 @@ server <- function(input, output, session) {
                       c(0, 1)),
       reverse = TRUE)
     
-    ## MAPPING----------------------------------------------------------------------
+    ## MAPPING Change 2011 - 2017----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -3974,7 +4008,7 @@ server <- function(input, output, session) {
       htmlwidgets::prependContent(html_fix)
   })
   
-  output$M0_Scatterplot <- renderPlot({
+  output$M0_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M0)
     
     RegionSelection = strtoi(input$RegionSelection_M0)
@@ -3982,10 +4016,6 @@ server <- function(input, output, session) {
     
     
     k_threshold = input$slider_M0_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
     
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
@@ -4036,11 +4066,10 @@ server <- function(input, output, session) {
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
     
-    print(length(names))
-    create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017")
+    create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017") 
   })
   
-  output$M1_Scatterplot <- renderPlot({
+  output$M1_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M1)
     
     RegionSelection = strtoi(input$RegionSelection_M1)
@@ -4048,10 +4077,7 @@ server <- function(input, output, session) {
     
     
     k_threshold = input$slider_M1_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
+
     
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
@@ -4102,8 +4128,7 @@ server <- function(input, output, session) {
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
     
-    print(length(names))
-    create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017")
+    create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017") 
   })
   
   output$M1_Comparison_Map <- renderLeaflet({
@@ -4196,7 +4221,7 @@ server <- function(input, output, session) {
       htmlwidgets::prependContent(html_fix)
   })
   
-  output$M2_Scatterplot <- renderPlot({
+  output$M2_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M2)
     
     RegionSelection = strtoi(input$RegionSelection_M2)
@@ -4204,10 +4229,6 @@ server <- function(input, output, session) {
     
     
     k_threshold = input$slider_M2_Comparison
-    
-    print(UrbRurSelection)
-    print(RegionSelection)
-    print(k_threshold)
     
     map_2017 = switch(UrbRurSelection, 
                       switch(RegionSelection,
@@ -4259,7 +4280,7 @@ server <- function(input, output, session) {
                    map_2017@data$ADM1_EN)
     
     create_scatter(names, M2_2011, M2_2017, "M2 for 2011", "M2 for 2017", "Comparison of M2 from 2011 to 2017")
-  })
+  }) 
   
   output$M2_Comparison_Map <- renderLeaflet({
     UrbRurSelection = strtoi(input$UrbRurSelection_M2)
