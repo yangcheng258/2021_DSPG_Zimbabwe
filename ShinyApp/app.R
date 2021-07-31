@@ -50,6 +50,7 @@ jscode <- "function getUrlVars() {
                 });
                 return vars;
             }
+
            function getUrlParam(parameter, defaultvalue){
                 var urlparameter = defaultvalue;
                 if(window.location.href.indexOf(parameter) > -1){
@@ -57,26 +58,33 @@ jscode <- "function getUrlVars() {
                     }
                 return urlparameter;
             }
+
             var mytype = getUrlParam('type','Empty');
+
             function changeLinks(parameter) {
                 links = document.getElementsByTagName(\"a\");
+
                 for(var i = 0; i < links.length; i++) {
                    var link = links[i];
                    var newurl = link.href + '?type=' + parameter;
                    link.setAttribute('href', newurl);
                  }
             }
+
            var x = document.getElementsByClassName('navbar-brand');
+
            if (mytype != 'economic') {
-             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://aaec.vt.edu/academics/undergraduate/beyond-classroom/dspg.html\">' +
-                              '<img src=\"VTDSPG Logo.png\", alt=\"DSPG 2021 Symposium Proceedings\", style=\"height:42px;\">' +
+             x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/\">' +
+                              '<img src=\"DSPG_black-01.png\", alt=\"DSPG 2021 Symposium Proceedings\", style=\"height:42px;\">' +
                               '</a></div>';
+
              //changeLinks('dspg');
            } else {
              x[0].innerHTML = '<div style=\"margin-top:-14px\"><a href=\"https://datascienceforthepublicgood.org/economic-mobility/community-insights/case-studies\">' +
                               '<img src=\"AEMLogoGatesColorsBlack-11.png\", alt=\"Gates Economic Mobility Case Studies\", style=\"height:42px;\">' +
                               '</a></div>';
-             //changeLinks('economic');
+
+             //changeLinks('economic'); 
            }
            "
 
@@ -383,11 +391,13 @@ get_polygon <- function(map, data, palette, palette_data, labels, group_name) {
 }
 
 get_label <- function(name_data, metric_name, metric, national_metric) {
+  metric <- metric %>% round(digits = 3)
+  national_metric <- national_metric%>% round(digits = 3)
   label <- sprintf(
     paste0("<strong>%s</strong><br/>
     <strong>" , metric_name , ":</strong> %g<br/>
     <strong>National " , metric_name , ":</strong> %g"),
-    name_data, metric, national_metric) %>% lapply(htmltools::HTML)
+    name_data, round(metric,digits = 3), round(national_metric,digits = 3)) %>% lapply(htmltools::HTML)
   return(label)
 }
 
@@ -397,7 +407,11 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
   M0_Comparison = data.frame(names, x_data, y_data)
   print(x_data)
   print(y_data)
- 
+  x_data <- round(x_data,digits = 3)
+  y_data <- round(y_data,digits = 3)
+  # replace NA with 0
+  M0_Comparison <- mutate_if(M0_Comparison, is.numeric, ~replace(., is.na(.), 0))
+  
   colnames(M0_Comparison)[1] = "Name"
   # return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) + #, text=~Name)) +
   #           geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
@@ -418,7 +432,7 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
   #           theme_bw() +
   #           geom_abline()) %>% ggplotly()
   #)
-          #a function to calculate your abline
+          
           
     t <- list(
             family = "sans serif",
@@ -964,7 +978,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("LevelSelection_Decomp_91", "Select Level to Examine", 
+                                    radioButtons("LevelSelection_Decomp_91", "Select Poverty Index to Examine", 
                                                  choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
                                                                  "Adj. Poverty Gap \\(M_{1}\\)",
                                                                  "Adj. Poverty Severity \\(M_{2}\\)"),
@@ -973,7 +987,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("c_g_Decomp_91", "Select Measure to Examine", 
+                                    radioButtons("c_g_Decomp_91", "Select Method to Examine", 
                                                  choiceNames = c("Percent Contribution to MPI",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
@@ -1021,7 +1035,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("LevelSelection_Decomp_60", "Select Level to Examine", 
+                                    radioButtons("LevelSelection_Decomp_60", "Select Poverty Index to Examine", 
                                                  choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
                                                                  "Adj. Poverty Gap \\(M_{1}\\)",
                                                                  "Adj. Poverty Severity \\(M_{2}\\)"),
@@ -1030,7 +1044,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("c_g_Decomp_60", "Select Measure to Examine", 
+                                    radioButtons("c_g_Decomp_60", "Select Method to Examine", 
                                                  choiceNames = c("Percent Contribution to MPI",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
@@ -1078,7 +1092,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("LevelSelection_Decomp_Prov", "Select Level to Examine", 
+                                    radioButtons("LevelSelection_Decomp_Prov", "Select Poverty Index to Examine", 
                                                  choiceNames = c("Adj. Headcount Ratio \\(M_{0}\\)",
                                                                  "Adj. Poverty Gap \\(M_{1}\\)",
                                                                  "Adj. Poverty Severity \\(M_{2}\\)"),
@@ -1087,7 +1101,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   ),
                                   box(
                                     withMathJax(),
-                                    radioButtons("c_g_Decomp_Prov", "Select Measure to Examine", 
+                                    radioButtons("c_g_Decomp_Prov", "Select Method to Examine", 
                                                  choiceNames = c("Percent Contribution to MPI",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
@@ -1273,15 +1287,16 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    img(src = "team-sambath.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-atticus.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-matt.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);",
-                                                     a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);",
-                                                     a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics)|",
-                                                     a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)"),
+                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
+                                                     p(a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
+                                                       p(a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics)"),
+                                                         p( a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)"),
                                                    p("", style = "padding-top:10px;")
                                                             
                                             ),
                                             column(6, align = "center",
                                                    h4(strong("Virginia Tech Faculty Members")),
+                                                   p("", style = "padding-top:10px;")
                                                    # img(src = "team-teja.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    # img(src = "team-brandon.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    # p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Project Lead, Research Assistant Professor);",
@@ -1309,7 +1324,7 @@ server <- function(input, output, session) {
     table <- read.csv("data/isochrones/tables/grc_iso_table.csv")
     table$Coverage <- paste0(round(table$Coverage, 2), " %")
     table
-  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 2)
+  }, striped = TRUE, hover = TRUE, bordered = TRUE, width = "100%", align = "r", colnames = T, digits = 3)
   
   
   output$Dist_91_MPI_Map <- renderLeaflet({
@@ -2012,7 +2027,7 @@ server <- function(input, output, session) {
       
     })
     
-    ## MAPPING MPI 2017 10 provinces----------------------------------------------------------------------
+    ## MAPPING MPI 2017 90 district ----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -4491,7 +4506,12 @@ server <- function(input, output, session) {
                      map_2011@data$M0_k8,
                      map_2011@data$M0_k9)
     
-    M0_change = M0_2017 - M0_2011
+    M0_2011 <- M0_2011 %>% round(digits = 3)
+    M0_2017 <- M0_2017 %>% round(digits = 3)
+    
+    M0_change = (M0_2017 - M0_2011) %>% round(digits = 3)
+    
+    
     
     map_2017@data$M0_change = M0_change
     
@@ -4645,6 +4665,8 @@ server <- function(input, output, session) {
     names = switch(RegionSelection,
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
+    M1_2011 <- M1_2011 %>% round(digits = 3)
+    M1_2017 <- M1_2017 %>% round(digits = 3)
     
     create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017") 
   })
@@ -4704,7 +4726,7 @@ server <- function(input, output, session) {
                      map_2011@data$M1_k8,
                      map_2011@data$M1_k9)
     
-    M1_change = M1_2017 - M1_2011
+    M1_change = (M1_2017 - M1_2011) %>% round(digits=3)
     
     map_2017@data$M1_change = M1_change
     
@@ -4796,6 +4818,8 @@ server <- function(input, output, session) {
     names = switch(RegionSelection,
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
+    M2_2011 <- M2_2011 %>% round(digits = 3)
+    M2_2017 <- M2_2017 %>% round(digits = 3)
     
     create_scatter(names, M2_2011, M2_2017, "M2 for 2011", "M2 for 2017", "Comparison of M2 from 2011 to 2017")
   }) 
@@ -4855,7 +4879,7 @@ server <- function(input, output, session) {
                      map_2011@data$M2_k8,
                      map_2011@data$M2_k9)
     
-    M2_change = M2_2017 - M2_2011
+    M2_change = (M2_2017 - M2_2011) %>% round(digits = 3)
     
     map_2017@data$M2_change = M2_change
     
