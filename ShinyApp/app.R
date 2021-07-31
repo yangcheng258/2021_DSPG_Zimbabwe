@@ -1253,16 +1253,17 @@ ui <- navbarPage(title = "Zimbabwe",
 
                 ## Tab DSPG Team------------------------------------------------
                 tabPanel("Our Team", value = "team",
-                                   fluidRow(style = "margin-left: 300px; margin-right: 300px;",
-                                            h1(strong("Zimbabwe Team"), align = "center"),
+                                   fluidRow(style = "margin-left: 100px; margin-right: 100px;",
+                                            h1(strong("Team"), align = "center"),
                                             br(),
-                                            h4(strong("UVA Data Science for the Public Good")),
-                                            p("The", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics/dspg-program', 'Data Science for the Public Good (DSPG) Young Scholars program', target = "_blank"), 
-                                              "is a summer immersive program held at the", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics', 'University of Virginia Biocomplexity Institute’s Social and Decision Analytics division (SDAD).'), 
-                                              "In its seventh year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges around 
-                              critical social issues relevant in the world today. DSPG young scholars conduct research at the intersection of statistics, computation, and the social sciences 
-                              to determine how information generated within every community can be leveraged to improve quality of life and inform public policy. For more information on program 
-                              highlights, how to apply, and our annual symposium, please visit", a(href = 'https://biocomplexity.virginia.edu/social-decision-analytics/dspg-program', 'the official Biocomplexity DSPG website.', target = "_blank")),
+                                            h4(strong("VT Data Science for the Public Good"), align = "center"),
+                                            p("The", a(href = 'https://aaec.vt.edu/academics/undergraduate/beyond-classroom/dspg.html', 'Data Science for the Public Good (DSPG) Young Scholars program', target = "_blank"),
+                                              "is a summer immersive program offered by the", a(href = 'https://aaec.vt.edu/index.html', 'Virginia Tech Department of Agricultural and Applied Economics'), 
+                                              "In its second year, the program engages students from across the country to work together on projects that address state, federal, and local government challenges 
+                                               around critical social issues relevant in the world today. DSPG young scholars conduct research at the intersection of statistics, computation, and the social sciences to 
+                                               determine how information generated within every community can be leveraged to improve quality of life and inform public policy. For more information on program highlights, 
+                                               how to apply, and our annual symposium, please visit", 
+                                              a(href = 'https://aaec.vt.edu/content/aaec_vt_edu/en/academics/undergraduate/beyond-classroom/dspg.html#select=1.html', 'the official VT DSPG website.', target = "_blank")),
                                             p("", style = "padding-top:10px;")
                                    ),
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
@@ -1272,9 +1273,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    img(src = "team-sambath.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-atticus.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-matt.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics)|",
-                                                     a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(-----)|",
-                                                     a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, ---)|",
+                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);",
+                                                     a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);",
+                                                     a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics)|",
                                                      a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)"),
                                                    p("", style = "padding-top:10px;")
                                                             
