@@ -1,9 +1,8 @@
-<<<<<<< Updated upstream
-=======
+
 #Yang's seeting WD
 # setwd("G:/My Drive/PhD/Internship/Zimbabwe/03_Git/2021_DSPG_Zimbabwe/ShinyApp")
 
->>>>>>> Stashed changes
+
 library(shiny)
 library(leaflet)
 library(tidyverse)

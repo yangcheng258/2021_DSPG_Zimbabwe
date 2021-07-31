@@ -13,8 +13,8 @@ library(shinyjs)
 library(forcats)
 
 #Pulls required data 
-ranked_data <- read_csv("/Users/mattb24/Zimbabwe/2021_DSPG_Zimbabwe/ShinyApp/MappingData/OriginalMPI/2017/2017_District.csv")
-prov_ranked <- read_csv("/Users/mattb24/Zimbabwe/2021_DSPG_Zimbabwe/ShinyApp/MappingData/OriginalMPI/2017/2017_Province.csv")
+ranked_data <- read_csv("/Users/mattb24/Zimbabwe/2021_DSPG_Zimbabwe/ShinyApp/data/MappingData/OriginalMPI/2017/2017_District.csv")
+prov_ranked <- read_csv("/Users/mattb24/Zimbabwe/2021_DSPG_Zimbabwe/ShinyApp/data/MappingData/OriginalMPI/2017/2017_Province.csv")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -25,14 +25,14 @@ ui <- fluidPage(
     
     # Sidebar with a slider input for number of bins 
 
-        sidebarPanel(
-            # menuItem("M0",
-            #          tabName = "M0_k"),
-            # menuItem("M1", 
-            #          tabName = "M1_k"),
-            # menuItem("M2", 
-            #          tabName = "M2_k")
-            
+        # sidebarPanel(
+        #     menuItem("M0",
+        #              tabName = "M0_k"),
+        #     menuItem("M1",
+        #              tabName = "M1_k"),
+        #     menuItem("M2",
+        #              tabName = "M2_k")
+
             # menuItem("M0",
             #          tabName = "M0_dec"),
             # menuItem("M1",
@@ -40,30 +40,30 @@ ui <- fluidPage(
             # menuItem("M2",
             #          tabName = "M2_dec")
             
-            ##Province Ranking
+            #Province Ranking
             menuItem("M0",
                      tabName = "M0_prov"),
             menuItem("M1",
                      tabName = "M1_prov"),
             menuItem("M2",
-                     tabName = "M2_prov")
+                     tabName = "M2_prov"),
             
-        ),
+        
         
         # Show a plot of the generated distribution
         
             dashboardBody(
                 ##K Threshold
-                # tabItem(tabName = "M0_k",
-                #         plotlyOutput("M0_ranking", height = 750),
-                #         sliderInput("M0_k_threshold", "K Threshold", min = 1, max = 9, value = 3)),
-                # tabItem(tabName = "M1_k",
-                #         plotlyOutput("M1_ranking", height = 750),
-                #         sliderInput("M1_k_threshold", "K Threshold", min = 1, max = 9, value = 3)),
-                # tabItem(tabName = "M2_k",
-                #         plotlyOutput("M2_ranking", height = 750),
-                #         sliderInput("M2_k_threshold", "K Threshold", min = 1, max = 9, value = 3))
-                # 
+                tabItem(tabName = "M0_k",
+                        plotlyOutput("M0_ranking", height = 750),
+                        sliderInput("M0_k_threshold", "K Threshold", min = 1, max = 9, value = 3)),
+                tabItem(tabName = "M1_k",
+                        plotlyOutput("M1_ranking", height = 750),
+                        sliderInput("M1_k_threshold", "K Threshold", min = 1, max = 9, value = 3)),
+                tabItem(tabName = "M2_k",
+                        plotlyOutput("M2_ranking", height = 750),
+                        sliderInput("M2_k_threshold", "K Threshold", min = 1, max = 9, value = 3))
+
                 
                 ##Decomp
                 # tabItem(tabName = "M0_dec",
@@ -77,15 +77,15 @@ ui <- fluidPage(
                 #         sliderInput("M2_decomp_k", "K Threshold", min = 1, max = 9, value = 3))
 
                 ##Province Level
-                tabItem(tabName = "M0_prov",
-                        plotlyOutput("M0_prov", height = 750),
-                        sliderInput("M0_prov_k", "K Threshold", min = 1, max = 9, value = 3)),
-                tabItem(tabName = "M1_prov",
-                        plotlyOutput("M1_prov", height = 750),
-                        sliderInput("M1_prov_k", "K Threshold", min = 1, max = 9, value = 3)),
-                tabItem(tabName = "M2_prov",
-                        plotlyOutput("M2_prov", height = 750),
-                        sliderInput("M2_prov_k", "K Threshold", min = 1, max = 9, value = 3))
+                # tabItem(tabName = "M0_prov",
+                #         plotlyOutput("M0_prov", height = 750),
+                #         sliderInput("M0_prov_k", "K Threshold", min = 1, max = 9, value = 3)),
+                # tabItem(tabName = "M1_prov",
+                #         plotlyOutput("M1_prov", height = 750),
+                #         sliderInput("M1_prov_k", "K Threshold", min = 1, max = 9, value = 3)),
+                # tabItem(tabName = "M2_prov",
+                #         plotlyOutput("M2_prov", height = 750),
+                #         sliderInput("M2_prov_k", "K Threshold", min = 1, max = 9, value = 3))
         ))
 
 
