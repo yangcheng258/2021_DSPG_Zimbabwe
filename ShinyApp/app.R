@@ -457,21 +457,22 @@ ui <- navbarPage(title = "Zimbabwe",
                  tabPanel("Project Overview", value = "overview",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
-                                   # br("", style = "padding-top:2px;"),
-                                   # img(src = "VTDSPG Logo.png", class = "topimage", width = "20%", style = "display: block; margin-left: auto; margin-right: auto;"),
                                    br(""),
                                    h1(strong("Using 2017 PICES Data to Create a Multidimensional Poverty Index of Zimbabwe")),
                                    fluidRow(style = "margin: 2px;",
                                             img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")),
                                       h4("Data Science for the Public Good Program"),
                                       h4("Virginia Tech"),
-                                      h4("Department of Agriculture")
+                                      h4("Department of Agriculture and Applied Economics")
                                    
                           ),
                           
                           fluidRow(style = "margin: 6px;",
-                                   column(8,
-                                          h2(strong("Introduction to Zimbabwe")),
+                                   column(4,
+                                          h2(strong("Project Overview"), align = "center"),
+                                          p("OVERVIEW TEXT GOES HERE")),
+                                   column(4,
+                                          h2(strong("Introduction to Zimbabwe"), align = "center"),
                                           p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert MUGABE until his resignation in 2017. Presently, Emmerson Mnangagwa holds office. 
                                             The country is home to roughly 14,830,000 inhabitants, 10% of whom live in the capital city of Harare. Although large agglomerations exist in other major urban areas including Bulawayo and Chitungwiza, population distribution is relatively even otherwise. Zimbabwe’s central government is responsible for regulating 
                                             its 10 provinces and 59 further subdivided districts. Zimbabwe’s terrain consists mostly of plateau upon which forests thrive and arable land is plenty. Because of this, 67.5% of the labor force works in agriculture growing sugar cane, tobacco, fruits, and vegetables among other things. Another 7.3% of the labor force 
@@ -479,8 +480,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                             suffers from both unemployment and severe underemployment in which individuals are overqualified for the jobs they have or are not given adequate work hours. In combination with ubiquitous low wages, this creates an obstacle for economic growth. Monetary poverty measures in 2017 revealed roughly 63% of Zimbabwean households 
                                             lived in poverty. This is reflected in income inequality, overall low standards of living, malnourishment, low life expectancy, high rates of infant/maternal mortality, and difficulty accessing health and education resources.")),
 
-                                   column(12,
-                                          h2(strong("Recent History")),
+                                   column(4,
+                                          h2(strong("Recent History"), align = "center"),
                                           p("After gaining independence in 1980, there was widespread hope that the economic and labor exploitation Africans suffered at the hands of an imperial Great Britain would diminish. While initial trends were encouraging, this hope dwindled as a multitude of factors sent the Zimbabwean economy into decline. Most prominent among 
                                             these factors was inconsistent policy put forth by the central government which resulted in vague and evolving strategies on combatting poverty. An initial scientific socialist policy was applied between 1980 and 1990 to address poverty but was ineffective and thus abandoned due to financial downturn and prolonged drought which 
                                             forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which meant an adoption of more capitalistic policy. The costs of necessities including food, water, and 
@@ -502,7 +503,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                    
                           ),
                           fluidRow(align = "center",
-                                   p(tags$small(em('Last updated: July 2021'))))
+                                   p(tags$small(em('Last updated: August 2021'))))
                  ),
 
                  ## Tab data and methodology ----------------------------------------------------
@@ -608,6 +609,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                   "60 District MPI Map",
                                   tabName = '60_Dist'
                                 ),
+                                menuSubItem("District Rankings",
+                                            tabName = "rank_60"
+                                            ),
                                 menuItem(
                                   "Province MPI Map",
                                   tabName = "Prov"
@@ -661,7 +665,55 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Education-Adjusted MPI"),
                                                  choiceValues = c(1, 2))
                                     
-                                  ))),
+                                    ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("Looking at the original poverty index and focusing on the M0 index, 
+                                      we can see that for low k-threshold values, a large portion of the population 
+                                      can be considered to be multidimensionally poor. Additionally, urban districts 
+                                      and urban households tend to have lower M0 scores as compared to their rural counterparts. 
+                                      As we increase the k-threshold values, thereby increasing the criteria to be labelled 
+                                      multidimensionally poor, we notice that fewer people across the country can be identified 
+                                      as such. Interestingly, whereas the greater Harare and Bulawayo areas have low M0 values for 
+                                      low k-thresholds, their M0 values for higher k-thresholds are above the national average, 
+                                      implying that while those districts are better on average, some of the most poverty-stricken 
+                                      households reside within their bounds (particularly the Epworth district). 	Switching from 
+                                      the original poverty index to the Education-adjusted MPI, we can see that, on average, the M0 
+                                      scores are higher when adjusting the poverty line for the primary education variable from ‘nobody 
+                                      in the household has a primary school education’ to ‘nobody in the household has a secondary school 
+                                      education’. This is intuitive, given that more individuals who would have not been considered education-deprived 
+                                      in the original M0 (adjusted-headcount) index will be exactly such in the adjusted M0. 
+                                      Similar trends exist for the education-adjusted M0 index as was the case for the original M0 index – 
+                                      fewer households are considered multidimensionally poor as we increase k, urban districts & households 
+                                      tend to have lower M0 scores, and some of the households most vulnerable to multidimensional poverty are 
+                                      present around the biggest cities as we increase k values."),
+                                    h5("\\(M_{1}\\):"),
+                                    p("When focus is placed on the M1 index, a clearer picture of the depth of poverty is formed. If k-threshold values 
+                                      are low, poverty throughout much of Zimbabwe can be considered deep as a majority of M1 values exceed the national M1 value. 
+                                      Similar to the M0 trends, urban districts tend to have lower M1 values than rural districts, implying the presence of deeper
+                                      poverty in rural districts. Although the number of districts portraying deep poverty generally decreases as k-threshold values 
+                                      increase, rural districts neighboring Harare, including Bindura, Goromonzi, and Marondera similarly maintain high M1 values as 
+                                      k-threshold values increase as does a cluster of districts in the southeastern region of the country.	M1 values when the sensitivity 
+                                      analysis is accounted for increase, indicating deeper poverty when changing the level of education from primary school to secondary school. 
+                                      As k-threshold values increase, M1 values predictably decrease on average as the criteria of deep poverty becomes more drastic. Outliers of 
+                                      this decrease exist in similar areas as the original M1 index as southwestern Zimbabwe maintains relatively high M1 values when compared to 
+                                      other regions. Rural M1 values are, on average, higher than urban M1 values with few exceptions in Umguza, Bubi, and Mutaza."),
+                                    h5("\\(M_{2}\\):"),
+                                    p("A look at M2 values of the original index reveals much of the same. Low k-threshold values render high rates of poverty severity across a 
+                                      large proportion of Zimbabwe’s population. As k-threshold values increase, M2 values fall throughout most of the country but remain substantially 
+                                      high in the western portion of the country as well as around Harare, implying a greater number of impoverished households are further away from the 
+                                      poverty line than other impoverished households in these regions. If we distinguish between urban and rural, we can see that urban districts tend 
+                                      to have less severe poverty than rural districts excluding the urban aggregates in Umguza, Bubi, and Mutasa. 	As is the case with the M0 and M1 indexes, 
+                                      a look at the Education-adjusted MPI shows an increase in M2 values across the board. It is reasonable to conclude that the addition of the population that 
+                                      has not completed secondary school to the education variable is significant as it consistently results in higher MPI values. In regard to the overall sensitivity 
+                                      analysis, this means an expanded education threshold captures a significant part of the population deprived in the education dimension as M0, M1, and M2 values 
+                                      all increase substantially. Interestingly, when selected for urban districts, the cities of Harare and Bulawayo show relatively high M2 values as the k-threshold 
+                                      value increases, raising the possibility of disproportionate education deprivation in the two major urban landscapes of Zimbabwe.")
+                                     )
+                                  )),
                               tabItem(
                                 tabName = "60_Dist",
                                 fluidPage(
@@ -706,9 +758,75 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Education-Adjusted MPI"),
                                                  choiceValues = c(1, 2))
                                     
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("When viewing M0 values at the 60-district level, it is clear that a majority of Zimbabwe’s 
+                                      districts can be categorized as multidimensionally poor as most exceed the national M0 value. As 
+                                      k-threshold values increase, making the criteria for poverty more severe, most districts exhibit 
+                                      very low M0 values while a cluster of districts (Lupane, Nkayi, Tsholotsho, Bulilima, Mangwe, and 
+                                      Matobo) in the western part of the country maintain high M0 values. The region northeast of Harare 
+                                      holds similar M0 values at a high k-threshold. This trend indicates high rural poverty incidence two 
+                                      intersections, one between Matabeleland North and Matabeleland South, the other between Mashonaland 
+                                      Central and Mashonaland East. When defined by aggregated urban households, most districts fall below the 
+                                      national M0 value, indicating less poverty incidence in urban areas than in their rural counterparts as 
+                                      well as the nation at large. Looking at the M0 measure when MPI is adjusted for the sensitivity analysis, 
+                                      we can see district M0 values increase consistently throughout Zimbabwe. As k-threshold values increase, 
+                                      the majority of districts move out of multidimensional poverty. The southwest region and the northeast region 
+                                      surrounding Harare are exceptions. The districts of Bindura and Marondera are hold especially high M0 values at 
+                                      high k-thresholds, signaling a exceedingly high rate of poverty incidence. When the impact of urban and rural 
+                                      households on M0 is compared, it becomes clear that the trend of disproportionate poverty incidence in the rural 
+                                      regions continues."),
+                                    h5("\\(M_{1}\\):"),
+                                    p("When we look at M1 values as they exist at the 60-district level, we can see that a majority of Zimbabwe 
+                                      exhibits deep multidimensional poverty as a many of the districts have M1 values higher than the national average. 
+                                      As k-threshold values increase, M1 values tend to decrease, although outliers can be found in the northwestern region 
+                                      of the country as well as the region surrounding Harare. Distinguishing between urban and rural reveals that urban areas 
+                                      tend to have more shallow poverty than the national average as well as their rural counterparts. Poverty depth, M1, 
+                                      seems to reflect poverty incidence, M0 in both urban and rural areas as those with high M0 values have higher M1 values 
+                                      and those with low M0 values have low M1 values. Overall, M1 value when adjusted for a more encompassing education dimension 
+                                      reveals higher m1 values and, thus, deeper levels of poverty than the original dimension. As k-threshold values increase, 
+                                      the number of households that exist far from the poverty line decrease as evidenced by low M1 values in a majority of Zimbabwe’s 
+                                      districts. The urban and rural distinction brings to light another continuing trend as most rural districts have larger M1 values 
+                                      than their urban counterparts."),
+                                    h5("\\(M_{2}\\):"),
+                                    p("Poverty severity, reflected by the M2 value, indicates moderate poverty severity throughout Zimbabwe that tends to decrease as k-threshold 
+                                    values increase. Urban areas consistently have lower M2 values and thus less severe poverty than the national average as well as rural areas. 
+                                    This said, poverty severity remains a problem in both Bulawayo and Harare. Rural areas maintain an opposite trend and consistently have M2 values higher 
+                                    than urban areas and the nation, revealing the presence of relatively severe multidimensional poverty in northwest regions. The severity of poverty throughout 
+                                    Zimbabwe slightly increases as the education dimension is expanded to account for secondary schooling, potentially indicating only a small amount of households 
+                                    greatly deprived from in this variable. When urban households are selected at high k-threshold values, Harare and Bulawayo become the only two districts with M2 
+                                    values not equal to zero, implying greater severity due to lack of secondary education in these districts than elsewhere. Rural districts consistently exhibit
+                                    higher M2 values than urban districts and have more variation in M2 value when k-threshold values are adjusted. ")
                                   )
                                 )
                               ),
+                              tabItem(tabName = "rank_60",
+                                     tabsetPanel(
+                                       tabPanel("M0",
+                                                fluidRow(
+                                                      plotlyOutput("M0_ranking", height = 750),
+                                                  box(sliderInput("M0_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                      width = 6,
+                                                      footer = slider_caption))),
+     
+                                       tabPanel("M1",
+                                                fluidRow(
+                                                    plotlyOutput("M1_ranking", height = 750)),
+                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                    width = 6,
+                                                    footer = slider_caption)),
+                                       tabPanel("M2",
+                                                fluidRow(
+                                                    plotlyOutput("M2_ranking", height = 750)),
+                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                    width = 6,
+                                                    footer = slider_caption))
+                                                )),
+                               
                               tabItem(
                                 tabName = "Prov",
                                 fluidPage(
@@ -753,6 +871,27 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Education-Adjusted MPI"),
                                                  choiceValues = c(1, 2))
                                     
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong("Trends"),
+                                    width = 12,
+                                    h5("\\(M_{0}\\):"),
+                                    p("High province level poverty incidence appears to be widespread throughout Zimbabwe as every province, 
+                                      excluding Mashonaland West and the city provinces of Bulawayo and Harare, have M0 values higher than the 
+                                      national M0 value. As k-threshold value increases, province level M0 values decrease. Interestingly, Harare’s 
+                                      M0 value exceeds those of the other provinces at high k-threshold, marking a persistent poverty incidence that 
+                                      meets drastic criteria in the capital city. When urban households are drawn out, M0 values decrease throughout 
+                                      all provinces, especially Masvingo and Mashonaland West. A switch to rural households results in increased M0 values, 
+                                      and therefore increased poverty incidence, across the board. When the education adjustment is made, provinces reflect 
+                                      substantially higher M0 values in accordance with ongoing trends. Mashonaland Central, Mashonaland East, Matabeleland North, 
+                                      and Matabeleland South are especially impacted by this adjustment and show M0 values nearing 0.5. Increases of k-threshold 
+                                      show decreased M0 values throughout although Harare and Mashonaland East have relatively high values. The urban and rural 
+                                      split reveals disparity among rural households when compared to their urban counterparts. "),
+                                    h5("\\(M_{1}\\):"),
+                                    p(""),
+                                    h5("\\(M_{2}\\):"),
+                                    p("")
                                   )
                                 )
                               )
@@ -1133,31 +1272,27 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    img(src = "team-sambath.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-atticus.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-matt.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);",
-                                                     a(href = 'https://www.linkedin.com/in/tasfia-chowdhury-89005a1b2/', 'Tasfia Chowdhury', target = '_blank'), "(Indiana University Bloomington, Political Science);",
-                                                     a(href = 'https://www.linkedin.com/in/igomez-3099/', 'Isabel Gomez', target = '_blank'), "(Smith College, Statistical and Data Science)."),
+                                                   p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics)|",
+                                                     a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(-----)|",
+                                                     a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, ---)|",
+                                                     a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)"),
                                                    p("", style = "padding-top:10px;")
+                                                            
                                             ),
                                             column(6, align = "center",
                                                    h4(strong("Virginia Tech Faculty Members")),
                                                    # img(src = "team-teja.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
                                                    # img(src = "team-brandon.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   # img(src = "team-sallie.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   # p(a(href = "https://www.linkedin.com/in/tejapristavec/", 'Teja Pristavec', target = '_blank'), "(Project Lead, Research Assistant Professor);",
-                                                   #   a(href = "https://biocomplexity.virginia.edu/brandon-kramer", 'Brandon Kramer', target = '_blank'), "(Postdoctoral Research Associate);",
-                                                   #   a(href = 'https://biocomplexity.virginia.edu/sallie-keller', 'Sallie Keller', target = '_blank'), "(Division Director and Distinguished Professor)."),
+                                                   # p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Project Lead, Research Assistant Professor);",
+                                                   #   a(href = "https://aaec.vt.edu/people/faculty/gupta-anubhab.html", 'Dr. Anubhab Gupta', target = '_blank'), "(Postdoctoral Research Associate);",
                                                    # p("", style = "padding-top:10px;")
                                             )
                                    ),
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
-                                            h4(strong("Project Stakeholders")),
-                                            p(""),
-                                            p("")
-                                            # p(a(href = 'https://www.linkedin.com/in/nancy-bell-aa293810/', 'Nancy Bell', target = '_blank'), "(Virginia Department of Health);",
-                                            #   a(href = 'https://www.linkedin.com/in/terri-alt-3138b4101/', 'Terri Alt', target = '_blank'), "(Virginia Cooperative Extension, Patrick County at Virginia Tech)."),
-                                            # p("", style = "padding-top:10px;"),
-                                            # h4(strong("Acknowledgments")),
-                                            # p("We would like to thank Healthy Patrick County, an association of concerned Patrick County residents, and Brandon Kramer for their input to this project.")
+                                            h4(strong("Project Stakeholders"), align = "center"),
+                                            p("Grown Chirongwe (Zimstat)"),
+                                            p("Dhiraj (World Bank")
+
                                    )
                           ),
                           inverse = T)
@@ -1493,6 +1628,388 @@ server <- function(input, output, session) {
                                                                               MPI_2017_1_T_o$M2_k7[1],
                                                                               MPI_2017_1_T_o$M2_k8[1],
                                                                               MPI_2017_1_T_o$M2_k9[1]))
+
+# Graphing Ranked District Bar Chart --------------------------------------
+
+    ranked_data <- read_csv("data/MappingData/OriginalMPI/2017/2017_District.csv")
+    
+    M0_dist_rank <- reactive({
+      input$M0_k_threshold
+    })
+    
+    output$M0_ranking <- renderPlotly({
+      if (M0_dist_rank() == "1") {
+        M0_k1_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k1)) %>% 
+          ggplot(aes(x = District_name, y = M0_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 1", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k1_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "2") {
+        M0_k2_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k2)) %>% 
+          ggplot(aes(x = District_name, y = M0_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 2", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k2_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "3") {
+        M0_k3_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k3)) %>% 
+          ggplot(aes(x = District_name, y = M0_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 3", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k3_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "4") {
+        M0_k4_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k4)) %>% 
+          ggplot(aes(x = District_name, y = M0_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 4", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k4_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "5") {
+        M0_k5_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k5)) %>% 
+          ggplot(aes(x = District_name, y = M0_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 5", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k5_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "6") {
+        M0_k6_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k6)) %>% 
+          ggplot(aes(x = District_name, y = M0_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 6", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k6_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "7") {
+        M0_k7_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k7)) %>% 
+          ggplot(aes(x = District_name, y = M0_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 7", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k7_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "8") {
+        M0_k8_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k8)) %>% 
+          ggplot(aes(x = District_name, y = M0_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 8", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k8_ranking)
+        
+      }
+      
+      else if (M0_dist_rank() == "9") {
+        
+        M0_k9_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k9)) %>% 
+          ggplot(aes(x = District_name, y = M0_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 9", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k9_ranking)
+        
+      }
+      
+      
+    })
+    
+    M1_k_threshold <- reactive({
+      input$M1_k_threshold
+    })
+    
+    output$M1_ranking <- renderPlotly({
+      if (M1_k_threshold() == "1") {
+        M1_k1_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k1)) %>% 
+          ggplot(aes(x = District_name, y = M1_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 1", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k1_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "2") {
+        M1_k2_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k2)) %>% 
+          ggplot(aes(x = District_name, y = M1_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 2", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k2_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "3") {
+        M1_k3_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k3)) %>% 
+          ggplot(aes(x = District_name, y = M1_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 3", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k3_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "4") {
+        M1_k4_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k4)) %>% 
+          ggplot(aes(x = District_name, y = M1_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 4", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k4_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "5") {
+        M1_k5_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k5)) %>% 
+          ggplot(aes(x = District_name, y = M1_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 5", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k5_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "6") {
+        M1_k6_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k6)) %>% 
+          ggplot(aes(x = District_name, y = M1_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 6", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k6_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "7") {
+        M1_k7_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k7)) %>% 
+          ggplot(aes(x = District_name, y = M1_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 7", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k7_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "8") {
+        M1_k8_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k8)) %>% 
+          ggplot(aes(x = District_name, y = M1_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 8", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k8_ranking)
+        
+      }
+      
+      else if (M1_k_threshold() == "9") {
+        
+        M1_k9_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k9)) %>% 
+          ggplot(aes(x = District_name, y = M1_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 9", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k9_ranking)
+        
+      }
+      
+      
+    })
+    
+    M2_k_threshold <- reactive({
+      input$M2_k_threshold
+    })
+    
+    output$M2_ranking <- renderPlotly({
+      if (M2_k_threshold() == "1") {
+        M2_k1_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k1)) %>% 
+          ggplot(aes(x = District_name, y = M2_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 1", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k1_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "2") {
+        M2_k2_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k2)) %>% 
+          ggplot(aes(x = District_name, y = M2_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 2", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k2_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "3") {
+        M2_k3_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k3)) %>% 
+          ggplot(aes(x = District_name, y = M2_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 3", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k3_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "4") {
+        M2_k4_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k4)) %>% 
+          ggplot(aes(x = District_name, y = M2_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 4", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k4_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "5") {
+        M2_k5_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k5)) %>% 
+          ggplot(aes(x = District_name, y = M2_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 5", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k5_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "6") {
+        M2_k6_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k6)) %>% 
+          ggplot(aes(x = District_name, y = M2_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 6", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k6_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "7") {
+        M2_k7_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k7)) %>% 
+          ggplot(aes(x = District_name, y = M2_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 7", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k7_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "8") {
+        M2_k8_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k8)) %>% 
+          ggplot(aes(x = District_name, y = M2_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 8", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k8_ranking)
+        
+      }
+      
+      else if (M2_k_threshold() == "9") {
+        
+        M2_k9_ranking <- ranked_data %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k9)) %>% 
+          ggplot(aes(x = District_name, y = M2_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 9", x = "Districts", title = "District Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k9_ranking)
+        
+      }
+      
+      
+    })
     
     ## MAPPING MPI 2017 10 provinces----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
