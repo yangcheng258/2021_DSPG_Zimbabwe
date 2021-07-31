@@ -436,7 +436,7 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
           
     t <- list(
             family = "sans serif",
-            size = 14,
+            size = 12,
             color = toRGB("grey50"))
     
     return (plot_ly(M0_Comparison, x = ~x_data, y = ~y_data, text=~Name) %>%
@@ -447,12 +447,12 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
             #             # theme_bw() +
             #             geom_abline() %>%
              
-            add_text(textfont = t, textposition = "top right")%>% 
+            add_text(textfont = t, textposition = "top left")%>% 
             add_markers()%>%
-            layout(shapes=list(type='line', x0=0, x1=(max(x_data,y_data)+0.01), y0=0, y1=(max(x_data,y_data)+0.01)), 
+              layout(shapes=list(type='line', x0=0, x1=0.6, y0=0, y1=0.6,name=" "), 
                    showlegend = FALSE,
-                   xaxis=list( title = x_label), 
-                   yaxis=list(title=y_label) )  
+                   xaxis=list(range = c(0,0.56),title = x_label), 
+                   yaxis=list(range = c(0,0.56),title=y_label) )  
     )
   
   
@@ -467,7 +467,7 @@ ui <- navbarPage(title = "Zimbabwe",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  useShinyjs(),
-                ## Tab main -----------------------------------------------------------
+                ## Tab Overview -----------------------------------------------------------
                  tabPanel("Project Overview", value = "overview",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
@@ -505,11 +505,11 @@ ui <- navbarPage(title = "Zimbabwe",
                                    
                                 
                                           # h2(strong("Application of a Multidimensional Poverty Index")),
-                                          # p("A brief introduction to Zimbabwe makes clear the severity and the urgency of the poverty situation. Although a money metric approach to measuring poverty is historically prevalent, this sort of strategy is unable to accurately paint an accurate picture of poverty in Zimbabwe. This is most notably due to the extreme hyperinflation the 
+                                          # p(""A brief introduction to Zimbabwe makes clear the severity and the urgency of the poverty situation. Although a money metric approach to measuring poverty is historically prevalent, this sort of strategy is unable to accurately paint an accurate picture of poverty in Zimbabwe. This is most notably due to the extreme hyperinflation the 
                                           #   country suffers from. Because the actual value of money is constantly evolving, the importance of monetary wealth accumulation in determining poverty is questionable. Additionally, variations in consumption tendencies, prices of goods and necessities, and household income distribution can make it difficult to provide an accurate account 
                                           #   of money metric poverty as the value of money is hardly standardized. This volatility also renders money metric comparisons of poverty over time futile as the modern value of currency is incomparable to that of years past. As the practicality of a monetary poverty measure becomes increasingly suspect, the value of alternative poverty measure 
                                           #   methods is revealed. "),
-                                          # p("An Alkire Foster (AF) method, developed by Sabina Alkire and James Foster, will be utilized in this project to measure poverty in Zimbabwe. The AF method first denotes the different kinds of deprivations households experience simultaneously. These deprivations make clear who is impoverished in a population and are then used to construct a non-monetary 
+                                          # p(""An Alkire Foster (AF) method, developed by Sabina Alkire and James Foster, will be utilized in this project to measure poverty in Zimbabwe. The AF method first denotes the different kinds of deprivations households experience simultaneously. These deprivations make clear who is impoverished in a population and are then used to construct a non-monetary 
                                           #   Multidimensional Poverty Index (MPI). MPI’s are powerful insofar as they provide a non-monetary measure poverty as it exists in its various manifestations. In this way, an MPI accounts for the hyperinflation in Zimbabwe by defining poverty as the inability to satisfy a certain list of needs or capabilities rather than the accumulation of money 
                                           #   that may or may not fulfill such needs. The list, as pictured below, is comprised of variables that indicate deprivation. Each variable corresponds to a broader dimension of poverty. These variables and dimensions are normatively chosen to be applicable in the context of Zimbabwe. The MPI created by the 2021 DSPG Zimbabwe team can be utilized to decompose
                                           #   multidimensional poverty as it exists in different subgroups including the national, provincial, and district level. Additionally, the MPI can be deconstructed to analyze at what strength each deprivation is contributing to poverty within groups. By emulating the work of Stoeffler, et al., this MPI can also be used to track changes in multifaceted poverty 
@@ -523,7 +523,41 @@ ui <- navbarPage(title = "Zimbabwe",
                  ## Tab data and methodology ----------------------------------------------------
                  tabPanel("Data & Methodology", value = "dm",
                              tabsetPanel(
-                               tabPanel("Data", value = "data"),
+                               tabPanel("Data", value = "data",
+                                        fluidPage(
+                                          h3(strong("PICES DATA")),
+                                        withMathJax(),  
+                                        p("The data come from two nationally representative household surveys conducted by ZIMSTAT: the PICES from June 2011 to May 2012 and from January to December 2017. The PICES surveys are well suited to construct multidimensional poverty indices, because they include information at the household and individual level, and are collected in a consistent manner. The surveys were conducted in the eight provinces of Zimbabwe and in the cities of Harare and Bulawayo. The number of usable observations (households) is 29,748 in 2011–2012 (23,843 rural, 5,905 urban) and 31,193 in 2017 (25,525 rural, 5668 urban). Survey weights and household size are employed to obtain national, provincial, and urban/rural representation. Both modules are virtually identical across the two years. They include information on household demographics, education, employment, healthcare, migration, housing characteristics, assets ownership, access to services, and agricultural activities. "),
+                                        h3(strong("Description of the variables")),
+                                         img(src = "variables.png", style = "display: inline; border: 0px solid #C0C0C0;", width = "80%"),
+                                        withMathJax(), 
+                                          p("In order to construct the multidimensional poverty index based on the Alkire-Foster method, we have to consider 8 dimensions of poverty consisting of a total of 14 variables relevant to identifying poverty status. "),
+                                          p("The first dimension, Education, consists of two variables – Max Education and Education Dropout. The Max Education variable refers to nobody in the household having completed primary school. The education adjusted MPI is modified in that it refers to nobody in the household having completed secondary school. The Education Dropout variable looks at whether the household has a child between the ages of 7-11 who is not enrolled in school. The education dimension receives the greatest weight in the MPI (2 out of 9.5), along with the two health variables that make up the second, health dimension (2 out of 9.5). These two variables are the Chronic Illness variable, referring to the presence of a chronically ill individual within the household, and the Lack of Health Visit variable, which refers to a household member having been ill in the past 30 days without receiving healthcare (when necessary).  "),
+                                          p("Unemployment, defined as one member of the household having been unemployed as their main occupation in the last 12 months is given a weight of one for urban households and 0 for rural households, since unemployment is less common and is more difficult to identify in rural areas. "),
+                                          p("For housing conditions, two variables are considered: lack of access to electricity, and no toilet (in rural areas) or no flush toilet (in urban areas, where sanitation is more developed). Weights of 0.5 are given to rural residence Lack of Electricity and Lack of Toilet indicators underlying the dimension. In urban areas, where lack of electricity indicates a greater state of deprivation, a weight of one is attributed to electricity, while the lack of toilet indicator retains a weight of 0.5. "),
+                                          p("Two variables reflect living conditions: Poor Water Source and Poor Cooking Fuel, with a weight of 0.5 for each. Rural households are considered to be deprived if their main source of water is an unprotected well, a river, or another unprotected source, or if the source of water is 1 km away or farther. In urban areas, because water infrastructure is more developed, deprivation is defined as not having access to piped water or communal water on-premises (which affects only a small number of households). In rural and urban areas, households are deprived if they use wood or ‘other’ (not electricity, paraffin, gas, coal) as cooking fuel. "),
+                                          p("Lack of Household Assets is given a dimension weight of one in both rural and urban areas. Household asset stocks across a variety of assets are accounted for through a physical asset index (PAI) and an asset deprivation (D) threshold as follows: "),
+                                          
+                                          p(" \\(PAI = 2 * motor vehicle + motorcycle + bicycle + television + radio + fridge + landline phone\\)   "),
+                                          p("\\( D = 1 if PAI < 2 \\)"),
+                                          p("For rural households, agricultural assets are essential indicators of wellbeing and agricultural activity capabilities. The dimension weight is 1.5, with three component variables usually given a weight of 0.5 each. The first variable, Lack of Land, uses a threshold of 0.25 hectares, which is sufficiently low to represent effective deprivation in rural Zimbabwe. The second variable, livestock, measured in Tropical Livestock Units (TLU), is an indicator of wealth that can be used to insulate households from the impact of shocks. A TLU deprivation threshold of one indicates a Lack of Livestock. The third variable is Lack of Rural Equipment. An agricultural equipment index (AEI) is created as follows: "),
+                                          p("\\( AEI = plough + wheelbarrow + scotchcart + tractor + griding mill \\)"),
+                                          p("\\( D = 1 if AEI < 1 \\)"),
+                                          p("The agricultural asset dimension is not employed for urban areas. "),
+                                          p("The final dimension of wellbeing – with a weight of one – is Lack of Access to Services, where remoteness indicates deprivation. Households are considered deprived if they are far from two or more of seven services available in the data. The distance thresholds employed are 5 km for a primary school, 15 km for a secondary school, 15 km for a hospital, 5 km for shops, 6 km for a hammer mill, 15 km for a post office, and 5 km for a bus stop. These distance thresholds are halved in urban areas, where services tend to be closer, but distance still represents a barrier to access. "),
+                                          p("**Note: For our index, livestock data was not available for 2011 data, which limited our ability to compare across time. To account for this, we have assigned the Lack of Livestock variable a weight of zero and divided the weight proportionally between the other two agricultural asset variables."),
+                                          
+                                          p(""),
+                                          h3(strong("Sensitivity Check")),
+                                          p("As per the request of Zimstat, we explore the differences in the 3 multidimensional poverty indices (MPIs) when changing the threshold of the Max Education variable. In the original Alkire-Foster MPIs, Max Education is defined as the highest level of education achieved in the household, whereby the threshold to be considered education deprived is a primary education. If somebody in the household had finished primary school, their household would not be considered education deprived. In our education-adjusted MPI model, we adjust this threshold to be at the secondary level. That is to say, if somebody in a household had finished primary school, but had not finished secondary school, then their household would now be considered education deprived in our new model. Only households that have an individual who has finished secondary school will be excluded from the label of being education deprived."),
+                                          p("Please look at our Mapping MPI tab and select the education-adjusted MPI to compare with the original Alkire-Foster MPI results.")
+                                          
+                                         )
+                                        
+                                        
+                                        
+                                        
+                                        ),
                                tabPanel("Methodology", value = "methodology",
                                         fluidPage(
                                           box(
@@ -531,7 +565,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                             title = h3(strong("MPI Methodology")),
                                             width = 12,
                                             em(h4("A brief overview of the Mathematics behind the Multidimensional Poverty Index")), tags$br(),
-                                            h5("The aggregate methodology for determining the multidimensional poverty 
+                                            p("The aggregate methodology for determining the multidimensional poverty 
        indices proposed by Alkine and Foster in 2011 involve a matrix with \\(n\\) 
        rows and \\(d\\) columns, where \\(n\\) is the number of people within the 
        state and \\(d\\) is the number of dimensions for assessing poverty. There 
@@ -547,19 +581,19 @@ ui <- navbarPage(title = "Zimbabwe",
        measure into its individual variables to identify which are contributing 
        most to the overal index of poverty."),
                                             tags$br(),
-                                            h5("The \\(M_{0}\\) index is known as the Adjusted Headcount Ratio. The simple headcount
+                                            p("The \\(M_{0}\\) index is known as the Adjusted Headcount Ratio. The simple headcount
        ratio is simply the number of individuals considered to be poor divided by
        the entire population. The \\(M_{0}\\) index adjusts for the multidimensionality
        of the algorithm by multiplying the simple headcount ratio, \\(H\\), by the 
        average deprivation share, \\(A\\). This metric can be thought of as a more
        accurate measure of the simple headcount ratio."),
                                             tags$br(),
-                                            h5("The \\(M_{1}\\) index is known as the Adjusted Poverty Gap. This examines the distance
-       between the prescribed threshold, \\(k\\), and an individual's true number of 
+                                            p("The \\(M_{1}\\) index is known as the Adjusted Poverty Gap. This examines the distance
+       between the prescribed threshold, \\(k\\), and an individual","'","s true number of 
        deprivations. This helps examine the subset of poor individuals to efficiently
-       assess which individuals are the 'poorest' in the country."),
+       assess which individuals are the poorest in the country."),
                                             tags$br(),
-                                            h5("The \\(M_{2}\\) index is known as the Adjusted Poverty Severity. This is
+                                            p("The \\(M_{2}\\) index is known as the Adjusted Poverty Severity. This is
        simply the square of the distance between a poor individual and the poverty
        threshold, \\(k\\). The advantage of using this metric is that it weights
        poorer individuals who fall farther from the poverty line more heavily to 
@@ -579,9 +613,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                             tags$br(),
                                             h5(strong("Dimensional Aggregation")),
                                             h4("\\(D_{total} = \\sum_{i=1}^{d}\\sum_{j=1}^{v_{d}} w_{i, j}\\)"),
-                                            em(h5("\\(d = \\) Number of Dimensions")),
-                                            em(h5("\\(v_{d} = \\) Number of variables for a Specific Dimension")),
-                                            em(h5("\\(w_{i,j} = \\) Weight of a Specific Variable for a Specific Dimension"))
+                                            em(p("\\(d = \\) Number of Dimensions")),
+                                            em(p("\\(v_{d} = \\) Number of variables for a Specific Dimension")),
+                                            em(p("\\(w_{i,j} = \\) Weight of a Specific Variable for a Specific Dimension"))
                                             
                                             
                                           ),
@@ -604,7 +638,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                         ))
                              )),
 
-                 ## Tab maps --------------------------------------------------------------------
+                 ## Tab MPIPING MPI --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
                           dashboardPage(
                             skin = 'black',
@@ -618,10 +652,12 @@ ui <- navbarPage(title = "Zimbabwe",
                                 menuItem(
                                   "91 District MPI Map",
                                   tabName = '91_Dist'
+                                  
                                 ),
                                 menuItem(
                                   "60 District MPI Map",
-                                  tabName = '60_Dist'
+                                  tabName = '60_Dist',
+                                  selected = TRUE
                                 ),
                                 menuSubItem("District Rankings",
                                             tabName = "rank_60"
@@ -647,7 +683,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -684,7 +720,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                     withMathJax(),
                                     title = strong("Trends"),
                                     width = 12,
-                                    h5("\\(M_{0}\\):"),
+                                    p("\\(M_{0}\\):"),
                                     p("Looking at the original poverty index and focusing on the M0 index, 
                                       we can see that for low k-threshold values, a large portion of the population 
                                       can be considered to be multidimensionally poor. Additionally, urban districts 
@@ -704,7 +740,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                       fewer households are considered multidimensionally poor as we increase k, urban districts & households 
                                       tend to have lower M0 scores, and some of the households most vulnerable to multidimensional poverty are 
                                       present around the biggest cities as we increase k values."),
-                                    h5("\\(M_{1}\\):"),
+                                    p("\\(M_{1}\\):"),
                                     p("When focus is placed on the M1 index, a clearer picture of the depth of poverty is formed. If k-threshold values 
                                       are low, poverty throughout much of Zimbabwe can be considered deep as a majority of M1 values exceed the national M1 value. 
                                       Similar to the M0 trends, urban districts tend to have lower M1 values than rural districts, implying the presence of deeper
@@ -715,7 +751,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                       As k-threshold values increase, M1 values predictably decrease on average as the criteria of deep poverty becomes more drastic. Outliers of 
                                       this decrease exist in similar areas as the original M1 index as southwestern Zimbabwe maintains relatively high M1 values when compared to 
                                       other regions. Rural M1 values are, on average, higher than urban M1 values with few exceptions in Umguza, Bubi, and Mutaza."),
-                                    h5("\\(M_{2}\\):"),
+                                    p("\\(M_{2}\\):"),
                                     p("A look at M2 values of the original index reveals much of the same. Low k-threshold values render high rates of poverty severity across a 
                                       large proportion of Zimbabwe’s population. As k-threshold values increase, M2 values fall throughout most of the country but remain substantially 
                                       high in the western portion of the country as well as around Harare, implying a greater number of impoverished households are further away from the 
@@ -740,7 +776,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -777,7 +813,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                     withMathJax(),
                                     title = strong("Trends"),
                                     width = 12,
-                                    h5("\\(M_{0}\\):"),
+                                    p("\\(M_{0}\\):"),
                                     p("When viewing M0 values at the 60-district level, it is clear that a majority of Zimbabwe’s 
                                       districts can be categorized as multidimensionally poor as most exceed the national M0 value. As 
                                       k-threshold values increase, making the criteria for poverty more severe, most districts exhibit 
@@ -794,7 +830,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                       high k-thresholds, signaling a exceedingly high rate of poverty incidence. When the impact of urban and rural 
                                       households on M0 is compared, it becomes clear that the trend of disproportionate poverty incidence in the rural 
                                       regions continues."),
-                                    h5("\\(M_{1}\\):"),
+                                    p("\\(M_{1}\\):"),
                                     p("When we look at M1 values as they exist at the 60-district level, we can see that a majority of Zimbabwe 
                                       exhibits deep multidimensional poverty as a many of the districts have M1 values higher than the national average. 
                                       As k-threshold values increase, M1 values tend to decrease, although outliers can be found in the northwestern region 
@@ -806,7 +842,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                       the number of households that exist far from the poverty line decrease as evidenced by low M1 values in a majority of Zimbabwe’s 
                                       districts. The urban and rural distinction brings to light another continuing trend as most rural districts have larger M1 values 
                                       than their urban counterparts."),
-                                    h5("\\(M_{2}\\):"),
+                                    p("\\(M_{2}\\):"),
                                     p("Poverty severity, reflected by the M2 value, indicates moderate poverty severity throughout Zimbabwe that tends to decrease as k-threshold 
                                     values increase. Urban areas consistently have lower M2 values and thus less severe poverty than the national average as well as rural areas. 
                                     This said, poverty severity remains a problem in both Bulawayo and Harare. Rural areas maintain an opposite trend and consistently have M2 values higher 
@@ -853,7 +889,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -890,40 +926,28 @@ ui <- navbarPage(title = "Zimbabwe",
                                     withMathJax(),
                                     title = strong("Trends"),
                                     width = 12,
-                                    h5("\\(M_{0}\\):"),
-                                    p("High province level poverty incidence appears to be widespread throughout Zimbabwe as every province, 
-                                      excluding Mashonaland West and the city provinces of Bulawayo and Harare, have M0 values higher than the 
-                                      national M0 value. As k-threshold value increases, province level M0 values decrease. Interestingly, Harare’s 
-                                      M0 value exceeds those of the other provinces at high k-threshold, marking a persistent poverty incidence that 
-                                      meets drastic criteria in the capital city. When urban households are drawn out, M0 values decrease throughout 
-                                      all provinces, especially Masvingo and Mashonaland West. A switch to rural households results in increased M0 values, 
-                                      and therefore increased poverty incidence, across the board. When the education adjustment is made, provinces reflect 
-                                      substantially higher M0 values in accordance with ongoing trends. Mashonaland Central, Mashonaland East, Matabeleland North, 
-                                      and Matabeleland South are especially impacted by this adjustment and show M0 values nearing 0.5. Increases of k-threshold 
-                                      show decreased M0 values throughout although Harare and Mashonaland East have relatively high values. The urban and rural 
-                                      split reveals disparity among rural households when compared to their urban counterparts. "),
-                                    h5("\\(M_{1}\\):"),
+                                    p("\\(M_{0}\\):"),
                                     p(""),
-                                    h5("\\(M_{2}\\):"),
+                                    p("\\(M_{1}\\):"),
+                                    p(""),
+                                    p("\\(M_{2}\\):"),
                                     p("")
                                   )
                                 )
                               )
                             )))),
-                 
+                 ## Tab Decomposition------------------
                  tabPanel("MPI Decomposition", value = "decomposition",
-                          dashboardPage(
-                            skin = 'blue',
+                          
+                          dashboardPage(skin = 'black',
                             dashboardHeader(
-                              title = 'MPI Decomposition'
-                            ),
-                            
-                            
+                              title = 'MPI Decomposition' ),
                             dashboardSidebar(
                               sidebarMenu(
                                 menuItem(
                                   "91 District MPI Map",
-                                  tabName = '91_Decomp'
+                                  tabName = '91_Decomp',
+                                  selected = TRUE
                                 ),
                                 menuItem(
                                   "60 District MPI Map",
@@ -936,7 +960,8 @@ ui <- navbarPage(title = "Zimbabwe",
                               )
                             ),
                             
-                            dashboardBody(tabItems(
+                            dashboardBody(
+                              tabItems(
                               tabItem(
                                 tabName = "91_Decomp",
                                 # Everything has to be put in a row or column
@@ -950,7 +975,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -992,6 +1017,27 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong(""),
+                                    width = 12,
+                                    p("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labelled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score. "),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("")
                                   )
                                   )),
                               tabItem(
@@ -1007,7 +1053,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -1049,6 +1095,27 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong(""),
+                                    width = 12,
+                                    p("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score. "),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labelled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("")
                                   )
                                 )),
                               tabItem(
@@ -1064,7 +1131,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwe's districts, 
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
                                       broken up into 91 distinct regions. The standard district model uses 60 districts,
                                       but the 2017 pices data designed specific urban areas within districts. There are 
                                       three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
@@ -1106,6 +1173,26 @@ ui <- navbarPage(title = "Zimbabwe",
                                                                  "Raw Poverty Gap in Variable"),
                                                  choiceValues = c(1, 2)),
                                     footer = c_g_caption
+                                  ),
+                                  box(
+                                    withMathJax(),
+                                    title = strong(""),
+                                    width = 12,
+                                    p("\\(M_{0}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M0 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M0 score. "),
+                                    p("In our interface, selecting the adjusted-headcount ratio (M0) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M0 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M0 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M0 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M0 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M0 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M0 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M0 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M0 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{1}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M1 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M1 score. "),
+                                    p("In our interface, selecting the adjusted-poverty gap (M1) and focusing first on the percent contribution of the individual variables, we can see that the three most important contributors to the M1 index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M1 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M1 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M1 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables mentioned above that are contributing greatly to the M1 scores for most k-thresholds. We see that the poverty gaps are quite high for all three variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M1 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M1 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M1 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tell us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. "),
+                                    p("\\(M_{2}\\):"),
+                                    p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the M2 scores for high values of k, we are viewing an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as being multidimensionally poor, so more of the initial population (which is largely composed of rural households) will influence the M2 score. "),
+                                    p("In our interface, selecting the adjusted-poverty severity (M2) and focusing first on the percent contribution of the individual variables, we can see that the most important contributors to the M2 index for most k-threshold values are the Lack of Household Assets & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit, which was not as prevalent to begin with becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the M2 scores significantly to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our M2 scores to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor. "),
+                                    p("Sticking with the M2 measure and looking at the poverty gap for each variable, we can see that the poverty gap is most striking with the Lack of Household Assets & Chronic Illness variables mentioned above that are contributing greatly to the M2 scores for most k-thresholds. We see that the poverty gaps are quite high for both variables compared to the poverty gaps of the other variables for most values of k. Lack of Health Visit, which contributes more to the M2 score for higher values of k has more striking poverty gaps toward the end. Poor Cooking Fuel, which contributes more to our M2 scores to begin with, has more striking poverty gaps in the beginning. Given the Alkire-Foster method to weight variables as fairly as possible, it should come to no surprise that the variables with the largest poverty gaps contribute the most to the M2 score for a given k-threshold."),
+                                    p("Decomposing our households to look at just the urban and rural households also tells us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. ")
                                   )
                                 ))
                               
@@ -1113,19 +1200,19 @@ ui <- navbarPage(title = "Zimbabwe",
                             )
                           ),
                 ## Tab Temporal Comparison--------------------------------------
-                tabPanel("2011 to 2017 Data", value = "Comparison",
+                tabPanel("MPI: from 2011 to 2017", 
+                         value = "Comparison",
                          dashboardPage(
-                           skin = 'blue',
+                           skin = 'black',
                            dashboardHeader(
-                             title = 'MPI Decomposition'
+                             title = 'MPI: from 2011 to 2017'
                            ),
-                           
-                           
                            dashboardSidebar(
                              sidebarMenu(
                                menuItem(
                                  "M0 Comparison Map",
-                                 tabName = 'M0_Comp'
+                                 tabName = 'M0_Comp',
+                                 selected = TRUE
                                ),
                                menuItem(
                                  "M1 Comparison",
@@ -1137,8 +1224,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                )
                              )
                            ),
-                           
                            dashboardBody(
+                             
                              tabItems(
                                tabItem(
                                  tabName = "M0_Comp",
@@ -1152,7 +1239,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                    ),
                                    box(
                                      withMathJax(),
-                                     title = "Scatterplot",
+                                     title = "Comparison M0 for 2011 and 2017",
                                      #withSpinner(plotlyOutput("M0_Scatterplot"))
                                      withSpinner(plotlyOutput("M0_Scatterplot")),
                                      width = 6,
@@ -1171,12 +1258,33 @@ ui <- navbarPage(title = "Zimbabwe",
                                      footer = urban_rural_caption
                                    ),
                                    box(
-                                     radioButtons("RegionSelection_M0", "Select Boundaries to Display", 
+                                     radioButtons("RegionSelection_M0", "Select Index Level to Display", 
                                                   choiceNames = c("Districts",
                                                                   "Provinces"),
                                                   choiceValues = c(1, 2)),
                                      footer = urban_rural_caption
-                                   )
+                                   ),
+                                   box(
+                                     withMathJax(),
+                                     title = strong(" "),
+                                     width = 12,
+                                     p("\\(M_{0}\\):"),
+                                     p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     
+                                     p("\\(M_{1}\\):"),
+                                     p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     p(""),
+                                     p("\\(M_{2}\\):"),
+                                     p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     p("")
+                                     ),
+                                   p("")
                                  )
                                )
                              ,
@@ -1192,7 +1300,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                    ),
                                    box(
                                      withMathJax(),
-                                     title = "Scatterplot",
+                                     title = "Comparison M1 for 2011 and 2017",
                                      withSpinner(plotlyOutput("M1_Scatterplot")),
                                      width = 6,
                                      height = 500
@@ -1210,12 +1318,33 @@ ui <- navbarPage(title = "Zimbabwe",
                                      footer = urban_rural_caption
                                    ),
                                    box(
-                                     radioButtons("RegionSelection_M1", "Select Boundaries to Display", 
+                                     radioButtons("RegionSelection_M1", "Select Index Level to Display", 
                                                   choiceNames = c("Districts",
                                                                   "Provinces"),
                                                   choiceValues = c(1, 2)),
                                      footer = urban_rural_caption
-                                   )
+                                   ),
+                                   box(
+                                     withMathJax(),
+                                     title = strong(""),
+                                     width = 12,
+                                     p("\\(M_{0}\\):"),
+                                     p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     
+                                     p("\\(M_{1}\\):"),
+                                     p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     p(""),
+                                     p("\\(M_{2}\\):"),
+                                     p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
+                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                     p("")
+                                   ),
+                                   p("")
                                  )
                                ),
                              tabItem(
@@ -1230,7 +1359,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                  ),
                                  box(
                                    withMathJax(),
-                                   title = "Scatterplot",
+                                   title = "Comparison M2 for 2011 and 2017",
                                    withSpinner(plotlyOutput("M2_Scatterplot")),
                                    width = 6,
                                    height = 500
@@ -1248,12 +1377,33 @@ ui <- navbarPage(title = "Zimbabwe",
                                    footer = urban_rural_caption
                                  ),
                                  box(
-                                   radioButtons("RegionSelection_M2", "Select Boundaries to Display", 
+                                   radioButtons("RegionSelection_M2", "Select Index Level to Display", 
                                                 choiceNames = c("Districts",
                                                                 "Provinces"),
                                                 choiceValues = c(1, 2)),
                                    footer = urban_rural_caption
-                                 )
+                                 ),
+                                 box(
+                                   withMathJax(),
+                                   title = strong(""),
+                                   width = 12,
+                                   p("\\(M_{0}\\):"),
+                                   p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
+                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                   p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                   
+                                   p("\\(M_{1}\\):"),
+                                   p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
+                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                   p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                   p(""),
+                                   p("\\(M_{2}\\):"),
+                                   p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
+                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
+                                   p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
+                                   p("")
+                                 ),
+                                 p("")
                                )
                              )
                              )
@@ -1283,9 +1433,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                                             column(6, align = "center",
                                                    h4(strong("DSPG Team Members")),
-                                                   img(src = "team-yang.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   img(src = "team-sambath.jpg", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   img(src = "team-atticus.jpg", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "team-yang.png", style = "display: inline;  border: 0px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "team-sambath.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "team-atticus.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-matt.png", style = "display: inline; border: 1px solid #C0C0C0;", width = "150px"),
                                                    p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                      p(a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
@@ -1296,19 +1446,26 @@ ui <- navbarPage(title = "Zimbabwe",
                                             ),
                                             column(6, align = "center",
                                                    h4(strong("Virginia Tech Faculty Members")),
+                                                   p("", style = "padding-top:10px;"),
+                                                   img(src = "faculty-chen.ipg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "faculty-gupta.jpg", style = "display: inline;  border: 0px solid #C0C0C0;", width = "150px"),
+                                                   img(src = "faculty-alwang.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
+                                                   p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
+                                                   p(a(href = "https://aaec.vt.edu/people/faculty/gupta-anubhab.html", 'Dr. Anubhab Gupta', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
+                                                   p(a(href = "https://aaec.vt.edu/people/faculty/alwang-jeffrey.html", 'Dr. Jeffrey Alwang', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                    p("", style = "padding-top:10px;")
-                                                   # img(src = "team-teja.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   # img(src = "team-brandon.png", style = "display: inline; margin-right: 5px; border: 1px solid #C0C0C0;", width = "150px"),
-                                                   # p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Project Lead, Research Assistant Professor);",
-                                                   #   a(href = "https://aaec.vt.edu/people/faculty/gupta-anubhab.html", 'Dr. Anubhab Gupta', target = '_blank'), "(Postdoctoral Research Associate);",
-                                                   # p("", style = "padding-top:10px;")
                                             )
                                    ),
                                    fluidRow(style = "margin-left: 300px; margin-right: 300px;",
                                             h4(strong("Project Stakeholders"), align = "center"),
-                                            p("Grown Chirongwe (Zimstat)"),
-                                            p("Dhiraj (World Bank")
+                                            p("Dhiraj Sharma (World Bank), "),
+                                            p("Grown Chirongwe (Zimbabwe National Statistics Agency)")
 
+                                   ),
+                                   fluidRow(style = "margin-left: 300px; margin-right: 300px;",
+                                            h4(strong("Acknowledgement"), align = "center"),
+                                            p("We would like to thank ",a(href="https://www.linkedin.com/in/quentin-stoeffler-7913a035/?originalSubdomain=tr","Dr. Quentin Stoeffler",target='_blank')," for providing us with code of the paper", a(href="https://www.researchgate.net/profile/Jeffrey-Alwang/publication/283241726_Multidimensional_Poverty_in_Crisis_Lessons_from_Zimbabwe/links/56b8978a08ae44bb330d32f2/Multidimensional-Poverty-in-Crisis-Lessons-from-Zimbabwe.pdf","Multidimensional Poverty in Crisis: Lessons from Zimbabwe",target='_blank'),". We also thank ZimStat for providing 2011 and 2017 PICES data for this project.")
+                                            
                                    )
                           ),
                           inverse = T)
@@ -4603,7 +4760,8 @@ server <- function(input, output, session) {
     names = switch(RegionSelection,
                    map_2017@data$NAME_2,
                    map_2017@data$ADM1_EN)
-    
+    M0_2011 <- M0_2011 %>% round(digits = 3)
+    M0_2017 <- M0_2017 %>% round(digits = 3)
     create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017") 
   })
   
