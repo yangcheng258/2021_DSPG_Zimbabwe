@@ -879,11 +879,11 @@ ui <- navbarPage(title = "Zimbabwe",
                                                     footer = slider_caption)),
                                        tabPanel("M2",
                                                 fluidRow(
-                                                  withSpinner(plotlyOutput("M2_ranking", height = 750))),
-                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                  withSpinner(plotlyOutput("M2_ranking", height = 750)),
+                                                box(sliderInput("M2_k_threshold", "K-Threshold Value", 1, 9, 3),
                                                     width = 6,
                                                     footer = slider_caption))
-                                                )),
+                                                ))),
                                
                               tabPanel("Province MPI Map",
                                # tabName = "Prov",
@@ -1937,12 +1937,12 @@ server <- function(input, output, session) {
       
     })
     
-    M1_k_threshold <- reactive({
+    M1_dist_rank <- reactive({
       input$M1_k_threshold
     })
     
     output$M1_ranking <- renderPlotly({
-      if (M1_k_threshold() == "1") {
+      if (M1_dist_rank() == "1") {
         M1_k1_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k1)) %>% 
           ggplot(aes(x = District_name, y = M1_k1)) +
@@ -1955,7 +1955,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "2") {
+      else if (M1_dist_rank() == "2") {
         M1_k2_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k2)) %>% 
           ggplot(aes(x = District_name, y = M1_k2)) +
@@ -1968,7 +1968,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "3") {
+      else if (M1_dist_rank() == "3") {
         M1_k3_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k3)) %>% 
           ggplot(aes(x = District_name, y = M1_k3)) +
@@ -1981,7 +1981,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "4") {
+      else if (M1_dist_rank() == "4") {
         M1_k4_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k4)) %>% 
           ggplot(aes(x = District_name, y = M1_k4)) +
@@ -1994,7 +1994,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "5") {
+      else if (M1_dist_rank() == "5") {
         M1_k5_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k5)) %>% 
           ggplot(aes(x = District_name, y = M1_k5)) +
@@ -2007,7 +2007,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "6") {
+      else if (M1_dist_rank() == "6") {
         M1_k6_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k6)) %>% 
           ggplot(aes(x = District_name, y = M1_k6)) +
@@ -2020,7 +2020,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "7") {
+      else if (M1_dist_rank() == "7") {
         M1_k7_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k7)) %>% 
           ggplot(aes(x = District_name, y = M1_k7)) +
@@ -2033,7 +2033,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "8") {
+      else if (M1_dist_rank() == "8") {
         M1_k8_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k8)) %>% 
           ggplot(aes(x = District_name, y = M1_k8)) +
@@ -2046,7 +2046,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M1_k_threshold() == "9") {
+      else if (M1_dist_rank() == "9") {
         
         M1_k9_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M1_k9)) %>% 
@@ -2063,12 +2063,12 @@ server <- function(input, output, session) {
       
     })
     
-    M2_k_threshold <- reactive({
+    M2_dist_rank <- reactive({
       input$M2_k_threshold
     })
     
     output$M2_ranking <- renderPlotly({
-      if (M2_k_threshold() == "1") {
+      if (M2_dist_rank() == "1") {
         M2_k1_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k1)) %>% 
           ggplot(aes(x = District_name, y = M2_k1)) +
@@ -2081,7 +2081,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "2") {
+      else if (M2_dist_rank() == "2") {
         M2_k2_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k2)) %>% 
           ggplot(aes(x = District_name, y = M2_k2)) +
@@ -2094,7 +2094,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "3") {
+      else if (M2_dist_rank() == "3") {
         M2_k3_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k3)) %>% 
           ggplot(aes(x = District_name, y = M2_k3)) +
@@ -2107,7 +2107,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "4") {
+      else if (M2_dist_rank() == "4") {
         M2_k4_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k4)) %>% 
           ggplot(aes(x = District_name, y = M2_k4)) +
@@ -2120,7 +2120,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "5") {
+      else if (M2_dist_rank() == "5") {
         M2_k5_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k5)) %>% 
           ggplot(aes(x = District_name, y = M2_k5)) +
@@ -2133,7 +2133,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "6") {
+      else if (M2_dist_rank() == "6") {
         M2_k6_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k6)) %>% 
           ggplot(aes(x = District_name, y = M2_k6)) +
@@ -2146,7 +2146,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "7") {
+      else if (M2_dist_rank() == "7") {
         M2_k7_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k7)) %>% 
           ggplot(aes(x = District_name, y = M2_k7)) +
@@ -2159,7 +2159,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "8") {
+      else if (M2_dist_rank() == "8") {
         M2_k8_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k8)) %>% 
           ggplot(aes(x = District_name, y = M2_k8)) +
@@ -2172,7 +2172,7 @@ server <- function(input, output, session) {
         
       }
       
-      else if (M2_k_threshold() == "9") {
+      else if (M2_dist_rank() == "9") {
         
         M2_k9_ranking <- ranked_data %>% 
           mutate(District_name = fct_reorder(District_name, M2_k9)) %>% 
