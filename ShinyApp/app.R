@@ -484,21 +484,23 @@ ui <- navbarPage(title = "Zimbabwe",
                                             "We provide interactive tools that allow the user to visualize and study each component and understand their contribution to the MPI. We constructed these measures for two waves of data in 2011 and 2017 to show the changes in poverty over time and across regions in Zimbabwe.  The composition and decomposition of MPI in this project provide policy implications for informing evidence-based policy and interventions for poverty reduction. ")),
                                    column(4,
                                           h2(strong("Introduction to Zimbabwe"), align = "center"),
-                                          p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert MUGABE until his resignation in 2017. Presently, Emmerson Mnangagwa holds office. 
-                                            The country is home to roughly 14,830,000 inhabitants, 10% of whom live in the capital city of Harare. Although large agglomerations exist in other major urban areas including Bulawayo and Chitungwiza, population distribution is relatively even otherwise. Zimbabwe’s central government is responsible for regulating 
-                                            its 10 provinces and 59 further subdivided districts. Zimbabwe’s terrain consists mostly of plateau upon which forests thrive and arable land is plenty. Because of this, 67.5% of the labor force works in agriculture growing sugar cane, tobacco, fruits, and vegetables among other things. Another 7.3% of the labor force 
-                                            takes advantage of the Zimbabwe’s rich natural resources and participates in the industry sector mining and exporting coal, gold, platinum copper, and other metals as well as manufacturing wood products, cement, chemicals, fertilizer, and food. Despite being relatively well-educated and extremely literate, the population 
-                                            suffers from both unemployment and severe underemployment in which individuals are overqualified for the jobs they have or are not given adequate work hours. In combination with ubiquitous low wages, this creates an obstacle for economic growth. Monetary poverty measures in 2017 revealed roughly 63% of Zimbabwean households 
-                                            lived in poverty. This is reflected in income inequality, overall low standards of living, malnourishment, low life expectancy, high rates of infant/maternal mortality, and difficulty accessing health and education resources.")),
+                                          p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert Mugabe until his resignation in 2017. Presently, Emmerson Mnangagwa holds office. 
+                                            The country is home to roughly 14,830,000 inhabitants, 10% of whom live in the capital city of Harare. Although large agglomerations exist in other major urban areas including Bulawayo and Chitungwiza, the population distribution is relatively evenly dispersed throughout the country otherwise. Zimbabwe’s central government is responsible for regulating 
+                                            its ten provinces and 59 further subdivided districts. Zimbabwe’s terrain consists mainly of a flat plateau upon which forests thrive."),
+                                           p("Arable land is plenty, and 67.5 percent of the labor force works in agriculture growing sugar cane, tobacco, fruits, and vegetables among other things. Another 7.3 percent of the labor force 
+                                            takes advantage of Zimbabwe’s rich natural resources and participates in mining. Zimbabwe exports coal, gold, platinum copper, and other metals and manufactures wood products, cement, chemicals, fertilizer, and food. Despite being relatively well-educated and highly literate, the population 
+                                            suffers from both unemployment and severe underemployment. Many individuals are either overqualified for the jobs they have or are not engaging in full time work. Together with ubiquitous low wages, this creates an obstacle to economic growth"),
+                                           p("Monetary poverty measures in 2017 revealed that roughly 63 percent of Zimbabwean households 
+                                            lived in poverty. Together with high poverty rate, the country experiences income inequality, malnourishment, low life expectancy, high infant/maternal mortality rates, difficulty accessing health and education resources, and overall low living standards.")),
 
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
-                                          p("After gaining independence in 1980, there was widespread hope that the economic and labor exploitation Africans suffered at the hands of an imperial Great Britain would diminish. While initial trends were encouraging, this hope dwindled as a multitude of factors sent the Zimbabwean economy into decline. Most prominent among 
-                                            these factors was inconsistent policy put forth by the central government which resulted in vague and evolving strategies on combatting poverty. An initial scientific socialist policy was applied between 1980 and 1990 to address poverty but was ineffective and thus abandoned due to financial downturn and prolonged drought which 
-                                            forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which meant an adoption of more capitalistic policy. The costs of necessities including food, water, and 
-                                            education went up as a result, harming and expanding the already existing poor population. The late 1990’s and 2000’s brought ever greater poverty and financial distress to Zimbabwe as a continuing government budget deficit mixed with a fiscal policy focused on increasing the amount of money in circulation resulted in hyperinflation. 
-                                            In turn, this increased the economic crisis as foreign investment dropped and Zimbabwean currency crashed. During this time, unemployment skyrocketed and a massive informal sector of the economy emerged. In 2009, Zimbabwe adopted the U.S. dollar along with a handful of other currencies. Though this move somewhat stabilized the 
-                                            economy at first, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly as did overall economic crisis and poverty.")),
+                                          p("After gaining independence in 1980, there was widespread hope that the economic and labor exploitation Africans suffered at the hands of an imperial Great Britain would diminish. While initial trends were encouraging, this hope dwindled as many factors sent the Zimbabwean economy into decline. Most prominent among 
+                                            these factors was the central government's inconsistent policy, which resulted in vague and evolving strategies for combatting poverty. A scientific socialist policy approach was applied between 1980 and 1990 to address poverty but was ineffective and abandoned due to a financial downturn coupled with a prolonged drought which 
+                                            forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which led to adopting a different approach to economic development. The costs of necessities including food, water, and 
+                                            education went up, harming and expanding the already existing poor population. The late 1990s and 2000s brought greater poverty and financial distress to Zimbabwe. A continuing government budget deficit mixed with a fiscal policy focused on increasing the amount of money in circulation resulted in hyperinflation. 
+                                            In turn, this increased the economic crisis as foreign investment dropped and Zimbabwean currency crashed. During this time, unemployment skyrocketed, and a massive informal sector of the economy emerged. In 2009, Zimbabwe adopted the US dollar along with a handful of other currencies. Though this move somewhat stabilized the 
+                                            economy initially, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly, as did the overall economic crisis and poverty.")),
                                    
                                 
                                           # h2(strong("Application of a Multidimensional Poverty Index")),
@@ -728,47 +730,41 @@ ui <- navbarPage(title = "Zimbabwe",
                                     title = strong("Trends"),
                                     width = 12,
                                     p("\\(M_{0}\\):"),
-                                    p("Looking at the original poverty index and focusing on the M0 index, 
-                                      we can see that for low k-threshold values, a large portion of the population 
-                                      can be considered to be multidimensionally poor. Additionally, urban districts 
-                                      and urban households tend to have lower M0 scores as compared to their rural counterparts. 
-                                      As we increase the k-threshold values, thereby increasing the criteria to be labelled 
-                                      multidimensionally poor, we notice that fewer people across the country can be identified 
-                                      as such. Interestingly, whereas the greater Harare and Bulawayo areas have low M0 values for 
-                                      low k-thresholds, their M0 values for higher k-thresholds are above the national average, 
-                                      implying that while those districts are better on average, some of the most poverty-stricken 
-                                      households reside within their bounds (particularly the Epworth district). 	Switching from 
-                                      the original poverty index to the Education-adjusted MPI, we can see that, on average, the M0 
-                                      scores are higher when adjusting the poverty line for the primary education variable from ‘nobody 
-                                      in the household has a primary school education’ to ‘nobody in the household has a secondary school 
-                                      education’. This is intuitive, given that more individuals who would have not been considered education-deprived 
-                                      in the original M0 (adjusted-headcount) index will be exactly such in the adjusted M0. 
-                                      Similar trends exist for the education-adjusted M0 index as was the case for the original M0 index – 
-                                      fewer households are considered multidimensionally poor as we increase k, urban districts & households 
-                                      tend to have lower M0 scores, and some of the households most vulnerable to multidimensional poverty are 
-                                      present around the biggest cities as we increase k values."),
+                                    p("Looking at the original poverty index and focusing on the M0 index, we can see that for low k-threshold values,
+                                    a large portion of the population can be considered multidimensionally poor. Additionally, urban districts and urban
+                                    households tend to have lower M0 scores than their rural counterparts. As we increase the k-threshold values, thereby
+                                    increasing the criteria to be labeled multidimensionally poor, fewer people across the country can be identified as such. 
+                                    The greater Harare and Bulawayo areas have low M0 values for low k-thresholds. Still, their M0 values for higher k-thresholds 
+                                    are above the national average, implying that while those districts are better on average, some of the most poverty-stricken 
+                                    households reside within their bounds (particularly the Epworth district)."),
+                                    p("Sensitivity Analysis:"),
+                                    p("When we consider how sensitive the MPI is to a change in the education variable to the highest level of attainment being less 
+                                      than a secondary school education, we see that, on average, the (adjusted-headcount) M0 scores are higher. More individuals are
+                                      now more likely to be considered education-deprived than the original M0  index. Similar trends exist for the adjusted M0 index 
+                                      as the original M0 index – fewer households are considered multidimensionally poor as we increase k. Urban districts & households 
+                                      tend to have lower M0 scores, and some of the households most vulnerable to multidimensional poverty are present around the biggest cities."),
                                     p("\\(M_{1}\\):"),
-                                    p("When focus is placed on the M1 index, a clearer picture of the depth of poverty is formed. If k-threshold values 
-                                      are low, poverty throughout much of Zimbabwe can be considered deep as a majority of M1 values exceed the national M1 value. 
-                                      Similar to the M0 trends, urban districts tend to have lower M1 values than rural districts, implying the presence of deeper
-                                      poverty in rural districts. Although the number of districts portraying deep poverty generally decreases as k-threshold values 
-                                      increase, rural districts neighboring Harare, including Bindura, Goromonzi, and Marondera similarly maintain high M1 values as 
-                                      k-threshold values increase as does a cluster of districts in the southeastern region of the country.	M1 values when the sensitivity 
-                                      analysis is accounted for increase, indicating deeper poverty when changing the level of education from primary school to secondary school. 
-                                      As k-threshold values increase, M1 values predictably decrease on average as the criteria of deep poverty becomes more drastic. Outliers of 
-                                      this decrease exist in similar areas as the original M1 index as southwestern Zimbabwe maintains relatively high M1 values when compared to 
-                                      other regions. Rural M1 values are, on average, higher than urban M1 values with few exceptions in Umguza, Bubi, and Mutaza."),
+                                    p("When we focus on the depth of poverty (M1 index ), if the k-threshold values are low, poverty throughout much of Zimbabwe can be considered deep. 
+                                      A majority of M1 values exceed the national M1 value. Similar to the M0 trends, urban districts tend to have lower M1 values than rural districts, 
+                                      implying deeper poverty in rural districts. Although the number of districts portraying deep poverty generally decreases as k-threshold values increase, 
+                                      this is not the case for rural districts neighboring Harare, including Bindura,Goromonzi, and Marondera. These areas maintain high M1 values as k-threshold
+                                      values increase, as do a cluster of districts in the country’s southeastern region. "),
+                                    p("Sensitivity Analysis:"),
+                                    p("Deeper poverty is seen when the level of education is changed from primary school to secondary school. As  k-threshold values increase, M1 values predictably 
+                                    decrease on average. Rural M1 values are, on average, higher than urban M1 values, with few exceptions in Umguza, Bubi, and Mutaza. Districts with M1 values do not 
+                                      follow this pattern but maintain relatively high M1 values are in southwestern Zimbabwe."),
                                     p("\\(M_{2}\\):"),
-                                    p("A look at M2 values of the original index reveals much of the same. Low k-threshold values render high rates of poverty severity across a 
-                                      large proportion of Zimbabwe’s population. As k-threshold values increase, M2 values fall throughout most of the country but remain substantially 
-                                      high in the western portion of the country as well as around Harare, implying a greater number of impoverished households are further away from the 
-                                      poverty line than other impoverished households in these regions. If we distinguish between urban and rural, we can see that urban districts tend 
-                                      to have less severe poverty than rural districts excluding the urban aggregates in Umguza, Bubi, and Mutasa. 	As is the case with the M0 and M1 indexes, 
-                                      a look at the Education-adjusted MPI shows an increase in M2 values across the board. It is reasonable to conclude that the addition of the population that 
-                                      has not completed secondary school to the education variable is significant as it consistently results in higher MPI values. In regard to the overall sensitivity 
-                                      analysis, this means an expanded education threshold captures a significant part of the population deprived in the education dimension as M0, M1, and M2 values 
-                                      all increase substantially. Interestingly, when selected for urban districts, the cities of Harare and Bulawayo show relatively high M2 values as the k-threshold 
-                                      value increases, raising the possibility of disproportionate education deprivation in the two major urban landscapes of Zimbabwe.")
+                                    p("A look at the M2 values of the original index reveals much of the same. Low k-threshold values render high rates of poverty severity across a large proportion of 
+                                      Zimbabwe’s population. As k-threshold values increase, M2 values fall throughout most of the country but remain substantially high in the western portion of the country 
+                                      and around Harare, implying a greater number of impoverished households are further away from the poverty line than other impoverished households in these regions. 
+                                      If we distinguish between urban and rural, we can see that urban districts tend to have less severe poverty than rural districts, excluding the urban aggregates in 
+                                      Umguza, Bubi, and Mutasa."),
+                                    p("Sensitivity Analysis:"),
+                                    p("As is the case with the M0 and M1 indexes, a look at the Education-adjusted MPI shows an increase in M2 values across the board. It is reasonable to conclude that 
+                                      adding the population that has not completed secondary school to the education variable is significant as it consistently results in higher MPI values. Taken together, 
+                                      our findings suggest that an expanded education threshold captures a substantial part of the population deprived in the education dimension as M0, M1, and M2 values all 
+                                      increase substantially. Interestingly, when selected for urban districts, the cities of Harare and Bulawayo show relatively high M2 values as the  k-threshold value increases, 
+                                      raising the possibility of disproportionate education deprivation in the two major urban landscapes of Zimbabwe.")
                                      )
                                   )),
                               tabPanel( "60 District MPI Map",
@@ -821,69 +817,35 @@ ui <- navbarPage(title = "Zimbabwe",
                                     title = strong("Trends"),
                                     width = 12,
                                     p("\\(M_{0}\\):"),
-                                    p("When viewing M0 values at the 60-district level, it is clear that a majority of Zimbabwe’s 
-                                      districts can be categorized as multidimensionally poor as most exceed the national M0 value. As 
-                                      k-threshold values increase, making the criteria for poverty more severe, most districts exhibit 
-                                      very low M0 values while a cluster of districts (Lupane, Nkayi, Tsholotsho, Bulilima, Mangwe, and 
-                                      Matobo) in the western part of the country maintain high M0 values. The region northeast of Harare 
-                                      holds similar M0 values at a high k-threshold. This trend indicates high rural poverty incidence two 
-                                      intersections, one between Matabeleland North and Matabeleland South, the other between Mashonaland 
-                                      Central and Mashonaland East. When defined by aggregated urban households, most districts fall below the 
-                                      national M0 value, indicating less poverty incidence in urban areas than in their rural counterparts as 
-                                      well as the nation at large. Looking at the M0 measure when MPI is adjusted for the sensitivity analysis, 
-                                      we can see district M0 values increase consistently throughout Zimbabwe. As k-threshold values increase, 
-                                      the majority of districts move out of multidimensional poverty. The southwest region and the northeast region 
-                                      surrounding Harare are exceptions. The districts of Bindura and Marondera are hold especially high M0 values at 
-                                      high k-thresholds, signaling a exceedingly high rate of poverty incidence. When the impact of urban and rural 
-                                      households on M0 is compared, it becomes clear that the trend of disproportionate poverty incidence in the rural 
-                                      regions continues."),
+                                    p("When viewing M0 values at the 60-district level, it is clear that a majority of Zimbabwe’s districts can be categorized as multidimensionally
+                                      poor as most exceed the national M0 value. As k-threshold values increase, making the criteria for poverty more severe, most districts exhibit 
+                                      very low M0 values while a cluster of districts (Lupane, Nkayi, Tsholotsho,Bulilima, Mangwe, and Matobo) in the western part of the country maintain 
+                                      high M0 values. The region northeast of Harare holds similar M0 values at a high k-threshold. This trend indicates high rural poverty incidence at two 
+                                      intersections, one between Matabeleland North and Matabeleland South and Mashonaland Central and Mashonaland East. When defined by aggregated urban households, 
+                                      most districts fall below the national M0 value, indicating less poverty incidence in urban areas than in their rural counterparts and the nation at large."),
+                                    p("Sensitivity Analysis:"),
+                                    p("Looking at the M0 measure when MPI is adjusted for the sensitivity analysis, we see district M0 values increase consistently throughout Zimbabwe. As k-threshold 
+                                      values increase, the majority of districts move out of multidimensional poverty. The southwest region and the northeast region surrounding Harare are exceptions. 
+                                      The districts of Bindura and Marondera exhibit high M0 values at high k-thresholds, suggesting a very high poverty incidence. When we compare urban and rural households, 
+                                      it becomes clear that the rural regions have a higher prevalence of poverty than their rural counterparts."),
                                     p("\\(M_{1}\\):"),
-                                    p("When we look at M1 values as they exist at the 60-district level, we can see that a majority of Zimbabwe 
-                                      exhibits deep multidimensional poverty as a many of the districts have M1 values higher than the national average. 
-                                      As k-threshold values increase, M1 values tend to decrease, although outliers can be found in the northwestern region 
-                                      of the country as well as the region surrounding Harare. Distinguishing between urban and rural reveals that urban areas 
-                                      tend to have more shallow poverty than the national average as well as their rural counterparts. Poverty depth, M1, 
-                                      seems to reflect poverty incidence, M0 in both urban and rural areas as those with high M0 values have higher M1 values 
-                                      and those with low M0 values have low M1 values. Overall, M1 value when adjusted for a more encompassing education dimension 
-                                      reveals higher m1 values and, thus, deeper levels of poverty than the original dimension. As k-threshold values increase, 
-                                      the number of households that exist far from the poverty line decrease as evidenced by low M1 values in a majority of Zimbabwe’s 
-                                      districts. The urban and rural distinction brings to light another continuing trend as most rural districts have larger M1 values 
-                                      than their urban counterparts."),
+                                    p("When we look at M1 values for the 60-districts map, we see that the majority of Zimbabwe exhibits deep multidimensional poverty. Many of the districts have M1 values higher 
+                                      than the national average. As k-threshold values increase, M1 values tend to decrease, although outliers can be found in the northwestern region of the country as well as the 
+                                      region surrounding Harare. Distinguishing between urban and rural reveals that urban areas tend to have more shallow poverty than the national average as well as their rural counterparts."),
+                                    p("Sensitivity Analysis:"),
+                                    p("The adjusted M1 value is higher, suggesting deeper levels of poverty than the original dimension. As the k-threshold values are increased, the number of households that exist far above the poverty 
+                                      line decrease. The urban and rural disparities described above remain."),
                                     p("\\(M_{2}\\):"),
-                                    p("Poverty severity, reflected by the M2 value, indicates moderate poverty severity throughout Zimbabwe that tends to decrease as k-threshold 
-                                    values increase. Urban areas consistently have lower M2 values and thus less severe poverty than the national average as well as rural areas. 
-                                    This said, poverty severity remains a problem in both Bulawayo and Harare. Rural areas maintain an opposite trend and consistently have M2 values higher 
-                                    than urban areas and the nation, revealing the presence of relatively severe multidimensional poverty in northwest regions. The severity of poverty throughout 
-                                    Zimbabwe slightly increases as the education dimension is expanded to account for secondary schooling, potentially indicating only a small amount of households 
-                                    greatly deprived from in this variable. When urban households are selected at high k-threshold values, Harare and Bulawayo become the only two districts with M2 
-                                    values not equal to zero, implying greater severity due to lack of secondary education in these districts than elsewhere. Rural districts consistently exhibit
-                                    higher M2 values than urban districts and have more variation in M2 value when k-threshold values are adjusted. ")
+                                    p("Poverty severity, reflected by the M2 value, indicates moderate poverty severity throughout Zimbabwe that tends to decrease as k-threshold values increase. Urban areas consistently have lower M2 values 
+                                      and thus less severe poverty than the national average and rural areas. Poverty severity remains a problem in both Bulawayo and Harare. Rural areas consistently have M2 values higher than urban areas and 
+                                      the nation, revealing the presence of relatively severe multidimensional poverty in northwest regions."),
+                                    p("Sensitivity Analysis:"),
+                                    p("The severity of poverty throughout Zimbabwe increases slightly as the education dimension is expanded to account for secondary schooling. When urban households are selected at high k-threshold values,
+                                      Harare and Bulawayo become the only two districts with M2 values not equal to zero, implying greater severity due to lack of secondary education in these districts than elsewhere. Rural districts consistently
+                                      exhibit higher M2 values than urban districts and have more variation in M2 value when k-threshold values are adjusted.")
                                   )
                                 )
                               ),
-                              tabPanel("District Rankings",
-                                #tabName = "rank_60",
-                                     tabsetPanel(
-                                       tabPanel("M0",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M0_ranking", height = 750)),
-                                                  box(sliderInput("M0_k_threshold", "K-Threshold Value", 1, 9, 3),
-                                                      width = 6,
-                                                      footer = slider_caption))),
-     
-                                       tabPanel("M1",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M1_ranking", height = 750))),
-                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
-                                                    width = 6,
-                                                    footer = slider_caption)),
-                                       tabPanel("M2",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M2_ranking", height = 750)),
-                                                box(sliderInput("M2_k_threshold", "K-Threshold Value", 1, 9, 3),
-                                                    width = 6,
-                                                    footer = slider_caption))
-                                                ))),
                                
                               tabPanel("Province MPI Map",
                                # tabName = "Prov",
@@ -935,14 +897,133 @@ ui <- navbarPage(title = "Zimbabwe",
                                     title = strong("Trends"),
                                     width = 12,
                                     p("\\(M_{0}\\):"),
-                                    p(""),
+                                    p("While province-level MPI measures can provide insight into regional poverty trends, this analysis is limited in its ability to highlight
+                                      variations inside each province. Nonetheless, measures of poverty incidence show slight deviation across different provinces. However, the 
+                                      city provinces of Bulawayo and Harare stand out from the others insofar as they exhibit lower province-level M0 values than the other provinces. 
+                                      As the k-threshold value increases, province-level M0 values decrease. Interestingly, Harare’s M0 value exceeds those of the other provinces at a 
+                                      high k-threshold, signaling the existence of multidimensional poverty even at high poverty thresholds. When urban households are selected, M0 values 
+                                      decrease throughout all provinces, especially Masvingo and Mashonaland West. A switch to rural households results in increased M0 values across the board."),
+                                    p("Sensitivity Analysis:"),
+                                    p("Provinces reflect substantially higher M0 values following ongoing trends when the education adjustment is made. Mashonaland Central, Mashonaland East, Matabeleland North,
+                                      and Matabeleland South are significantly impacted by this adjustment and show M0 values nearing 0.5. Increases in the k-threshold show decreased M0 values throughout, although 
+                                      Harare and Mashonaland East have relatively high values. The urban and rural split reveals disparity among rural households when compared to their urban counterparts."),
                                     p("\\(M_{1}\\):"),
-                                    p(""),
+                                    p("For M1, the map above shows that moderate province-level M1 values are evenly dispersed throughout Zimbabwe with slight disparities in Matabeleland North and Matabeleland South. 
+                                      An increase in the k-threshold decreases M1 values at a greater rate in the southeastern region of Zimbabwe than in the western and northeastern portions. Urban households in urban 
+                                      provinces tend to have lower M1 values than rural households in provinces with lower population density"),
+                                    p("Sensitivity Analysis:"),
+                                    p("Adjusting for the increased education threshold results in uniformly higher M1 values in all provinces, again with a slight disparity in Matabeleland North and Matabeleland South. 
+                                      When provinces are divided by population density, urban households tend to have lower M1 values than rural households."),
                                     p("\\(M_{2}\\):"),
-                                    p("")
+                                    p("For M2, the poverty severity measure, the maps show consistent values throughout Zimbabwe’s provinces. Midlands, Mashonaland West, Manicaland, and the city provinces reflect lower poverty
+                                      severity than other provinces. Increasing the k-threshold value reveals relatively high M2 values in the city provinces and extends into the surrounding provinces. Poverty severity in rural 
+                                      households is higher than it is at the overall province level and the urban household level."),
+                                    p("Sensitivity Analysis:"),
+                                    p("The sensitivity analysis on the education component shows that the M2 values increase across all provinces as more households become deprived in the education dimension. With this selection, 
+                                      rural households exhibit higher M2 values than their urban counterparts.")
                                   )
                                 )
-                              )
+                              ),
+                          tabPanel("District Rankings",
+                                   #tabName = "rank_60",
+                                   tabsetPanel(
+                                     tabPanel("M0",
+                                              fluidRow(
+                                                box(width = 7,
+                                                withSpinner(plotlyOutput("M0_ranking", height = 750, width = 700))
+                                                ),
+                                                box(withMathJax(),
+                                                    width = 5,
+                                                    title = "Description",
+                                                    p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                box(sliderInput("M0_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                    width = 5,
+                                                    footer = slider_caption)
+                                              )),
+                                     
+                                     tabPanel("M1",
+                                              fluidRow(
+                                                box(width = 7,
+                                                withSpinner(plotlyOutput("M1_ranking", height = 750, width = 700))
+                                                ),
+                                                box(withMathJax(),
+                                                    width = 5,
+                                                    title = "Description",
+                                                    p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                box(sliderInput("M1_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                    width = 5,
+                                                    footer = slider_caption)
+                                              )),
+                                     
+                                     tabPanel("M2",
+                                              fluidRow(
+                                                box(width = 7,
+                                                withSpinner(plotlyOutput("M2_ranking", height = 750, width = 700))
+                                                ),
+                                                box(withMathJax(),
+                                                    width = 5,
+                                                    title = "Description",
+                                                    p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                box(sliderInput("M2_k_threshold", "K-Threshold Value", 1, 9, 3),
+                                                    width = 5,
+                                                    footer = slider_caption)
+                                              ))
+                                   )),
+                          tabPanel("Province Rankings",
+                                  tabsetPanel(
+                                    tabPanel("M0",
+                                             fluidRow(
+                                               box(width = 7,
+                                                 withSpinner(plotlyOutput("M0_prov_ranking", height = 750, width = 700))
+                                                 ),
+                                               box(withMathJax(),
+                                                   width = 5,
+                                                   title = "Description",
+                                                   p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                               box(sliderInput("M0_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                   width = 5,
+                                                   footer = slider_caption)
+                                                   )),
+                                    
+                                    tabPanel("M1",
+                                             fluidRow(
+                                               box(width = 7,
+                                                   withSpinner(plotlyOutput("M1_prov_ranking", height = 750))
+                                                 ),
+                                               box(withMathJax(),
+                                                   width = 5,
+                                                   title = "Description",
+                                                   p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                               box(sliderInput("M1_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                   width = 5,
+                                                   footer = slider_caption)
+                                               )),
+                                    tabPanel("M2",
+                                             fluidRow(
+                                                 box(width = 7,
+                                                     withSpinner(plotlyOutput("M2_prov_ranking", height = 750))
+                                                     ),
+                                               box(withMathJax(),
+                                                   width = 5,
+                                                   title = "Description",
+                                                   p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                               box(sliderInput("M2_prov_k", "K-Threshold Value", 1, 9, 3),
+                                                   width = 5,
+                                                   footer = slider_caption)
+                                            ))
+                                  ))
                             ),
                  ## Tab Decomposition------------------
                  navbarMenu("MPI Decomposition",
@@ -2188,6 +2269,384 @@ server <- function(input, output, session) {
       
       
     })
+    
+    # Graphing Province Rankings ----------------------------------------------
+    
+    prov_ranked <- read_csv("data/MappingData/OriginalMPI/2017/2017_Province.csv")
+    
+    M0_prov_k_threshold <- reactive({
+      input$M0_prov_k
+    })
+    
+    output$M0_prov_ranking <- renderPlotly({
+      if (M0_prov_k_threshold() == "1") {
+        M0_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k1_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "2") {
+        M0_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k2_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "3") {
+        M0_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k3_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "4") {
+        M0_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k4_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "5") {
+        M0_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k5_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "6") {
+        M0_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k6_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "7") {
+        M0_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k7_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "8") {
+        M0_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k8_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "9") {
+        M0_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M1_prov_k_threshold <- reactive({
+      input$M1_prov_k
+    })
+    
+    output$M1_prov_ranking <- renderPlotly({
+      if (M1_prov_k_threshold() == "1") {
+        M1_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k1_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "2") {
+        M1_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k2_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "3") {
+        M1_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k3_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "4") {
+        M1_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k4_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "5") {
+        M1_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k5_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "6") {
+        M1_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k6_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "7") {
+        M1_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k7_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "8") {
+        M1_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k8_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "9") {
+        M1_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M2_prov_k_threshold <- reactive({
+      input$M2_prov_k
+    })
+    
+    output$M2_prov_ranking <- renderPlotly({
+      if (M2_prov_k_threshold() == "1") {
+        M2_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k1_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "2") {
+        M2_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k2_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "3") {
+        M2_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k3_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "4") {
+        M2_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k4_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "5") {
+        M2_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k5_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "6") {
+        M2_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k6_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "7") {
+        M2_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k7_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "8") {
+        M2_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k8_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "9") {
+        M2_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k9_prov_ranking)
+        
+      }
+      
+    })    
     
     # MAPPING MPI 2017 90 district ----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
