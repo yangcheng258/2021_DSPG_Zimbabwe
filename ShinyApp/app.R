@@ -796,30 +796,6 @@ The first dimension, education, consists of two variables – Max Education and 
                                       
                             ),
                             
-                            ## Distrcit ranking------------
-                            tabPanel("District Rankings",
-                                     #tabName = "rank_60",
-                                     tabsetPanel(
-                                       tabPanel("M0",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M0_ranking", height = 750)),
-                                                  box(sliderInput("M0_k_threshold", strong("k-Threshold Value"), 1, 9, 3),
-                                                      width = 6,
-                                                      footer = slider_caption))),
-                                       
-                                       tabPanel("M1",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M1_ranking", height = 750))),
-                                                box(sliderInput("M1_k_threshold", strong("k-Threshold Value"), 1, 9, 3),
-                                                    width = 6,
-                                                    footer = slider_caption)),
-                                       tabPanel("M2",
-                                                fluidRow(
-                                                  withSpinner(plotlyOutput("M2_ranking", height = 750))),
-                                                box(sliderInput("M1_k_threshold", strong("k-Threshold Value"), 1, 9, 3),
-                                                    width = 6,
-                                                    footer = slider_caption))
-                                     )),
                             ## province MPI-------------
                             tabPanel("Province MPI Map",
                                      # tabName = "Prov",
@@ -894,7 +870,108 @@ The first dimension, education, consists of two variables – Max Education and 
                                          p("The sensitivity analysis on the education component shows that the \\(M_{2}\\) values increase across all provinces as more households become deprived in the education dimension. With this selection, rural households exhibit higher \\(M_{2}\\) values than their urban counterparts.")
                                        )
                                      )
-                            )
+                            ),
+                            ## DIstricts ranking
+                            tabPanel("District Rankings",
+                                     #tabName = "rank_60",
+                                     tabsetPanel(
+                                       tabPanel("M0",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M0_ranking", height = 850, width = 700))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M0_k_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                )),
+                                       
+                                       tabPanel("M1",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M1_ranking", height = 850, width = 700))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M1_k_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                )),
+                                       
+                                       tabPanel("M2",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M2_ranking", height = 850, width = 700))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M2_k_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                ))
+                                     )),
+                            tabPanel("Province Rankings",
+                                     tabsetPanel(
+                                       tabPanel("M0",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M0_prov_ranking", height = 850, width = 700))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M0_prov_k", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                )),
+                                       
+                                       tabPanel("M1",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M1_prov_ranking", height = 850))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M1_prov_k", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                )),
+                                       tabPanel("M2",
+                                                fluidRow(
+                                                  box(width = 7,
+                                                      withSpinner(plotlyOutput("M2_prov_ranking", height = 850))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 5,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific province, hover over the respective bar. To view the ranked 
+                                                     order of each province at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M2_prov_k", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 5,
+                                                      footer = slider_caption)
+                                                ))
+                                     ))
                  ),
                  ## Tab Decomposition------------------
                  navbarMenu("MPI Decomposition",
@@ -1754,52 +1831,25 @@ server <- function(input, output, session) {
                                                                                      MPI_2017_1_T_o$M2_k7[1],
                                                                                      MPI_2017_1_T_o$M2_k8[1],
                                                                                      MPI_2017_1_T_o$M2_k9[1]))
+    ### Graphing Ranked District 60 Bar Chart --------------------------------------
     
-    # Graphing Ranked District Bar Chart --------------------------------------
-    #NAME_2
-    #MPI_2017_60_T_o
-    ranked_data <- MPI_2017_60_T_o 
+    ranked_data <- read_csv("./data/MappingData/OriginalMPI/2017/2017_District.csv")
     # Suggestion
     #
     M0_dist_rank <- reactive({
       input$M0_k_threshold
     })
     
-    #*******************ranking function----------------
-    #(data,M_K)
     
-    #     rank <- function(data,M_X,K_Y,titles){
-    #     p <- data %>%
-    #        #mutate(District_name = fct_reorder(data[[2]], data[[paste0("M",M_X,"_K",K_Y)]])) %>%
-    #       mutate(District_name = fct_reorder(data[[2]], data[[3]])) %>%
-    #       ggplot(aes(x = District_name, y =  paste0("M",M_X,"_K",K_Y))) +
-    #        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .6 ) +
-    #        coord_flip() +
-    #       labs(y = paste("M",M_X,"at Threshold K = ",K_Y), title = titles) +
-    #        theme_minimal() 
-    #     # %>%
-    #     #    ggplotly()
-    #   #**********************http://jeffgoldsmith.com/example_interactivity/plotly.html
-    #      return(p)
-    #     # return( mutate(District_name = fct_reorder(data[[2]], data[[paste0("M",M_X,"_K",K_Y)]])) %>%
-    #     #           ggplot(aes(x = District_name, y =  paste0("M",M_X,"_K",K_Y))) +
-    #     #           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .6 ) +
-    #     #           coord_flip() +
-    #     #           labs(y = paste("M",M_X,"at Threshold K = ",K_Y), title = titles) +
-    #     #           theme_minimal() )
-    #     }
-    #     
-    # 
-    # rank(MPI_2017_60_T_o, 0,1,"This is title")
     
     output$M0_ranking <- renderPlotly({
       if (M0_dist_rank() == "1") {
         M0_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]] , M0_k1)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k1)) %>% 
           ggplot(aes(x = District_name, y = M0_k1)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 1", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 1", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k1_ranking)
@@ -1808,11 +1858,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "2") {
         M0_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k2)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k2)) %>% 
           ggplot(aes(x = District_name, y = M0_k2)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 2", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 2", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k2_ranking)
@@ -1821,11 +1871,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "3") {
         M0_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k3)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k3)) %>% 
           ggplot(aes(x = District_name, y = M0_k3)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 3", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 3", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k3_ranking)
@@ -1834,11 +1884,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "4") {
         M0_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k4)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k4)) %>% 
           ggplot(aes(x = District_name, y = M0_k4)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 4", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 4", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k4_ranking)
@@ -1847,11 +1897,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "5") {
         M0_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k5)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k5)) %>% 
           ggplot(aes(x = District_name, y = M0_k5)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 5", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 5", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k5_ranking)
@@ -1860,11 +1910,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "6") {
         M0_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k6)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k6)) %>% 
           ggplot(aes(x = District_name, y = M0_k6)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 6", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 6", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k6_ranking)
@@ -1873,11 +1923,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "7") {
         M0_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k7)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k7)) %>% 
           ggplot(aes(x = District_name, y = M0_k7)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 7", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 7", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k7_ranking)
@@ -1886,11 +1936,11 @@ server <- function(input, output, session) {
       
       else if (M0_dist_rank() == "8") {
         M0_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k8)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k8)) %>% 
           ggplot(aes(x = District_name, y = M0_k8)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 8", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 8", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k8_ranking)
@@ -1900,11 +1950,11 @@ server <- function(input, output, session) {
       else if (M0_dist_rank() == "9") {
         
         M0_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M0_k9)) %>% 
+          mutate(District_name = fct_reorder(District_name, M0_k9)) %>% 
           ggplot(aes(x = District_name, y = M0_k9)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M0 at Threshold k = 9", x = "Districts", title = "District Comparison") +
+          labs(y = "M0 at Threshold K = 9", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M0_k9_ranking)
@@ -1914,123 +1964,123 @@ server <- function(input, output, session) {
       
     })
     
-    M1_dist_rank  <- reactive({
+    M1_dist_rank <- reactive({
       input$M1_k_threshold
     })
     
     output$M1_ranking <- renderPlotly({
-      if (M1_dist_rank () == "1") {
+      if (M1_dist_rank() == "1") {
         M1_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k1)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k1)) %>% 
           ggplot(aes(x = District_name, y = M1_k1)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 1", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 1", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k1_ranking)
         
       }
       
-      else if (M1_dist_rank () == "2") {
+      else if (M1_dist_rank() == "2") {
         M1_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k2)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k2)) %>% 
           ggplot(aes(x = District_name, y = M1_k2)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 2", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 2", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k2_ranking)
         
       }
       
-      else if (M1_dist_rank () == "3") {
+      else if (M1_dist_rank() == "3") {
         M1_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k3)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k3)) %>% 
           ggplot(aes(x = District_name, y = M1_k3)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 3", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 3", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k3_ranking)
         
       }
       
-      else if (M1_dist_rank () == "4") {
+      else if (M1_dist_rank() == "4") {
         M1_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k4)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k4)) %>% 
           ggplot(aes(x = District_name, y = M1_k4)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 4", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 4", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k4_ranking)
         
       }
       
-      else if (M1_dist_rank () == "5") {
+      else if (M1_dist_rank() == "5") {
         M1_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k5)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k5)) %>% 
           ggplot(aes(x = District_name, y = M1_k5)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 5", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 5", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k5_ranking)
         
       }
       
-      else if (M1_dist_rank () == "6") {
+      else if (M1_dist_rank() == "6") {
         M1_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k6)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k6)) %>% 
           ggplot(aes(x = District_name, y = M1_k6)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 6", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 6", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k6_ranking)
         
       }
       
-      else if (M1_dist_rank () == "7") {
+      else if (M1_dist_rank() == "7") {
         M1_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k7)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k7)) %>% 
           ggplot(aes(x = District_name, y = M1_k7)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 7", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 7", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k7_ranking)
         
       }
       
-      else if (M1_dist_rank () == "8") {
+      else if (M1_dist_rank() == "8") {
         M1_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k8)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k8)) %>% 
           ggplot(aes(x = District_name, y = M1_k8)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 8", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 8", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k8_ranking)
         
       }
       
-      else if (M1_dist_rank () == "9") {
+      else if (M1_dist_rank() == "9") {
         
         M1_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], M1_k9)) %>% 
+          mutate(District_name = fct_reorder(District_name, M1_k9)) %>% 
           ggplot(aes(x = District_name, y = M1_k9)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M1 at Threshold k = 9", x = "Districts", title = "District Comparison") +
+          labs(y = "M1 at Threshold K = 9", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M1_k9_ranking)
@@ -2040,130 +2090,507 @@ server <- function(input, output, session) {
       
     })
     
-    M2_dist_rank  <- reactive({
+    M2_dist_rank <- reactive({
       input$M2_k_threshold
     })
     
     output$M2_ranking <- renderPlotly({
-      
-      if (M2_dist_rank () == "1") {
+      if (M2_dist_rank() == "1") {
         M2_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]],ranked_data[["M2_k1"]] )) %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k1)) %>% 
           ggplot(aes(x = District_name, y = M2_k1)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 1", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 1", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k1_ranking)
         
       }
       
-      else if (M2_dist_rank () == "2") {
+      else if (M2_dist_rank() == "2") {
         M2_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], ranked_data[['M2_k2']])) %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k2)) %>% 
           ggplot(aes(x = District_name, y = M2_k2)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 2", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 2", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k2_ranking)
         
       }
       
-      else if (M2_dist_rank () == "3") {
+      else if (M2_dist_rank() == "3") {
         M2_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]],ranked_data[['M2_k3']])) %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k3)) %>% 
           ggplot(aes(x = District_name, y = M2_k3)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 3", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 3", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k3_ranking)
         
       }
       
-      else if (M2_dist_rank () == "4") {
+      else if (M2_dist_rank() == "4") {
         M2_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], ranked_data[['M2_k4']])) %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k4)) %>% 
           ggplot(aes(x = District_name, y = M2_k4)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 4", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 4", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k4_ranking)
         
       }
       
-      else if (M2_dist_rank () == "5") {
+      else if (M2_dist_rank() == "5") {
         M2_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], ranked_data[['M2_k5']])) %>% 
+          mutate(District_name = fct_reorder(District_name, M2_k5)) %>% 
           ggplot(aes(x = District_name, y = M2_k5)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 5", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 5", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k5_ranking)
         
       }
       
-      else if (M2_dist_rank () == "6") {
+      else if (M2_dist_rank() == "6") {
         M2_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], ranked_data[['M2_k6']])) %>% 
-          ggplot(aes(x = District_name, y = ranked_data[['M2_k6']])) +
+          mutate(District_name = fct_reorder(District_name, M2_k6)) %>% 
+          ggplot(aes(x = District_name, y = M2_k6)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 6", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 6", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k6_ranking)
         
       }
       
-      else if (M2_dist_rank () == "7") {
+      else if (M2_dist_rank() == "7") {
         M2_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]],ranked_data[['M2_k7']])) %>% 
-          ggplot(aes(x = District_name, y = ranked_data[['M2_k7']])) +
+          mutate(District_name = fct_reorder(District_name, M2_k7)) %>% 
+          ggplot(aes(x = District_name, y = M2_k7)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 7", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 7", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k7_ranking)
         
       }
       
-      else if (M2_dist_rank () == "8") {
+      else if (M2_dist_rank() == "8") {
         M2_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]], ranked_data[['M2_k8']])) %>% 
-          ggplot(aes(x = District_name, y = ranked_data[['M2_k8']])) +
+          mutate(District_name = fct_reorder(District_name, M2_k8)) %>% 
+          ggplot(aes(x = District_name, y = M2_k8)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 8", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 8", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k8_ranking)
         
       }
       
-      else if (M2_dist_rank () == "9") {
+      else if (M2_dist_rank() == "9") {
         
         M2_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(ranked_data[[2]],ranked_data[['M2_k9']])) %>% 
-          ggplot(aes(x = District_name, y = ranked_data[['M2_k9']])) +
+          mutate(District_name = fct_reorder(District_name, M2_k9)) %>% 
+          ggplot(aes(x = District_name, y = M2_k9)) +
           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
           coord_flip() +
-          labs(y = "M2 at Threshold k = 9", x = "Districts", title = "District Comparison") +
+          labs(y = "M2 at Threshold K = 9", x = "Districts", title = "District Comparison") +
           theme_minimal()
         
         ggplotly(M2_k9_ranking)
         
       }
       
+      
+    })
+    
+    ### Graphing Province Rankings ----------------------------------------------
+    
+    prov_ranked <- read_csv("./data/MappingData/OriginalMPI/2017/2017_Province.csv")
+    
+    M0_prov_k_threshold <- reactive({
+      input$M0_prov_k
+    })
+    
+    output$M0_prov_ranking <- renderPlotly({
+      if (M0_prov_k_threshold() == "1") {
+        M0_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k1_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "2") {
+        M0_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k2_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "3") {
+        M0_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k3_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "4") {
+        M0_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k4_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "5") {
+        M0_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k5_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "6") {
+        M0_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k6_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "7") {
+        M0_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k7_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "8") {
+        M0_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k8_prov_ranking)
+        
+      }
+      
+      else if (M0_prov_k_threshold() == "9") {
+        M0_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M0_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M0_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M0_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M1_prov_k_threshold <- reactive({
+      input$M1_prov_k
+    })
+    
+    output$M1_prov_ranking <- renderPlotly({
+      if (M1_prov_k_threshold() == "1") {
+        M1_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k1_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "2") {
+        M1_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k2_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "3") {
+        M1_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k3_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "4") {
+        M1_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k4_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "5") {
+        M1_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k5_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "6") {
+        M1_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k6_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "7") {
+        M1_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k7_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "8") {
+        M1_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k8_prov_ranking)
+        
+      }
+      
+      else if (M1_prov_k_threshold() == "9") {
+        M1_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M1_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M1_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M1_k9_prov_ranking)
+        
+      }
+      
+      
+    })
+    
+    M2_prov_k_threshold <- reactive({
+      input$M2_prov_k
+    })
+    
+    output$M2_prov_ranking <- renderPlotly({
+      if (M2_prov_k_threshold() == "1") {
+        M2_k1_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k1)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k1)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k1_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "2") {
+        M2_k2_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k2)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k2)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k2_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "3") {
+        M2_k3_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k3)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k3)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k3_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "4") {
+        M2_k4_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k4)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k4)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k4_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "5") {
+        M2_k5_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k5)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k5)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k5_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "6") {
+        M2_k6_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k6)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k6)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k6_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "7") {
+        M2_k7_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k7)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k7)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k7_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "8") {
+        M2_k8_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k8)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k8)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k8_prov_ranking)
+        
+      }
+      
+      else if (M2_prov_k_threshold() == "9") {
+        M2_k9_prov_ranking <- prov_ranked %>% 
+          mutate(Province_name = fct_reorder(Province_name, M2_k9)) %>% 
+          ggplot(aes(x = Province_name, y = M2_k9)) +
+          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+          coord_flip() +
+          labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+          theme_minimal()
+        
+        ggplotly(M2_k9_prov_ranking)
+        
+      }
       
     })
     
