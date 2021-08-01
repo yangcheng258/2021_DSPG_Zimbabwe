@@ -432,13 +432,7 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
   #           theme_bw() +
   #           geom_abline()) %>% ggplotly()
   #)
-          
-          
-    t <- list(
-            family = "sans serif",
-            size = 12,
-            color = toRGB("grey50"))
-    
+   
     return (plot_ly(M0_Comparison, x = ~x_data, y = ~y_data, text=~Name) %>%
 
             # +
@@ -447,7 +441,7 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
             #             # theme_bw() +
             #             geom_abline() %>%
              
-            add_text(textfont = t, textposition = "top left")%>% 
+           
             add_markers()%>%
               layout(shapes=list(type='line', x0=0, x1=0.6, y0=0, y1=0.6,name=" "), 
                    showlegend = FALSE,
@@ -468,13 +462,13 @@ ui <- navbarPage(title = "Zimbabwe",
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  useShinyjs(),
                 ## Tab Overview -----------------------------------------------------------
-                 tabPanel("Project Overview", value = "overview",
+                 tabPanel("Overview", value = "overview",
                           fluidRow(style = "margin: 2px;",
                                    align = "center",
                                    br(""),
-                                   h1(strong("Using 2017 PICES Data to Create a Multidimensional Poverty Index of Zimbabwe")),
-                                   fluidRow(style = "margin: 2px;",
-                                            img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")),
+                                   h1(strong("Using PICES Data to Visualize District Level Multidimensional Poverty in Zimbabwe")),
+                                   # fluidRow(style = "margin: 2px;",
+                                   #          img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")),
                                       h4("Data Science for the Public Good Program"),
                                       h4("Virginia Tech"),
                                       h4("Department of Agriculture and Applied Economics")
@@ -484,7 +478,10 @@ ui <- navbarPage(title = "Zimbabwe",
                           fluidRow(style = "margin: 6px;",
                                    column(4,
                                           h2(strong("Project Overview"), align = "center"),
-                                          p("OVERVIEW TEXT GOES HERE")),
+                                          p("Prior research suggests that poverty in Zimbabwe has increased since the period of crisis began at the turn of the millennium. According to the latest World Bank estimates, almost 49% of the population of Zimbabwe were in extreme poverty in 2020. Our stakeholders seek solutions to the economic situation. 
+                                            They would like more granular information presented in creative ways that allow the user to glean the multidimensional and temporal aspects of poverty in Zimbabwe. The recent availability of household surveys for public use has opened the possibility of using the data to inform evidence-based policy."),
+                                          p("This project uses data from the Poverty, Income, Consumption, Expenditure Survey (PICES) to provide granular information on poverty in Zimbabwe. We created multidimensional poverty indices (MPI) at the", strong(" district and province level"), " and decomposed them into components that focus on ", strong("education, health, employment, housing conditions, living conditions, assets, agricultural assets, and access to services."),   
+                                            "We provide interactive tools that allow the user to visualize and study each component and understand their contribution to the MPI. We constructed these measures for two waves of data in 2011 and 2017 to show the changes in poverty over time and across regions in Zimbabwe.  The composition and decomposition of MPI in this project provide policy implications for informing evidence-based policy and interventions for poverty reduction. ")),
                                    column(4,
                                           h2(strong("Introduction to Zimbabwe"), align = "center"),
                                           p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert MUGABE until his resignation in 2017. Presently, Emmerson Mnangagwa holds office. 
@@ -640,6 +637,7 @@ ui <- navbarPage(title = "Zimbabwe",
 
                  ## Tab MPIPING MPI --------------------------------------------------------------------
                  tabPanel("Mapping MPI", value = "maps",
+                          
                           dashboardPage(
                             skin = 'black',
                             dashboardHeader(
@@ -674,25 +672,33 @@ ui <- navbarPage(title = "Zimbabwe",
                                 tabName = "91_Dist",
                                 # Everything has to be put in a row or column
                                 fluidPage(
+                                    #       tags$head(tags$style(
+                                    #                 HTML('
+                                    # body, label, input, button, select { 
+                                    #     font-family: "Calibri";
+                                    #     background-color: black;
+                                    #         }')
+                                    #                           )),
                                   box(
                                     title = "91 District MPI Map of Zimbabwe",
                                     withSpinner(leafletOutput("Dist_91_MPI_Map")),
                                     width = 8,
                                     height = 500
                                   ),
+                                  
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
-                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
-                                      but the 2017 pices data designed specific urban areas within districts. There are 
-                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
-                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
-                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
-                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
-                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
-                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
+                                      \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
+                                    tags$ul(  
+                                      tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                      " and considers all of the dimensions described in the methodology section."),
+                                      tags$li("\\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
+                                      tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                  ),
+                                   p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph."),
                                     width = 4
                                   ),
@@ -776,16 +782,16 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
-                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
-                                      but the 2017 pices data designed specific urban areas within districts. There are 
-                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
-                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
-                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
-                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
-                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
-                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
+                                      \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
+                                    tags$ul(  
+                                      tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                              " and considers all of the dimensions described in the methodology section."),
+                                      tags$li("\\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
+                                      tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                    ),
+                                    p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph."),
                                     width = 4
                                   ),
@@ -889,16 +895,16 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
-                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
-                                      but the 2017 pices data designed specific urban areas within districts. There are 
-                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
-                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
-                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
-                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
-                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
-                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
+                                      \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
+                                    tags$ul(  
+                                      tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                              " and considers all of the dimensions described in the methodology section."),
+                                      tags$li("\\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
+                                      tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                    ),
+                                    p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph."),
                                     width = 4
                                   ),
@@ -969,25 +975,25 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     title = "91 District Decomposition Map of Zimbabwe",
                                     withSpinner(leafletOutput("Dist_91_Decomp_Map")),
+                                    p(strong("Note: The map always resets to Max Education.")),
                                     width = 8,
                                     height = 500
                                   ),
                                   box(
                                     withMathJax(),
                                     title = "Description",
-                                    p("This graphic shows a detailed visualization of Zimbabwean districts, 
-                                      broken up into 91 distinct regions. The standard district model uses 60 districts,
-                                      but the 2017 pices data designed specific urban areas within districts. There are 
-                                      three layers to this graph: \\(M_{0}\\), \\(M_{1}\\) and \\(M_{2}\\). \\(M_{0}\\)
-                                      shows the adjusted headcount ratio designed by Alkire-Foster et al. 2011 and takes
-                                      into account all of the dimensions described in the methodology section. \\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor 
-                                      are from the poverty line. Lastly, \\(M_{2}\\) is the square of the poverty gap and 
-                                      weights people who are farther away from the poverty gap higher. This is a measure of the 
-                                      poverty severity. To adjust the threshold cutoff, k, by which an individual is considered poor,
+                                    p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
+                                      \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
+                                    tags$ul(  
+                                      tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                              " and considers all of the dimensions described in the methodology section."),
+                                      tags$li("\\(M_{1}\\)
+                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
+                                      tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                    ),
+                                    p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph."),
-                                    width = 4,
-                                    height = 500
+                                    width = 4
                                   ),
                                   box(
                                     sliderInput("slider_91_Decomp", "K-Threshold Value", 1, 9, 3),
@@ -1047,6 +1053,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     title = "60 District Decomposition Map of Zimbabwe",
                                     withSpinner(leafletOutput("Dist_60_Decomp_Map")),
+                                    p(strong("Note: The map always resets to Max Education.")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -1125,6 +1132,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   box(
                                     title = "Province Decomposition Map of Zimbabwe",
                                     withSpinner(leafletOutput("Prov_Decomp_Map")),
+                                    p(strong("Note: The map always resets to Max Education.")),
                                     width = 8,
                                     height = 500
                                   ),
@@ -1210,16 +1218,16 @@ ui <- navbarPage(title = "Zimbabwe",
                            dashboardSidebar(
                              sidebarMenu(
                                menuItem(
-                                 "M0 Comparison Map",
+                                 "\\(M_0 \\) Comparison Map",
                                  tabName = 'M0_Comp',
                                  selected = TRUE
                                ),
                                menuItem(
-                                 "M1 Comparison",
+                                 "\\(M_1 \\) Comparison",
                                  tabName = "M1_Comp"
                                ),
                                menuItem(
-                                 "M2 Comparison Map",
+                                 "\\(M_2 \\) Comparison Map",
                                  tabName = 'M2_Comp'
                                )
                              )
@@ -1232,14 +1240,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                  # Everything has to be put in a row or column
                                  fluidPage(
                                    box(
-                                     title = "Comparison of M0 in Zimbabwe",
+                                     title = "Comparison of \\(M_0 \\) in Zimbabwe",
                                      withSpinner(leafletOutput("M0_Comparison_Map")),
                                      width = 6,
                                      height = 500
                                    ),
                                    box(
                                      withMathJax(),
-                                     title = "Comparison M0 for 2011 and 2017",
+                                     title = "Comparison of \\(M_0 \\) for 2011 and 2017",
                                      #withSpinner(plotlyOutput("M0_Scatterplot"))
                                      withSpinner(plotlyOutput("M0_Scatterplot")),
                                      width = 6,
@@ -1293,14 +1301,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                  # Everything has to be put in a row or column
                                  fluidPage(
                                    box(
-                                     title = "Comparison of M1 in Zimbabwe",
+                                     title = "Comparison of \\(M_1 \\) in Zimbabwe",
                                      withSpinner(leafletOutput("M1_Comparison_Map")),
                                      width = 6,
                                      height = 500
                                    ),
                                    box(
                                      withMathJax(),
-                                     title = "Comparison M1 for 2011 and 2017",
+                                     title = "Comparison of \\(M_1 \\) for 2011 and 2017",
                                      withSpinner(plotlyOutput("M1_Scatterplot")),
                                      width = 6,
                                      height = 500
@@ -1352,14 +1360,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                # Everything has to be put in a row or column
                                fluidPage(
                                  box(
-                                   title = "Comparison of M2 in Zimbabwe",
+                                   title = "Comparison of \\(M_2 \\) in Zimbabwe",
                                    withSpinner(leafletOutput("M2_Comparison_Map")),
                                    width = 6,
                                    height = 500
                                  ),
                                  box(
                                    withMathJax(),
-                                   title = "Comparison M2 for 2011 and 2017",
+                                   title = "Comparison of \\(M_2 \\) for 2011 and 2017",
                                    withSpinner(plotlyOutput("M2_Scatterplot")),
                                    width = 6,
                                    height = 500
@@ -1433,6 +1441,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                    fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             column(6, align = "center",
                                                    h4(strong("DSPG Team Members")),
+                                                   p("", style = "padding-top:10px;"),
                                                    img(src = "team-yang.png", style = "display: inline;  border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-sambath.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
                                                    img(src = "team-atticus.jpg", style = "display: inline; border: 0px solid #C0C0C0;", width = "150px"),
@@ -1440,8 +1449,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    p("", style = "padding-top:10px;"),
                                                    p(a(href = 'https://www.linkedin.com/in/yang-cheng-200118191/', 'Yang Cheng', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                      p(a(href = 'https://www.linkedin.com/in/sambath-jayapregasham-097803127/', 'Sambath Jayapregasham', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
-                                                       p(a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics)"),
-                                                         p( a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)"),
+                                                       p(a(href = 'https://www.linkedin.com/in/atticus-rex-717581191/', 'Atticus Rex', target = '_blank'), "(Virginia Tech, Computational Modeling and Data Analytics);"),
+                                                         p( a(href = 'https://www.linkedin.com/in/matthew-burkholder-297b9119a/', 'Matthew Burkholder', target = '_blank'), "(Virginia Tech, Philosophy, Politics, & Economics)."),
                                                    p("", style = "padding-top:10px;")
                                                             
                                             ),
@@ -1454,14 +1463,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    p("", style = "padding-top:10px;"),
                                                    p(a(href = "https://aaec.vt.edu/people/faculty/chen-susan.html", 'Dr. Susan Chen', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
                                                    p(a(href = "https://aaec.vt.edu/people/faculty/gupta-anubhab.html", 'Dr. Anubhab Gupta', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
-                                                   p(a(href = "https://aaec.vt.edu/people/faculty/alwang-jeffrey.html", 'Dr. Jeffrey Alwang', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics);"),
+                                                   p(a(href = "https://aaec.vt.edu/people/faculty/alwang-jeffrey.html", 'Dr. Jeffrey Alwang', target = '_blank'), "(Virginia Tech, Agricultural and Applied Microeconomics)."),
                                                    p("", style = "padding-top:10px;")
                                             )
                                    ),
                                    fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             h4(strong("Project Stakeholders"), align = "center"),
-                                            p("Dhiraj Sharma (World Bank), "),
-                                            p("Grown Chirongwe (Zimbabwe National Statistics Agency)")
+                                            p(a(href="https://www.linkedin.com/in/dhiraj-sharma-aa029024/?originalSubdomain=np","Dhiraj Sharma",target='_blank')," (World Bank); "),
+                                            p("Grown Chirongwe",a(href="https://www.zimstat.co.zw/","(Zimbabwe National Statistics Agency)",target="_blank"))
 
                                    ),
                                    fluidRow(style = "margin-left: 100px; margin-right: 100px;",
@@ -1805,12 +1814,41 @@ server <- function(input, output, session) {
                                                                               MPI_2017_1_T_o$M2_k9[1]))
 
 # Graphing Ranked District Bar Chart --------------------------------------
-
-    ranked_data <- read_csv("data/MappingData/OriginalMPI/2017/2017_District.csv")
-    
+    #NAME_2
+    #MPI_2017_60_T_o
+    ranked_data <- read_csv("./data/MappingData/OriginalMPI/2017/2017_District.csv")
+    # Suggestion
+    #
     M0_dist_rank <- reactive({
       input$M0_k_threshold
     })
+
+   #*******************ranking function----------------
+   #(data,M_K)
+   
+#     rank <- function(data,M_X,K_Y,titles){
+#     p <- data %>%
+#        #mutate(District_name = fct_reorder(data[[2]], data[[paste0("M",M_X,"_K",K_Y)]])) %>%
+#       mutate(District_name = fct_reorder(data[[2]], data[[3]])) %>%
+#       ggplot(aes(x = District_name, y =  paste0("M",M_X,"_K",K_Y))) +
+#        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .6 ) +
+#        coord_flip() +
+#       labs(y = paste("M",M_X,"at Threshold K = ",K_Y), title = titles) +
+#        theme_minimal() 
+#     # %>%
+#     #    ggplotly()
+#   #**********************http://jeffgoldsmith.com/example_interactivity/plotly.html
+#      return(p)
+#     # return( mutate(District_name = fct_reorder(data[[2]], data[[paste0("M",M_X,"_K",K_Y)]])) %>%
+#     #           ggplot(aes(x = District_name, y =  paste0("M",M_X,"_K",K_Y))) +
+#     #           geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .6 ) +
+#     #           coord_flip() +
+#     #           labs(y = paste("M",M_X,"at Threshold K = ",K_Y), title = titles) +
+#     #           theme_minimal() )
+#     }
+#     
+# 
+# rank(MPI_2017_60_T_o, 0,1,"This is title")
     
     output$M0_ranking <- renderPlotly({
       if (M0_dist_rank() == "1") {
@@ -2186,7 +2224,7 @@ server <- function(input, output, session) {
       
     })
     
-    ## MAPPING MPI 2017 90 district ----------------------------------------------------------------------
+    # MAPPING MPI 2017 90 district ----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
     # was appearing to the right of the data instead of at the bottom where it was 
     # supposed to. 
@@ -3005,7 +3043,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = TRUE)) %>%
+        options = layersControlOptions(collapsed = FALSE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_91_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
@@ -3804,7 +3842,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = TRUE)) %>%
+        options = layersControlOptions(collapsed = FALSE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_60_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
@@ -4602,7 +4640,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = TRUE)) %>%
+        options = layersControlOptions(collapsed = FALSE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_Prov_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
@@ -4764,7 +4802,7 @@ server <- function(input, output, session) {
                    map_2017@data$ADM1_EN)
     M0_2011 <- M0_2011 %>% round(digits = 3)
     M0_2017 <- M0_2017 %>% round(digits = 3)
-    create_scatter(names, M0_2011, M0_2017, "M0 for 2011", "M0 for 2017", "Comparison of M0 from 2011 to 2017") 
+    create_scatter(names, M0_2011, M0_2017, "M<sub>0</sub> for 2011", "M<sub>0</sub> for 2017", "Comparison of \\(M_0\\) from 2011 to 2017") 
   })
   
   output$M1_Scatterplot <- renderPlotly({
@@ -4828,7 +4866,7 @@ server <- function(input, output, session) {
     M1_2011 <- M1_2011 %>% round(digits = 3)
     M1_2017 <- M1_2017 %>% round(digits = 3)
     
-    create_scatter(names, M1_2011, M1_2017, "M1 for 2011", "M1 for 2017", "Comparison of M1 from 2011 to 2017") 
+    create_scatter(names, M1_2011, M1_2017, "M<sub>1</sub> for 2011", "M<sub>1</sub> for 2017", "Comparison of \\(M_1 \\) from 2011 to 2017") 
   })
   
   output$M1_Comparison_Map <- renderLeaflet({
@@ -4981,7 +5019,7 @@ server <- function(input, output, session) {
     M2_2011 <- M2_2011 %>% round(digits = 3)
     M2_2017 <- M2_2017 %>% round(digits = 3)
     
-    create_scatter(names, M2_2011, M2_2017, "M2 for 2011", "M2 for 2017", "Comparison of M2 from 2011 to 2017")
+    create_scatter(names, M2_2011, M2_2017, "M<sub>2</sub> for 2011", "M<sub>2</sub> for 2017", "Comparison of \\(M_2\\) from 2011 to 2017")
   }) 
   
   output$M2_Comparison_Map <- renderLeaflet({
@@ -5049,7 +5087,7 @@ server <- function(input, output, session) {
     
     change_labels <- sprintf(
       paste0("<strong>%s</strong><br/>
-    <strong>" , "M<sub>1</sub> Change" , ":</strong> %g<br/>"),
+    <strong>" , "\\(M_1 \\) Change" , ":</strong> %g<br/>"),
       names, M2_change) %>% lapply(htmltools::HTML)
     
     css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
