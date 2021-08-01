@@ -518,9 +518,9 @@ ui <- navbarPage(title = "Zimbabwe",
                  ),
 
                  ## Tab data and methodology ----------------------------------------------------
-                 tabPanel("Data & Methodology", value = "dm",
-                             tabsetPanel(
-                               tabPanel("Data", value = "data",
+                 navbarMenu("Data & Methodology", 
+                             
+                               tabPanel("Data", 
                                         fluidPage(
                                           h3(strong("PICES DATA")),
                                         withMathJax(),  
@@ -555,7 +555,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                         
                                         
                                         ),
-                               tabPanel("Methodology", value = "methodology",
+                               tabPanel("Methodology", 
                                         fluidPage(
                                           box(
                                             withMathJax(),
@@ -633,44 +633,45 @@ ui <- navbarPage(title = "Zimbabwe",
                                             
                                           )
                                         ))
-                             )),
+                             ),
 
                  ## Tab MPIPING MPI --------------------------------------------------------------------
-                 tabPanel("Mapping MPI", value = "maps",
+                 navbarMenu("Mapping MPI", 
                           
-                          dashboardPage(
-                            skin = 'black',
-                            dashboardHeader(
-                              title = 'Mapping MPI'
-                            ),
+                          # dashboardPage(
+                          #   skin = 'black',
+                          #   dashboardHeader(
+                          #     title = 'Mapping MPI'
+                          #   ),
                             
+                            # 
+                            # dashboardSidebar(
+                            #   sidebarMenu(
+                            #     menuItem(
+                            #       "91 District MPI Map",
+                            #       tabName = '91_Dist'
+                            #       
+                            #     ),
+                            #     menuItem(
+                            #       "60 District MPI Map",
+                            #       tabName = '60_Dist',
+                            #       selected = TRUE
+                            #     ),
+                            #     menuSubItem("District Rankings",
+                            #                 tabName = "rank_60"
+                            #                 ),
+                            #     menuItem(
+                            #       "Province MPI Map",
+                            #       tabName = "Prov"
+                            #     )
+                            #   )
+                            # ),
                             
-                            dashboardSidebar(
-                              sidebarMenu(
-                                menuItem(
-                                  "91 District MPI Map",
-                                  tabName = '91_Dist'
-                                  
-                                ),
-                                menuItem(
-                                  "60 District MPI Map",
-                                  tabName = '60_Dist',
-                                  selected = TRUE
-                                ),
-                                menuSubItem("District Rankings",
-                                            tabName = "rank_60"
-                                            ),
-                                menuItem(
-                                  "Province MPI Map",
-                                  tabName = "Prov"
-                                )
-                              )
-                            ),
-                            
-                            dashboardBody(tabItems(
-                              tabItem(
-                                tabName = "91_Dist",
-                                # Everything has to be put in a row or column
+                            # dashboardBody(tabItems(
+                              tabPanel("91 District MPI Map",
+                                
+                                # tabName = "91_Dist",
+                                # # Everything has to be put in a row or column
                                 fluidPage(
                                     #       tags$head(tags$style(
                                     #                 HTML('
@@ -770,8 +771,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                       value increases, raising the possibility of disproportionate education deprivation in the two major urban landscapes of Zimbabwe.")
                                      )
                                   )),
-                              tabItem(
-                                tabName = "60_Dist",
+                              tabPanel( "60 District MPI Map",
+                                # tabName = "60_Dist",
                                 fluidPage(
                                   box(
                                     title = "60 District MPI Map of Zimbabwe",
@@ -860,7 +861,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                   )
                                 )
                               ),
-                              tabItem(tabName = "rank_60",
+                              tabPanel("District Rankings",
+                                #tabName = "rank_60",
                                      tabsetPanel(
                                        tabPanel("M0",
                                                 fluidRow(
@@ -883,8 +885,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                                     footer = slider_caption))
                                                 )),
                                
-                              tabItem(
-                                tabName = "Prov",
+                              tabPanel("Province MPI Map",
+                               # tabName = "Prov",
                                 fluidPage(
                                   box(
                                     title = "Province-Level MPI Map of Zimbabwe",
@@ -941,35 +943,36 @@ ui <- navbarPage(title = "Zimbabwe",
                                   )
                                 )
                               )
-                            )))),
-                 ## Tab Decomposition------------------
-                 tabPanel("MPI Decomposition", value = "decomposition",
-                          
-                          dashboardPage(skin = 'black',
-                            dashboardHeader(
-                              title = 'MPI Decomposition' ),
-                            dashboardSidebar(
-                              sidebarMenu(
-                                menuItem(
-                                  "91 District MPI Map",
-                                  tabName = '91_Decomp',
-                                  selected = TRUE
-                                ),
-                                menuItem(
-                                  "60 District MPI Map",
-                                  tabName = '60_Decomp'
-                                ),
-                                menuItem(
-                                  "Province MPI Map",
-                                  tabName = "Prov_Decomp"
-                                )
-                              )
                             ),
+                 ## Tab Decomposition------------------
+                 navbarMenu("MPI Decomposition",
+                          
+                          # dashboardPage(skin = 'black',
+                          #   dashboardHeader(
+                          #     title = 'MPI Decomposition' ),
+                          #   dashboardSidebar(
+                          #     sidebarMenu(
+                          #       menuItem(
+                          #         "91 District MPI Map",
+                          #         tabName = '91_Decomp',
+                          #         selected = TRUE
+                          #       ),
+                          #       menuItem(
+                          #         "60 District MPI Map",
+                          #         tabName = '60_Decomp'
+                          #       ),
+                          #       menuItem(
+                          #         "Province MPI Map",
+                          #         tabName = "Prov_Decomp"
+                          #       )
+                          #     )
+                          #   ),
                             
-                            dashboardBody(
-                              tabItems(
-                              tabItem(
-                                tabName = "91_Decomp",
+                            # dashboardBody(
+                            #   tabItems(
+                              tabPanel(
+                                "91 District MPI Map",
+                                #tabName = "91_Decomp",
                                 # Everything has to be put in a row or column
                                 fluidPage(
                                   box(
@@ -1046,8 +1049,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                     p("")
                                   )
                                   )),
-                              tabItem(
-                                tabName = "60_Decomp",
+                              tabPanel("60 District MPI Map",
                                 # Everything has to be put in a row or column
                                 fluidPage(
                                   box(
@@ -1125,8 +1127,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                     p("")
                                   )
                                 )),
-                              tabItem(
-                                tabName = "Prov_Decomp",
+                              tabPanel(
+                                "Province MPI Map",
                                 # Everything has to be put in a row or column
                                 fluidPage(
                                   box(
@@ -1203,40 +1205,37 @@ ui <- navbarPage(title = "Zimbabwe",
                                     p("Decomposing our households to look at just the urban and rural households also tells us more about what variables skew towards the urban poor vs the rural poor. We encourage you to look at these decompositions as well. ")
                                   )
                                 ))
-                              
-                            ))
-                            )
                           ),
                 ## Tab Temporal Comparison--------------------------------------
                 tabPanel("MPI: from 2011 to 2017", 
-                         value = "Comparison",
-                         dashboardPage(
-                           skin = 'black',
-                           dashboardHeader(
-                             title = 'MPI: from 2011 to 2017'
-                           ),
-                           dashboardSidebar(
-                             sidebarMenu(
-                               menuItem(
-                                 "\\(M_0 \\) Comparison Map",
-                                 tabName = 'M0_Comp',
-                                 selected = TRUE
-                               ),
-                               menuItem(
-                                 "\\(M_1 \\) Comparison",
-                                 tabName = "M1_Comp"
-                               ),
-                               menuItem(
-                                 "\\(M_2 \\) Comparison Map",
-                                 tabName = 'M2_Comp'
-                               )
-                             )
-                           ),
-                           dashboardBody(
-                             
-                             tabItems(
-                               tabItem(
-                                 tabName = "M0_Comp",
+                         
+                         # dashboardPage(
+                         #   skin = 'black',
+                         #   dashboardHeader(
+                         #     title = 'MPI: from 2011 to 2017'
+                         #   ),
+                         #   dashboardSidebar(
+                         #     sidebarMenu(
+                         #       menuItem(
+                         #         "\\(M_0 \\) Comparison Map",
+                         #         tabName = 'M0_Comp',
+                         #         selected = TRUE
+                         #       ),
+                         #       menuItem(
+                         #         "\\(M_1 \\) Comparison",
+                         #         tabName = "M1_Comp"
+                         #       ),
+                         #       menuItem(
+                         #         "\\(M_2 \\) Comparison Map",
+                         #         tabName = 'M2_Comp'
+                         #       )
+                         #     )
+                         #   ),
+                           # dashboardBody(
+                          
+                             tabsetPanel(
+                               tabPanel("\\(M_0 \\) Comparison Map",
+                                 # tabName = "M0_Comp",
                                  # Everything has to be put in a row or column
                                  fluidPage(
                                    box(
@@ -1281,23 +1280,12 @@ ui <- navbarPage(title = "Zimbabwe",
                                      p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
                                      p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
                                      
-                                     p("\\(M_{1}\\):"),
-                                     p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
-                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                     p(""),
-                                     p("\\(M_{2}\\):"),
-                                     p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
-                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                     p("")
+                                    p("")
                                      ),
                                    p("")
                                  )
-                               )
-                             ,
-                               tabItem(
-                                 tabName = "M1_Comp",
+                               ),
+                               tabPanel("\\(M_1 \\) Comparison",
                                  # Everything has to be put in a row or column
                                  fluidPage(
                                    box(
@@ -1336,27 +1324,16 @@ ui <- navbarPage(title = "Zimbabwe",
                                      withMathJax(),
                                      title = strong(""),
                                      width = 12,
-                                     p("\\(M_{0}\\):"),
-                                     p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
-                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                     
-                                     p("\\(M_{1}\\):"),
+                                    p("\\(M_{1}\\):"),
                                      p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
                                      p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
                                      p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                     p(""),
-                                     p("\\(M_{2}\\):"),
-                                     p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
-                                     p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                     p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M2 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
                                      p("")
                                    ),
                                    p("")
                                  )
                                ),
-                             tabItem(
-                               tabName = "M2_Comp",
+                             tabPanel(  "\\(M_2 \\) Comparison Map",
                                # Everything has to be put in a row or column
                                fluidPage(
                                  box(
@@ -1395,16 +1372,6 @@ ui <- navbarPage(title = "Zimbabwe",
                                    withMathJax(),
                                    title = strong(""),
                                    width = 12,
-                                   p("\\(M_{0}\\):"),
-                                   p("The above maps display the change in the M0 index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M0 score for 2011, whereas the y-axis shows the M0 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M0 score, implying that the headcount of the multidimensionally-poor has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M0 score, implying that the headcount of multidimensionally-poor individuals has decreased."),
-                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that there is a greater number of multidimensionally-poor households in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time.  Nevertheless, the majority does remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                   p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M0 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                   
-                                   p("\\(M_{1}\\):"),
-                                   p("The above maps display the change in the M1 index from 2011 to 2017. Positive values represent increases in the gap measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M1 score for 2011, whereas the y-axis shows the M1 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M1 score, implying that the average gap score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M1 score, implying that the average gap score has decreased"),
-                                   p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does remain over the line for low k-thresholds and many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
-                                   p("Shifting the focus to the provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their M1 scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts."),
-                                   p(""),
                                    p("\\(M_{2}\\):"),
                                    p("The above maps display the change in the M2 index from 2011 to 2017. Positive values represent increases in the gap-squared measure for a given province/district. The same information is displayed graphically in the corresponding scatterplots. The x-axis shows the province/district’s M2 score for 2011, whereas the y-axis shows the M2 score of the same province/district for 2017. Should the province/district appear above the 45-degree line, that implies that that province/district has an increased M2 score, implying that the average gap-squared score has increased. Inversely, if the province/district appears below the 45-degree line, that implies that that province/district has a decreased M2 score, implying that the average gap-squared score has decreased."),
                                    p("Looking first at the district level, we can see that the majority of districts fall above the 45-degree line, implying that the average gap-squared score has increased in most districts. As we increase the k value, more districts fall below that line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their average gap-squared score. We are thus able to say that the most vulnerable populations within districts have, in half of the instances, improved over time. Nevertheless, the majority does still remain over the line for low k-thresholds and many still remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for both urban and rural households, which we can visualize by clicking the respective button in the filter section."),
@@ -1415,8 +1382,6 @@ ui <- navbarPage(title = "Zimbabwe",
                                )
                              )
                              )
-                           )
-                         )
                          ),
                                    
 
@@ -1424,7 +1389,7 @@ ui <- navbarPage(title = "Zimbabwe",
         
 
                 ## Tab DSPG Team------------------------------------------------
-                tabPanel("Our Team", value = "team",
+                tabPanel("Our Team", 
                                    fluidRow(style = "margin-left: 100px; margin-right: 100px;",
                                             h1(strong("Team"), align = "center"),
                                             br(),
@@ -1600,7 +1565,7 @@ server <- function(input, output, session) {
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
-        options = layersControlOptions(collapsed = FALSE)
+        options = layersControlOptions(collapsed = TRUE)
       ) %>% 
       addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_91_MPI),
                 position = "bottomright") %>%
@@ -1715,7 +1680,7 @@ server <- function(input, output, session) {
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
-        options = layersControlOptions(collapsed = FALSE)
+        options = layersControlOptions(collapsed = TRUE)
       ) %>% 
       addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_60_MPI),
                 position = "bottomright") %>%
@@ -2243,7 +2208,7 @@ server <- function(input, output, session) {
       clearControls() %>%
       addLayersControl(
         baseGroups = c("M0", "M1", "M2"),
-        options = layersControlOptions(collapsed = FALSE)
+        options = layersControlOptions(collapsed = TRUE)
       ) %>% 
       addLegend(pal = pal, values = c(0, max(M0, na.rm = TRUE)), opacity = 0.7, title = paste0("Index with k = ", input$slider_Prov_MPI),
                 position = "bottomright") %>%
@@ -3043,7 +3008,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
+        options = layersControlOptions(collapsed = TRUE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_91_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
@@ -3842,7 +3807,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
+        options = layersControlOptions(collapsed = TRUE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_60_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
@@ -4640,7 +4605,7 @@ server <- function(input, output, session) {
                        "Lack of Land",
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
-        options = layersControlOptions(collapsed = FALSE)) %>%
+        options = layersControlOptions(collapsed = TRUE)) %>%
       addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("Legend (with k = ", input$slider_Prov_Decomp, ")"),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
