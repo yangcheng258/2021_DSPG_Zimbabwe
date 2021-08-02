@@ -1,0 +1,22 @@
+Specify Type of data:
+MPI or Map
+
+Specify Year
+2011 or 2017
+
+Specify Urban/Rural
+Total, Urban or Rural
+
+Specify Boundary Level
+91-District, 60-Dist or Province
+
+Specify New or Old
+
+
+YEAR_BOUNDARY_URBANITY_TYPE_NEWOLD
+
+{MPI, Map}_{2011, 2017}_{91, 60, 10, 1}_{T, U, R}_{n, o}
+
+Ex. 2017 91-District Urban MPI Data for New MPI = 
+
+MPI_2017_91_U_N

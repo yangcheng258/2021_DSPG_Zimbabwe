@@ -1,0 +1,13 @@
+name: ZimbabweShinyApp
+title: ZimbabweShinyApp
+username:
+account: ecsusan-vt-2020-shiny
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4434411
+bundleId: 4878040
+url: https://ecsusan-vt-2020-shiny.shinyapps.io/ZimbabweShinyApp/
+when: 1627859340.49623
+lastSyncTime: 1627859340.49623
+asMultiple: FALSE
+asStatic: FALSE
