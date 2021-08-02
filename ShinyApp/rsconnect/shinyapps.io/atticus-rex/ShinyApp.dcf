@@ -1,0 +1,13 @@
+name: ShinyApp
+title: ShinyApp
+username:
+account: atticus-rex
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4432423
+bundleId: 4864469
+url: https://atticus-rex.shinyapps.io/ShinyApp/
+when: 1627480622.28276
+lastSyncTime: 1627480622.28276
+asMultiple: FALSE
+asStatic: FALSE
