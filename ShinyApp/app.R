@@ -362,7 +362,7 @@ slider_caption = "Adjust the poverty line or cutoff threshold for an individual 
 urban_rural_caption = "Choose between displaying data from all households, only urban households or only rural households"
 level_caption = "Choose which poverty index to display the relevant data for"
 c_g_caption = "Choose whether to display the percentage contribution to the specified poverty index or the raw calculation
-of the gap for each component of the multidimensional poverty index."
+of the gap for each component of the multidimensional poverty index.  Note: Users have to multiply by 100 to get the percentage contribution to MPI. E.g. 0.001*100 = 1%."
 
 
 ## MAPPING FUNCTIONs------------------------------------------------------------
@@ -437,6 +437,10 @@ ui <- navbarPage(title = "Zimbabwe",
                  theme = shinytheme("lumen"),
                  tags$head(tags$style('.selectize-dropdown {z-index: 10000}')),
                  useShinyjs(),
+#                  tags$script(HTML("var header = $('.navbar > .Zimbabwe');
+# header.append('<div style=\"float:right\"><ahref=\"URL\"><img src=\"github.png\" alt=\"alt\" style=\"float:right;width:33px;height:41px;padding-top:10px;\"> </a>`</div>');
+#     console.log(header)")
+#                  ),
                  ## Tab Overview -----------------------------------------------------------
                  tabPanel("Overview", value = "overview",
                           fluidRow(style = "margin: 2px;",
@@ -511,7 +515,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                       p("**Note: The livestock data were not available in the 2011-12 wave, which limited our ability to compare the change in livestock dimension across time. To account for this, we have assigned the Lack of Livestock variable a weight of zero and divided the weight proportionally between the other two agricultural asset variables. We use this adjusted index to compare the MPI for 2011 and 2017."),
                                        h3(strong("Sensitivity Check")),
                                        p("Our stakeholders believe that given the country’s high level of literacy, a higher education threshold would more accurately represent education (or the lack thereof) in the Zimbabwean context. To understand how sensitive the MPI measures are to a change in definition, we construct an adjusted MPI. The adjusted MPI assumes that a household is deprived if no one in the household has attained a secondary school education. This is an expansion of the original definition in Alkire-Foster MPI, which sets the threshold at primary school."),
-                                      p("We present this sensitivity analysis in the Mapping MPI tab. Select the education-adjusted MPI to compare with the original Alkire-Foster MPI results with the lower education threshold.")
+                                      p("We present this sensitivity analysis in the MPI Mapping tab. Select the education-adjusted MPI to compare with the original Alkire-Foster MPI results with the lower education threshold.")
                                      )
                                      
                                      
@@ -600,7 +604,7 @@ ui <- navbarPage(title = "Zimbabwe",
                  ),
                  
                  ## Tab MPIPING MPI --------------------------------------------------------------------
-                 navbarMenu("Mapping MPI", 
+                 navbarMenu("MPI Mapping", 
                              tabPanel("91 District MPI Map",
                                                  
                                      # tabName = "91_Dist",
@@ -666,19 +670,19 @@ ui <- navbarPage(title = "Zimbabwe",
                                          withMathJax(),
                                          title = strong("Descriptive Analysis of 91 Districts"),
                                          width = 12,
-                                         p("\\(M_{0}\\):"),
+                                         p("\\(M_{0}\\)"),
                                          p("Looking at the original poverty index and focusing on the \\(M_{0}\\) index, we can see that for low k-threshold values, a large portion of the population can be considered multidimensionally poor. Additionally, urban districts and urban households tend to have lower \\(M_{0}\\) scores than their rural counterparts. As we increase the k-threshold values, thereby increasing the criteria to be labeled multidimensionally poor, fewer people across the country can be identified as such. The greater Harare and Bulawayo areas have low \\(M_{0}\\) values for low k-thresholds. Still, their \\(M_{0}\\) values for higher k-thresholds are above the national average, implying that while those districts are better on average, some of the most poverty-stricken households reside within their bounds (particularly the Epworth district)."),
                                          em("Sensitivity Analysis: "),
                                          p("When we consider how sensitive the MPI is to a change in the education variable to the highest level of attainment being less than a secondary school education, we see that, on average, the (adjusted-headcount) \\(M_{0}\\) scores are higher. More individuals are now more likely to be considered education-deprived than the original \\(M_{0}\\)  index. Similar trends exist for the adjusted \\(M_{0}\\) index as the original \\(M_{0}\\) index – fewer households are considered multidimensionally poor as we increase k. Urban districts & households tend to have lower \\(M_{0}\\) scores, and some of the households most vulnerable to multidimensional poverty are present around the biggest cities. "),
                                          
                                          
-                                         p("\\(M_{1}\\):"),
+                                         p("\\(M_{1}\\)"),
                                          p("When we focus on the depth of poverty (\\(M_{1}\\) index ), if the k-thresholdvalues are low, poverty throughout much of Zimbabwe can be considered deep.  A majority of \\(M_{1}\\) values exceed the national \\(M_{1}\\) value. Similar to the \\(M_{0}\\) trends, urban districts tend to have lower \\(M_{1}\\) values than rural districts, implying deeper poverty in rural districts. Although the number of districts portraying deep poverty generally decreases as k-threshold values increase, this is not the case for rural districts neighboring Harare, including Bindura, Goromonzi, and Marondera. These areas maintain high \\(M_{1}\\) values as k-threshold values increase, as do a cluster of districts in the country’s southeastern region."),
                                          em("Sensitivity Analysis: "),
                                          p("Deeper poverty is seen when the level of education is changed from primary school to secondary school. As k-threshold values increase, \\(M_{1}\\) values predictably decrease on average. Rural \\(M_{1}\\) values are, on average, higher than urban \\(M_{1}\\) values, with few exceptions in Umguza, Bubi, and Mutaza."),
                                          p(" Districts with \\(M_{1}\\) values do not follow this pattern but maintain relatively high \\(M_{1}\\) values are in southwestern Zimbabwe."),
                                          
-                                         p("\\(M_{2}\\):"),
+                                         p("\\(M_{2}\\)"),
                                          p("A look at the \\(M_{2}\\) values of the original index reveals much of the same. Low k-threshold values render high rates of poverty severity across a large proportion of Zimbabwe’s population. As k-threshold values increase, \\(M_{2}\\) values fall throughout most of the country but remain substantially high in the western portion of the country and around Harare, implying a greater number of impoverished households are further away from the poverty line than other impoverished households in these regions. If we distinguish between urban and rural, we can see that urban districts tend to have less severe poverty than rural districts, excluding the urban aggregates in Umguza, Bubi, and Mutasa. "),
                                          em("Sensitivity Analysis: "),
                                          p("As is the case with the \\(M_{0}\\) and \\(M_{1}\\) indexes, a look at the Education-adjusted MPI shows an increase in \\(M_{2}\\) values across the board. It is reasonable to conclude that adding the population that has not completed secondary school to the education variable is significant as it consistently results in higher MPI values. Taken together, our findings suggest that an expanded education threshold captures a substantial part of the population deprived in the education dimension as \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\) values all increase substantially. Interestingly, when selected for urban districts, the cities of Harare and Bulawayo show relatively high \\(M_{2}\\) values as the k-threshold value increases, raising the possibility of disproportionate education deprivation in the two major urban landscapes of Zimbabwe. "),
@@ -744,15 +748,17 @@ ui <- navbarPage(title = "Zimbabwe",
                                           withMathJax(),
                                           title = strong("Descriptive Analysis of 60 Distirct"),
                                           width = 12,
-                                          p("\\(M_{0}\\):"),
-                                          p("When viewing \\(M_{0}\\) values at the 60-district level, it is clear that a majority of Zimbabwe’s districts can be categorized as multidimensionally poor as most exceed the national \\(M_{0}\\) value. As k-threshold values increase, making the criteria for poverty more severe, most districts exhibit very low \\(M_{0}\\) values while a cluster of districts (Lupane, Nkayi, Tsholotsho, Bulilima, Mangwe, and Matobo) in the western part of the country maintain high \\(M_{0}\\) values. The region northeast of Harare holds similar \\(M_{0}\\) values at a high k-threshold. This trend indicates high rural poverty incidence at two intersections, one between Matabeleland North and Matabeleland South and Mashonaland Central and Mashonaland East. When defined by aggregated urban households, most districts fall below the national \\(M_{0}\\) value, indicating less poverty incidence in urban areas than in their rural counterparts and the nation at large. Looking at the \\(M_{0}\\) measure when MPI is adjusted for the sensitivity analysis, we see district \\(M_{0}\\) values increase consistently throughout Zimbabwe. As k-threshold values increase, the majority of districts move out of multidimensional poverty. The southwest region and the northeast region surrounding Harare are exceptions. The districts of Bindura and Marondera exhibit high \\(M_{0}\\) values at high k-thresholds, suggesting a very high poverty incidence. When we compare urban and rural households, it becomes clear that the rural regions have a higher prevalence of poverty than their rural counterparts. ."),
-                                          p("\\(M_{1}\\):"),
+                                          p("\\(M_{0}\\)"),
+                                          p("When viewing \\(M_{0}\\) values at the 60-district level, it is clear that a majority of Zimbabwe’s districts can be categorized as multidimensionally poor as most exceed the national \\(M_{0}\\) value. As k-threshold values increase, making the criteria for poverty more severe, most districts exhibit very low \\(M_{0}\\) values while a cluster of districts (Lupane, Nkayi, Tsholotsho, Bulilima, Mangwe, and Matobo) in the western part of the country maintain high \\(M_{0}\\) values. The region northeast of Harare holds similar \\(M_{0}\\) values at a high k-threshold. This trend indicates high rural poverty incidence at two intersections, one between Matabeleland North and Matabeleland South and Mashonaland Central and Mashonaland East. When defined by aggregated urban households, most districts fall below the national \\(M_{0}\\) value, indicating less poverty incidence in urban areas than in their rural counterparts and the nation at large. "),
+                                          em("Sensitivity Analysis: "),
+                                          p("Looking at the \\(M_{0}\\) measure when MPI is adjusted for the sensitivity analysis, we see district \\(M_{0}\\) values increase consistently throughout Zimbabwe. As k-threshold values increase, the majority of districts move out of multidimensional poverty. The southwest region and the northeast region surrounding Harare are exceptions. The districts of Bindura and Marondera exhibit high \\(M_{0}\\) values at high k-thresholds, suggesting a very high poverty incidence. When we compare urban and rural households, it becomes clear that the rural regions have a higher prevalence of poverty than their rural counterparts. ."),
+                                          p("\\(M_{1}\\)"),
                                           p("When we look at \\(M_{1}\\) values for the 60-districts map, we see that the majority of Zimbabwe exhibits deep multidimensional poverty. Many many of the districts have \\(M_{1}\\) values higher than the national average. As k-threshold values increase, \\(M_{1}\\) values tend to decrease, although outliers can be found in the northwestern region of the country as well as the region surrounding Harare. Distinguishing between urban and rural reveals that urban areas tend to have more shallow poverty than the national average as well as their rural counterparts. "),
-                                          em("Sensitivity: "),
+                                          em("Sensitivity Analysis: "),
                                           p("The adjusted \\(M_{1}\\) value is higher, suggesting deeper levels of poverty than the original dimension. As the k-threshold values are increased, the number of households that exist far above the poverty line decrease. The urban and rural disparities described above remain."),
-                                          p("\\(M_{2}\\):"),
+                                          p("\\(M_{2}\\)"),
                                           p("Poverty severity, reflected by the \\(M_{2}\\) value, indicates moderate poverty severity throughout Zimbabwe that tends to decrease as k-threshold values increase. Urban areas consistently have lower \\(M_{2}\\) values and thus less severe poverty than the national average and rural areas. Poverty severity remains a problem in both Bulawayo and Harare. Rural areas consistently have \\(M_{2}\\) values higher than urban areas and the nation, revealing the presence of relatively severe multidimensional poverty in northwest regions.  "),
-                                          em("Sensitivity: "),
+                                          em("Sensitivity Analysis: "),
                                           p("The severity of poverty throughout Zimbabwe increases slightly as the education dimension is expanded to account for secondary schooling. When urban households are selected at high k-threshold values, Harare and Bulawayo become the only two districts with \\(M_{2}\\) values not equal to zero, implying greater severity due to lack of secondary education in these districts than elsewhere. Rural districts consistently exhibit higher \\(M_{2}\\) values than urban districts and have more variation in \\(M_{2}\\) value when k-threshold values are adjusted."),
                                           p("")
                                         )
@@ -821,17 +827,17 @@ ui <- navbarPage(title = "Zimbabwe",
                                          title = strong("Descriptive Analysis of Province"),
                                          width = 12,
                                          
-                                         em("\\(M_{0}\\) - Original:"),
+                                         em("\\(M_{0}\\)"),
                                          p("While province-level MPI measures can provide insight into regional poverty trends, this analysis is limited in its ability to highlight variations inside each province. Nonetheless, measures of poverty incidence show slight deviation across different provinces. However, the city provinces of Bulawayo and Harare stand out from the others insofar as they exhibit lower province-level \\(M_{0}\\) values than the other provinces. As the k-threshold value increases, province-level \\(M_{0}\\) values decrease. Interestingly, Harare’s \\(M_{0}\\) value exceeds those of the other provinces at a high k-threshold, signaling the existence of multidimensional poverty even at high poverty thresholds. When urban households are selected, \\(M_{0}\\) values decrease throughout all provinces, especially Masvingo and Mashonaland West. A switch to rural households results in increased \\(M_{0}\\) values across the board. "),
-                                         em("\\(M_{0}\\) - Sensitivity Analysis"),
+                                         em("Sensitivity Analysis: "),
                                          p("Provinces reflect substantially higher \\(M_{0}\\) values following ongoing trends when the education adjustment is made. Mashonaland Central, Mashonaland East, Matabeleland North, and Matabeleland South are significantly impacted by this adjustment and show \\(M_{0}\\) values nearing 0.5. Increases in the k-threshold show decreased \\(M_{0}\\) values throughout, although Harare and Mashonaland East have relatively high values. The urban and rural split reveals disparity among rural households when compared to their urban counterparts. "),
-                                         em("\\(M_{1}\\) - Original):"),
+                                         em("\\(M_{1}\\): "),
                                          p("For \\(M_{1}\\), the map above shows that moderate province-level \\(M_{1}\\) values are evenly dispersed throughout Zimbabwe with slight disparities in Matabeleland North and Matabeleland South. An increase in the k-threshold decreases \\(M_{1}\\) values at a greater rate in the southeastern region of Zimbabwe than in the western and northeastern portions. Urban households in urban provinces tend to have lower \\(M_{1}\\) values than rural households in provinces with lower population density. "),
-                                         em("\\(M_{1}\\) - Sensitivity Analysis"),
+                                         em("Sensitivity Analysis: "),
                                          p("Adjusting for the increased education threshold results in uniformly higher \\(M_{1}\\) values in all provinces, again with a slight disparity in Matabeleland North and Matabeleland South. When provinces are divided by population density, urban households tend to have lower \\(M_{1}\\) values than rural households. "),
-                                         em("\\(M_{2}\\) - Original:"),
+                                         em("\\(M_{2}\\)"),
                                          p("For \\(M_{2}\\), the poverty severity measure, the maps show consistent values throughout Zimbabwe’s provinces. Midlands, Mashonaland West, Manicaland, and the city provinces reflect lower poverty severity than other provinces. Increasing the k-threshold value reveals relatively high \\(M_{2}\\) values in the city provinces and extends into the surrounding provinces. Poverty severity in rural households is higher than it is at the overall province level and the urban household level. "),
-                                         em("\\(M_{1}\\) - Sensitivity Analysis"),
+                                         em("Sensitivity Analysis: "),
                                          p("The sensitivity analysis on the education component shows that the \\(M_{2}\\) values increase across all provinces as more households become deprived in the education dimension. With this selection, rural households exhibit higher \\(M_{2}\\) values than their urban counterparts.")
                                        )
                                      )
@@ -840,7 +846,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             
                  ),
                  # Tab MPI Ranking-----------------
-                 navbarMenu("MPI Ranking",
+                 navbarMenu("MPI Rankings",
                             ### 91 DIstricts ranking--------
                             tabPanel("91 District Rankings",
                                      
@@ -1005,35 +1011,11 @@ ui <- navbarPage(title = "Zimbabwe",
                  
                  ## Tab Decomposition------------------
                  navbarMenu("MPI Decomposition",
-                            
-                            # dashboardPage(skin = 'black',
-                            #   dashboardHeader(
-                            #     title = 'MPI Decomposition' ),
-                            #   dashboardSidebar(
-                            #     sidebarMenu(
-                            #       menuItem(
-                            #         "91 District MPI Map",
-                            #         tabName = '91_Decomp',
-                            #         selected = TRUE
-                            #       ),
-                            #       menuItem(
-                            #         "60 District MPI Map",
-                            #         tabName = '60_Decomp'
-                            #       ),
-                            #       menuItem(
-                            #         "Province MPI Map",
-                            #         tabName = "Prov_Decomp"
-                            #       )
-                            #     )
-                            #   ),
-                            
-                            # dashboardBody(
-                            #   tabItems(
+                     
                             tabPanel(
                               "91 District MPI Map",
-                              #tabName = "91_Decomp",
-                              # Everything has to be put in a row or column
-                              fluidPage(
+                               fluidPage(
+                                fluidRow(
                                 box(
                                   title = "91 District Decomposition Map of Zimbabwe",
                                   withSpinner(leafletOutput("Dist_91_Decomp_Map",height = 520)),
@@ -1051,7 +1033,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   
                                   p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\)), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
                                   width = 4
-                                ),
+                                )),
                                 
                                 fluidRow(
                                   br()
@@ -2612,6 +2594,7 @@ server <- function(input, output, session) {
     n_land = switch(c_g_selection, n_c_land, n_g_land)
     n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
     n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
+   
     
     edu_max_labels <- get_label(map@data$ADM2_EN, "Max. Education", edu_max, n_edu_max)
     edu_dropout_labels <- get_label(map@data$ADM2_EN, "Education Dropout", edu_dropout, n_edu_dropout)
@@ -2627,7 +2610,7 @@ server <- function(input, output, session) {
     land_labels <- get_label(map@data$ADM2_EN, "Lack of Land", land, n_land)
     livestock_labels <- get_label(map@data$ADM2_EN, "Lack of Livestock", livestock, n_livestock)
     rural_equip_labels <- get_label(map@data$ADM2_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip)
-    
+
     
     pal <- colorNumeric(
       palette = "viridis",
@@ -3414,6 +3397,8 @@ server <- function(input, output, session) {
     n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
     n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
     
+   
+    
     edu_max_labels <- get_label(map@data$NAME_2, "Max. Education", edu_max, n_edu_max)
     edu_dropout_labels <- get_label(map@data$NAME_2, "Education Dropout", edu_dropout, n_edu_dropout)
     hea_chronic_labels <- get_label(map@data$NAME_2, "Chronic Illness", hea_chronic, n_hea_chronic)
@@ -3428,7 +3413,7 @@ server <- function(input, output, session) {
     land_labels <- get_label(map@data$NAME_2, "Lack of Land", land, n_land)
     livestock_labels <- get_label(map@data$NAME_2, "Lack of Livestock", livestock, n_livestock)
     rural_equip_labels <- get_label(map@data$NAME_2, "Lack of Rural Equipment", rural_equip, n_rural_equip)
-    
+
     
     pal <- colorNumeric(
       palette = "viridis",
@@ -4725,7 +4710,7 @@ server <- function(input, output, session) {
     
     change_labels <- sprintf(
       paste0("<strong>%s</strong><br/>
-    <strong>" , "\\(M_1 \\) Change" , ":</strong> %g<br/>"),
+    <strong>" , "M<sub>2</sub> Change" , ":</strong> %g<br/>"),
       names, M2_change) %>% lapply(htmltools::HTML)
     
     css_fix <- "div.info.legend.leaflet-control br {clear: both;}" # CSS to correct spacing
