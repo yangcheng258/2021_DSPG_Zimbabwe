@@ -460,7 +460,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                    #          img(src = "Zimbabwe_Flag.png", height="100", width="200", alt="Image", style="display: block; margin-left: auto; margin-right: auto; border: 1px solid #000000;")),
                                    h4("Data Science for the Public Good Program"),
                                    h4("Virginia Tech"),
-                                   h4("Department of Agriculture and Applied Economics")
+                                   h4("Department of Agricultural and Applied Economics")
                                    
                           ),
                           
