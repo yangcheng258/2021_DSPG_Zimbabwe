@@ -413,35 +413,11 @@ create_scatter <- function(names, x_data, y_data, x_label, y_label, title) {
   #M0_Comparison <- mutate_if(M0_Comparison, is.numeric, ~replace(., is.na(.), 0))
   
   colnames(M0_Comparison)[1] = "Name"
-  # return (ggplot(M0_Comparison, aes(x = x_data, y = y_data)) + #, text=~Name)) +
-  #           geom_label_repel(aes(label = Name), size = 3, max.overlaps = 4,
-  # 
-  #                            min.segment.length = unit(0, 'lines'),
-  #                            nudge_y = 0.01) +
-  #           geom_point(
-  #             color= x_data,
-  #             fill="#69b3a2",
-  #             shape=22,
-  #             alpha=1,
-  #             size=2,
-  #             stroke = 1
-  #           ) +
-  #           ggtitle(title) +
-  #           xlab(x_label) +
-  #           ylab(y_label) +
-  #           theme_bw() +
-  #           geom_abline()) %>% ggplotly()
-  #)
+ 
   
   return (plot_ly(M0_Comparison, x = ~x_data, y = ~y_data, text=~Name) %>%
-            
-            # +
-            #             # # xlab(x_label) +
-            #             # # ylab(y_label) +
-            #             # theme_bw() +
-            #             geom_abline() %>%
-            
-            
+   
+               
             add_markers()%>%
             layout(shapes=list(type='line', x0=0, x1=0.6, y0=0, y1=0.6,name=" "), 
                    showlegend = FALSE,
@@ -478,13 +454,12 @@ ui <- navbarPage(title = "Zimbabwe",
                           fluidRow(style = "margin: 6px;",
                                    column(4,
                                           h2(strong("Project Overview"), align = "center"),
-                                          p("Prior research suggests that poverty in Zimbabwe has increased since the period of crisis began at the turn of the millennium. According to the latest World Bank estimates, almost 49% of the population of Zimbabwe were in extreme poverty in 2020. Our stakeholders seek solutions to the economic situation. 
-                                            They would like more granular information presented in creative ways that allow the user to glean the multidimensional and temporal aspects of poverty in Zimbabwe. The recent availability of household surveys for public use has opened the possibility of using the data to inform evidence-based policy."),
+                                          p("Prior research suggests that poverty in Zimbabwe has increased since the period of crisis began at the turn of the millennium. According to the latest World Bank (2020) estimates, due to the longstanding economic crisis and disruptions following the COVID-19 pandemic, 49% of Zimbabwe’s population was in extreme poverty in 2020. Our stakeholders seek solutions to the economic situation. They would like more granular information presented in creative ways that allow the user to glean the multidimensional and temporal aspects of poverty in Zimbabwe. The recent availability of household surveys for public use has opened the possibility of using the data to inform evidence-based policy."),
                                           p("This project uses data from the Poverty, Income, Consumption, Expenditure Survey (PICES) to provide granular information on poverty in Zimbabwe. We created multidimensional poverty indices (MPI) at the", strong(" district and province level"), " and decomposed them into components that focus on ", strong("education, health, employment, housing conditions, living conditions, assets, agricultural assets, and access to services."),   
-                                            "We provide interactive tools that allow the user to visualize and study each component and understand their contribution to the MPI. We constructed these measures for two waves of data in 2011 and 2017 to show the changes in poverty over time and across regions in Zimbabwe.  The composition and decomposition of MPI in this project provide policy implications for informing evidence-based policy and interventions for poverty reduction. ")),
+                                            "We provide interactive tools that allow the user to visualize and study each component and understand their contribution to the MPI. We constructed these measures for two waves of data in 2011 and 2017 to show the changes in poverty over time and across regions in Zimbabwe.  The composition and decomposition of MPI in this project provide evidence-based policy recommendations and interventions for poverty reduction. ")),
                                    column(4,
                                           h2(strong("Introduction to Zimbabwe"), align = "center"),
-                                          p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert MUGABE until his resignation in 2017. Presently, Emmerson Mnangagwa holds office. 
+                                          p("Nestled in the Southeastern tip of Africa, Zimbabwe neighbors South Africa, Mozambique, Zambia, and Botswana. Zimbabwe gained independence from Great Britain in 1980 and was ruled by Prime Minister and eventually President Robert MUGABE until his resignation in 2017. Presently, President Emmerson Mnangagwa holds office. 
                                             The country is home to roughly 14,830,000 inhabitants, 10% of whom live in the capital city of Harare. Although large agglomerations exist in other major urban areas including Bulawayo and Chitungwiza, population distribution is relatively even otherwise. Zimbabwe’s central government is responsible for regulating 
                                             its 10 provinces and 59 further subdivided districts. Zimbabwe’'s terrain consists mostly of plateau upon which forests thrive and arable land is plenty. Because of this, 67.5% of the labor force works in agriculture growing sugar cane, tobacco, fruits, and vegetables among other things. Another 7.3% of the labor force 
                                             takes advantage of the Zimbabwe’s rich natural resources and participates in the industry sector mining and exporting coal, gold, platinum copper, and other metals as well as manufacturing wood products, cement, chemicals, fertilizer, and food. Despite being relatively well-educated and extremely literate, the population 
@@ -494,23 +469,14 @@ ui <- navbarPage(title = "Zimbabwe",
                                    column(4,
                                           h2(strong("Recent History"), align = "center"),
                                           p("After gaining independence in 1980, there was widespread hope that the economic and labor exploitation Africans suffered at the hands of an imperial Great Britain would diminish. While initial trends were encouraging, this hope dwindled as a multitude of factors sent the Zimbabwean economy into decline. Most prominent among 
-                                            these factors was inconsistent policy put forth by the central government which resulted in vague and evolving strategies on combatting poverty. An initial scientific socialist policy was applied between 1980 and 1990 to address poverty but was ineffective and thus abandoned due to financial downturn and prolonged drought which 
-                                            forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which meant an adoption of more capitalistic policy. The costs of necessities including food, water, and 
+                                            these factors was inconsistent policy prescriptions resulting in vague and evolving strategies on combatting poverty. An initial scientific socialist policy was applied between 1980 and 1990 to address poverty but was ineffective and thus abandoned due to financial downturn and prolonged drought that 
+                                            forced agricultural workers into the cities where they faced even greater poverty due to unemployment. In an attempt to revamp the economy, Zimbabwe sought help from the International Monetary Fund (IMF) and the World Bank (WB) which meant an adoption of a more capitalistic policy. The costs of necessities including food, water, and 
                                             education went up as a result, harming and expanding the already existing poor population. The late 1990’s and 2000’s brought ever greater poverty and financial distress to Zimbabwe as a continuing government budget deficit mixed with a fiscal policy focused on increasing the amount of money in circulation resulted in hyperinflation. 
                                             In turn, this increased the economic crisis as foreign investment dropped and Zimbabwean currency crashed. During this time, unemployment skyrocketed and a massive informal sector of the economy emerged. In 2009, Zimbabwe adopted the U.S. dollar along with a handful of other currencies. Though this move somewhat stabilized the 
-                                            economy at first, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly as did overall economic crisis and poverty."))
+                                            economy at first, a 2013 shift in government rendered these efforts futile. By 2017, inflation increased significantly as did the overall economic crisis and poverty."))
                                    
                                    
-                                   # h2(strong("Application of a Multidimensional Poverty Index")),
-                                   # p(""A brief introduction to Zimbabwe makes clear the severity and the urgency of the poverty situation. Although a money metric approach to measuring poverty is historically prevalent, this sort of strategy is unable to accurately paint an accurate picture of poverty in Zimbabwe. This is most notably due to the extreme hyperinflation the 
-                                   #   country suffers from. Because the actual value of money is constantly evolving, the importance of monetary wealth accumulation in determining poverty is questionable. Additionally, variations in consumption tendencies, prices of goods and necessities, and household income distribution can make it difficult to provide an accurate account 
-                                   #   of money metric poverty as the value of money is hardly standardized. This volatility also renders money metric comparisons of poverty over time futile as the modern value of currency is incomparable to that of years past. As the practicality of a monetary poverty measure becomes increasingly suspect, the value of alternative poverty measure 
-                                   #   methods is revealed. "),
-                                   # p(""An Alkire Foster (AF) method, developed by Sabina Alkire and James Foster, will be utilized in this project to measure poverty in Zimbabwe. The AF method first denotes the different kinds of deprivations households experience simultaneously. These deprivations make clear who is impoverished in a population and are then used to construct a non-monetary 
-                                   #   Multidimensional Poverty Index (MPI). MPI’s are powerful insofar as they provide a non-monetary measure poverty as it exists in its various manifestations. In this way, an MPI accounts for the hyperinflation in Zimbabwe by defining poverty as the inability to satisfy a certain list of needs or capabilities rather than the accumulation of money 
-                                   #   that may or may not fulfill such needs. The list, as pictured below, is comprised of variables that indicate deprivation. Each variable corresponds to a broader dimension of poverty. These variables and dimensions are normatively chosen to be applicable in the context of Zimbabwe. The MPI created by the 2021 DSPG Zimbabwe team can be utilized to decompose
-                                   #   multidimensional poverty as it exists in different subgroups including the national, provincial, and district level. Additionally, the MPI can be deconstructed to analyze at what strength each deprivation is contributing to poverty within groups. By emulating the work of Stoeffler, et al., this MPI can also be used to track changes in multifaceted poverty 
-                                   #   over time. The combination of these unique aspects of the MPI allows it to be used not only to accurately measure poverty as it exists today, but to evaluate the effectiveness of policy going forward.")
+                                
                                    
                           ),
                           fluidRow(align = "center",
@@ -524,32 +490,28 @@ ui <- navbarPage(title = "Zimbabwe",
                                      fluidPage(
                                        h3(strong("Description of the PICES DATA")),
                                        withMathJax(),  
-                                       p("The data come from two nationally representative household surveys conducted by ZIMSTAT: the PICES from June 2011 to May 2012 and from January to December 2017. The PICES surveys are well suited to construct multidimensional poverty indices because they include information at the household and individual levels and are collected consistently. The surveys were conducted in the eight provinces of Zimbabwe and the cities of Harare and Bulawayo. The number of usable observations (households) is 29,748 in 2011–2012 (23,843 rural, 5,905 urban) and 31,193 in 2017 (25,525 rural, 5668 urban). Survey weights and household size are employed to obtain national, provincial, and urban/rural representation. Both modules are virtually identical across the two years. They include household demographics, education, employment, healthcare, migration, housing characteristics, assets ownership, access to services, and agricultural activities."),
+                                       p("The data come from two nationally representative household surveys, called the PICES, conducted by ZIMSTAT: first, from June 2011 to May 2012, and second, from January to December 2017. The PICES surveys are well suited to construct multidimensional poverty indices because they include information at the household and individual levels, and they are collected repeatedly. The surveys were conducted in the eight provinces of Zimbabwe and in the cities of Harare and Bulawayo. The number of usable observations (households) is 29,748 in 2011–2012 (23,843 rural and 5,905 urban) and 31,193 in 2017 (25,525 rural and 5668 urban). Survey weights and household size are employed to obtain national, provincial, and rural-urban representation. Both survey instruments are virtually identical across the two waves. They include information on household demographics, education, employment, healthcare, migration, housing characteristics, assets ownership, access to services, and agricultural activities."),
                                        h3(strong("Description of the Variables/Components")),
-                                       img(src = "variables.png", style = "display: inline; border: 0px solid #C0C0C0;", width = "80%"),
+                                       img(src = "variables.png", style = "display: inline; border: 0px solid #C0C0C0; margin-left: auto; margin-right: auto;", width = "80%"),
                                        withMathJax(), 
-                                       p("To construct the multidimensional poverty index based on the Alkire-Foster method, we consider eight poverty dimensions consisting of 14 variables relevant to identifying poverty status.  
-The first dimension, education, consists of two variables – Max Education and Education Dropout. The Max Education variable refers to nobody in the household having completed primary school. We assess the sensitivity of the MPI by broadening these measures to nobody in the household having completed secondary school. The Education Dropout variable is an indicator variable for whether the household has a child aged 7-11 who is not enrolled in school. The education dimension receives the greatest weight in the MPI (2 out of 9.5), along with the two health variables that make up the second health dimension (2 out of 9.5). These two variables are the Chronic Illness variable, referring to the presence of a chronically ill individual within the household, and the Lack of Health Visit variable, which refers to a household member who has been sick in the past 30 days without receiving healthcare (when necessary).   
-"),
-                                       p("Unemployment, defined as one member of the household having been unemployed as their main occupation in the last 12 months, is given a weight of one for urban households and 0 for rural households since unemployment is less common and is more difficult to identify in rural areas.  "),
+                                       p("To construct the multidimensional poverty index based on the Alkire-Foster method, we consider eight   poverty dimensions consisting of 14 variables relevant to identifying poverty status. The first dimension, education, consists of two variables – Max Education and Education Dropout. The Max Education variable refers to nobody in the household having completed primary school. We assess the sensitivity of the MPI by broadening these measures to nobody in the household having completed secondary school. The Education Dropout variable is an indicator variable for whether the household has a child aged 7-11 who is not enrolled in school. The education dimension receives the greatest weight in the MPI (2 out of 9.5), along with the two health variables that make up the second health dimension (2 out of 9.5). These two variables are Chronic Illness, referring to the presence of a chronically ill individual within the household, and Lack of Health Visit, which refers to a household member who has been sick in the past 30 days without receiving a necessary healthcare."),
+                                       p("Unemployment, defined as one member of the household having been unemployed as their main occupation in the last 12 months, is given a weight of 1 for urban households and 0 for rural households since unemployment is less common and is more difficult to identify in rural areas.  "),
                                        p("For housing conditions, two variables are considered: lack of access to electricity and no toilet (in rural areas) or no flush toilet (for urban areas with more developed sanitation). Weights of 0.5 are given to rural residence Lack of Electricity and Lack of Toilet indicators underlying the dimension. In urban areas, where lack of electricity indicates a greater state of deprivation, a weight of one is attributed to electricity. In contrast, the lack of a toilet retains a weight of 0.5."),
                                        p("Two variables reflect living conditions: Poor Water Source and Poor Cooking Fuel, with a weight of 0.5 for each. Rural households are considered to be deprived if their main water source is an unprotected well, a river, or another unprotected source, or if the water source is 1 km away or farther. In urban areas with more developed water infrastructure, deprivation is defined as not having access to piped water or communal water on-premises (which affects only a small number of households). In rural and urban areas, households are deprived if they use wood or ’other’ (not electricity, paraffin, gas, coal) as cooking fuel.  "),
-                                       p("Lack of Household Assets is given a dimension weight of one in both rural and urban areas. The stock of household assets are measured by a physical asset index (PAI) and an asset deprivation (D) threshold as follows:  "),
+                                       p("Lack of Household Assets is given a dimension weight of 1 in both rural and urban areas. The stock of household assets is measured by a physical asset index (PAI) and an asset deprivation (D) threshold as follows:  "),
                                        
                                        
-                                       p(" \\(PAI = 2 * motor vehicle + motorcycle + bicycle + television + radio + fridge + landline phone\\)   "),
-                                       p("\\( D = 1 if PAI < 2 \\)"),
-                                       p("For rural households, agricultural assets are essential indicators of wellbeing and agricultural activity capabilities. The dimension weight is 1.5, with three component variables usually given a weight of 0.5 each. The first variable, Lack of Land, uses a threshold of 0.25 hectares, which is sufficiently low to represent effective deprivation in rural Zimbabwe. The second variable, livestock, measured in Tropical Livestock Units (TLU), is an indicator of wealth that can be used to insulate households from the impact of shocks. A TLU deprivation threshold of one indicates a Lack of Livestock. The third variable is the Lack of Rural Equipment. An agricultural equipment index (AEI) is created as follows:  "),
-                                       p("\\( AEI = plough + wheelbarrow + scotchcart + tractor + griding mill \\)"),
-                                       p("\\( D = 1 if AEI < 1 \\)"),
+                                       p(" \\(PAI = 2 * motor vehicle + motorcycle + bicycle + television + radio + fridge + landline phone\\)   ", align = "center"),
+                                       p("\\( D = 1 \\)", " if ","\\(PAI < 2 \\)", align = "center"),
+                                       p("For rural households, agricultural assets are essential indicators of wellbeing and agricultural activity capabilities. The dimension weight is 1.5, with three component variables usually given a weight of 0.5 each. The first variable, Lack of Land, uses a threshold of 0.25 hectares, which is sufficiently low to represent effective deprivation of landholding in rural Zimbabwe. The second variable on livestock is measured in Tropical Livestock Units (TLU), an indicator of wealth that can be used to insulate households from negative idiosyncratic and covariateshocks. A TLU deprivation threshold of 1 indicates  Lack of Livestock. The third variable is the Lack of Rural Equipment. An agricultural equipment index (AEI) is created as follows:  "),
+                                       p("\\( AEI = plough + wheelbarrow + scotchcart + tractor + griding mill \\)", align = "center"),
+                                       p("\\( D = 1 \\)", " if ","\\(AEI < 1 \\)", align = "center"),
                                        p("The agricultural asset dimension is not included for households in urban areas.  "),
-                                       p("The final dimension of wellbeing – with a weight of one – is Lack of Access to Services, where remoteness indicates deprivation. Households are considered deprived if they are far from two or more of seven services available in the data. The distance thresholds employed are 5 km for a primary school, 15 km for a secondary school, 15 km for a hospital, 5 km for shops, 6 km for a hammer mill, 15 km for a post office, and 5 km for a bus stop. These distance thresholds are halved in urban areas, where services tend to be closer, but distance still represents a barrier to access.  "),
-                                       p(" 
-**Note: The livestock data were not available for 2011 data, which limited our ability to compare across time. To account for this, we have assigned the Lack of Livestock variable a weight of zero and divided the weight proportionally between the other two agricultural asset variables. We use this adjusted index to compare the MPI for 2011 and 2017.
-"),
+                                       p("The final dimension of wellbeing – with a weight of 1 – is Lack of Access to Services, where remoteness indicates deprivation. Households are considered deprived if they are far from two or more of seven recorded services in the data. The distance thresholds employed are 5 km for a primary school, 15 km for a secondary school, 15 km for a hospital, 5 km for shops, 6 km for a hammer mill, 15 km for a post office, and 5 km for a bus stop, respectively. These distance thresholds are halved in urban areas, where services tend to be closer, but distance still represents a barrier to access."),
+                                      p("**Note: The livestock data were not available in the 2011-12 wave, which limited our ability to compare the change in livestock dimension across time. To account for this, we have assigned the Lack of Livestock variable a weight of zero and divided the weight proportionally between the other two agricultural asset variables. We use this adjusted index to compare the MPI for 2011 and 2017."),
                                        h3(strong("Sensitivity Check")),
-                                       p("Our stakeholders believe that given the country’s high level of literacy, a higher education threshold would more accurately represent the Zimbabwean context. To understand how sensitive the MPI measures are to a change in definition, we construct an adjusted MPI. The adjusted MPI assumes that a household is deprived if no one in the household has attained a secondary school education.  This is an expansion from the original definition, which set the threshold at primary school."),
-                                       p("We present this sensitivity analysis in the Mapping MPI tab. Select the education-adjusted MPI to compare with the original Alkire-Foster MPI results with the lower education threshold.")
+                                       p("Our stakeholders believe that given the country’s high level of literacy, a higher education threshold would more accurately represent education (or the lack thereof) in the Zimbabwean context. To understand how sensitive the MPI measures are to a change in definition, we construct an adjusted MPI. The adjusted MPI assumes that a household is deprived if no one in the household has attained a secondary school education. This is an expansion of the original definition in Alkire-Foster MPI, which sets the threshold at primary school."),
+                                      p("We present this sensitivity analysis in the Mapping MPI tab. Select the education-adjusted MPI to compare with the original Alkire-Foster MPI results with the lower education threshold.")
                                      )
                                      
                                      
@@ -659,12 +621,13 @@ The first dimension, education, consists of two variables – Max Education and 
                                          p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
                                       \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
                                          tags$ul(  
-                                           tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                           tags$li("\\(M_{0}\\) is the ",strong("adjusted headcount ratio")," designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
                                                    " and considers all of the dimensions described in the methodology section."),
                                            tags$li("\\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
-                                           tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
-                                         ),
+                                      is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
+                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                                   )
+                                           ),
                                          p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph.")
                                        )),
@@ -701,7 +664,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                        fluidRow(
                                      box(
                                          withMathJax(),
-                                         title = strong("Descriptive Analysis"),
+                                         title = strong("Descriptive Analysis of 91 Districts"),
                                          width = 12,
                                          p("\\(M_{0}\\):"),
                                          p("Looking at the original poverty index and focusing on the \\(M_{0}\\) index, we can see that for low k-threshold values, a large portion of the population can be considered multidimensionally poor. Additionally, urban districts and urban households tend to have lower \\(M_{0}\\) scores than their rural counterparts. As we increase the k-threshold values, thereby increasing the criteria to be labeled multidimensionally poor, fewer people across the country can be identified as such. The greater Harare and Bulawayo areas have low \\(M_{0}\\) values for low k-thresholds. Still, their \\(M_{0}\\) values for higher k-thresholds are above the national average, implying that while those districts are better on average, some of the most poverty-stricken households reside within their bounds (particularly the Epworth district)."),
@@ -734,20 +697,21 @@ The first dimension, education, consists of two variables – Max Education and 
                                           height = 600
                                         ),
                                         box(
+                                          width = 4,
                                           withMathJax(),
                                           title = "Description",
                                           p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
                                       \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
                                           tags$ul(  
-                                            tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                            tags$li("\\(M_{0}\\) is the ",strong("adjusted headcount ratio")," designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
                                                     " and considers all of the dimensions described in the methodology section."),
                                             tags$li("\\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
-                                            tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                      is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
+                                            tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                            )
                                           ),
                                           p("To adjust the threshold cutoff, k, by which an individual is considered poor,
-                                      adjust the slider below the graph."),
-                                          width = 4
+                                      adjust the slider below the graph.")
                                         )),
                                         fluidRow(
                                           br()
@@ -778,7 +742,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                         ),
                                         box(
                                           withMathJax(),
-                                          title = strong("Descriptive Analysis"),
+                                          title = strong("Descriptive Analysis of 60 Distirct"),
                                           width = 12,
                                           p("\\(M_{0}\\):"),
                                           p("When viewing \\(M_{0}\\) values at the 60-district level, it is clear that a majority of Zimbabwe’s districts can be categorized as multidimensionally poor as most exceed the national \\(M_{0}\\) value. As k-threshold values increase, making the criteria for poverty more severe, most districts exhibit very low \\(M_{0}\\) values while a cluster of districts (Lupane, Nkayi, Tsholotsho, Bulilima, Mangwe, and Matobo) in the western part of the country maintain high \\(M_{0}\\) values. The region northeast of Harare holds similar \\(M_{0}\\) values at a high k-threshold. This trend indicates high rural poverty incidence at two intersections, one between Matabeleland North and Matabeleland South and Mashonaland Central and Mashonaland East. When defined by aggregated urban households, most districts fall below the national \\(M_{0}\\) value, indicating less poverty incidence in urban areas than in their rural counterparts and the nation at large. Looking at the \\(M_{0}\\) measure when MPI is adjusted for the sensitivity analysis, we see district \\(M_{0}\\) values increase consistently throughout Zimbabwe. As k-threshold values increase, the majority of districts move out of multidimensional poverty. The southwest region and the northeast region surrounding Harare are exceptions. The districts of Bindura and Marondera exhibit high \\(M_{0}\\) values at high k-thresholds, suggesting a very high poverty incidence. When we compare urban and rural households, it becomes clear that the rural regions have a higher prevalence of poverty than their rural counterparts. ."),
@@ -808,20 +772,21 @@ The first dimension, education, consists of two variables – Max Education and 
                                          height = 600
                                        ),
                                        box(
+                                         width = 4,
                                          withMathJax(),
                                          title = "Description",
                                          p("This graphic shows a detailed visualization of Zimbabwean districts/provinces, broken up into distinct regions. In 2011 Zimbabwe was divided into 60 administrative districts. In 2017 PICES, the districts were redefined to include specific urban areas as separate districts, thus increasing the administrative boundaries to 91 districts. There are three layers to this graph:
                                       \\(M_{0}\\), \\(M_{1}\\), and \\(M_{2}\\)."), 
                                          tags$ul(  
-                                           tags$li("\\(M_{0}\\) shows the adjusted headcount ratio designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
+                                           tags$li("\\(M_{0}\\) is the ",strong("adjusted headcount ratio")," designed by",a(href="https://ophi.org.uk/research/multidimensional-poverty/alkire-foster-method/","Sabina Alkire and James Foster",target="_blank"),
                                                    " and considers all of the dimensions described in the methodology section."),
                                            tags$li("\\(M_{1}\\)
-                                      is the adjusted poverty gap and is an index to show how far the people considered poor are from the poverty line."),
-                                           tags$li("\\(M_{2}\\) is the square of the poverty gap and weights people farther away from the poverty gap higher. This is a measure of the poverty severity.")
+                                      is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
+                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                           )
                                          ),
                                          p("To adjust the threshold cutoff, k, by which an individual is considered poor,
-                                      adjust the slider below the graph."),
-                                         width = 4
+                                      adjust the slider below the graph.")
                                        )),
                                        fluidRow(
                                          br()
@@ -853,14 +818,14 @@ The first dimension, education, consists of two variables – Max Education and 
                                        ),
                                        box(
                                          withMathJax(),
-                                         title = strong("Descriptive Analysis"),
+                                         title = strong("Descriptive Analysis of Province"),
                                          width = 12,
                                          
                                          em("\\(M_{0}\\) - Original:"),
                                          p("While province-level MPI measures can provide insight into regional poverty trends, this analysis is limited in its ability to highlight variations inside each province. Nonetheless, measures of poverty incidence show slight deviation across different provinces. However, the city provinces of Bulawayo and Harare stand out from the others insofar as they exhibit lower province-level \\(M_{0}\\) values than the other provinces. As the k-threshold value increases, province-level \\(M_{0}\\) values decrease. Interestingly, Harare’s \\(M_{0}\\) value exceeds those of the other provinces at a high k-threshold, signaling the existence of multidimensional poverty even at high poverty thresholds. When urban households are selected, \\(M_{0}\\) values decrease throughout all provinces, especially Masvingo and Mashonaland West. A switch to rural households results in increased \\(M_{0}\\) values across the board. "),
                                          em("\\(M_{0}\\) - Sensitivity Analysis"),
                                          p("Provinces reflect substantially higher \\(M_{0}\\) values following ongoing trends when the education adjustment is made. Mashonaland Central, Mashonaland East, Matabeleland North, and Matabeleland South are significantly impacted by this adjustment and show \\(M_{0}\\) values nearing 0.5. Increases in the k-threshold show decreased \\(M_{0}\\) values throughout, although Harare and Mashonaland East have relatively high values. The urban and rural split reveals disparity among rural households when compared to their urban counterparts. "),
-                                         em("\\(M_{1}\\ - Original):"),
+                                         em("\\(M_{1}\\) - Original):"),
                                          p("For \\(M_{1}\\), the map above shows that moderate province-level \\(M_{1}\\) values are evenly dispersed throughout Zimbabwe with slight disparities in Matabeleland North and Matabeleland South. An increase in the k-threshold decreases \\(M_{1}\\) values at a greater rate in the southeastern region of Zimbabwe than in the western and northeastern portions. Urban households in urban provinces tend to have lower \\(M_{1}\\) values than rural households in provinces with lower population density. "),
                                          em("\\(M_{1}\\) - Sensitivity Analysis"),
                                          p("Adjusting for the increased education threshold results in uniformly higher \\(M_{1}\\) values in all provinces, again with a slight disparity in Matabeleland North and Matabeleland South. When provinces are divided by population density, urban households tend to have lower \\(M_{1}\\) values than rural households. "),
@@ -870,109 +835,174 @@ The first dimension, education, consists of two variables – Max Education and 
                                          p("The sensitivity analysis on the education component shows that the \\(M_{2}\\) values increase across all provinces as more households become deprived in the education dimension. With this selection, rural households exhibit higher \\(M_{2}\\) values than their urban counterparts.")
                                        )
                                      )
-                            ),
-                            ## DIstricts ranking
-                            tabPanel("District Rankings",
+                            )
+                            
+                            
+                 ),
+                 # Tab MPI Ranking-----------------
+                 navbarMenu("MPI Ranking",
+                            ### 91 DIstricts ranking--------
+                            tabPanel("91 District Rankings",
+                                     
+                                     tabsetPanel(
+                                       tabPanel("M0",
+                                                fluidRow(
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M0_dis_91_ranking", height = 950))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 4,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of 91 districts. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M0_k_91_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 4,
+                                                      footer = slider_caption)
+                                                )),
+                                       
+                                       tabPanel("M1",
+                                                fluidRow(
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M1_dis_91_ranking", height = 950))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 4,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M1_k_91_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 4,
+                                                      footer = slider_caption)
+                                                )),
+                                       
+                                       tabPanel("M2",
+                                                fluidRow(
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M2_dis_91_ranking", height = 950))
+                                                  ),
+                                                  box(withMathJax(),
+                                                      width = 4,
+                                                      title = "Description",
+                                                      p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
+                                                      when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific district, hover over the respective bar. To view the ranked 
+                                                     order of each district at different k-thresholds, adjust the slider to the desired value.")),
+                                                  box(sliderInput("M2_k_91_threshold", strong("k-Threshold"), 1, 9, 3),
+                                                      width = 4,
+                                                      footer = slider_caption)
+                                                ))
+                                     )),
+                            
+                            
+                            
+                            ### DIstricts ranking--------
+                            tabPanel("60 District Rankings",
                                      #tabName = "rank_60",
                                      tabsetPanel(
                                        tabPanel("M0",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M0_ranking", height = 850, width = 700))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M0_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific district, hover over the respective bar. To view the ranked 
                                                      order of each district at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M0_k_threshold", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 )),
                                        
                                        tabPanel("M1",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M1_ranking", height = 850, width = 700))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M1_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific district, hover over the respective bar. To view the ranked 
                                                      order of each district at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M1_k_threshold", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 )),
                                        
                                        tabPanel("M2",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M2_ranking", height = 850, width = 700))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M2_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each district. Displaying the data this way reveals where each district stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific district, hover over the respective bar. To view the ranked 
                                                      order of each district at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M2_k_threshold", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 ))
                                      )),
+                            ### Province ranking-------------
                             tabPanel("Province Rankings",
                                      tabsetPanel(
                                        tabPanel("M0",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M0_prov_ranking", height = 850, width = 700))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M0_prov_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{0}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{0}\\) value of a specific province, hover over the respective bar. To view the ranked 
                                                      order of each province at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M0_prov_k", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 )),
                                        
                                        tabPanel("M1",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M1_prov_ranking", height = 850))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M1_prov_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{1}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{1}\\) value of a specific province, hover over the respective bar. To view the ranked 
                                                      order of each province at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M1_prov_k", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 )),
                                        tabPanel("M2",
                                                 fluidRow(
-                                                  box(width = 7,
-                                                      withSpinner(plotlyOutput("M2_prov_ranking", height = 850))
+                                                  box(width = 8,
+                                                      withSpinner(plotlyOutput("M2_prov_ranking", height = 950))
                                                   ),
                                                   box(withMathJax(),
-                                                      width = 5,
+                                                      width = 4,
                                                       title = "Description",
                                                       p("This graphic portrays a ranked ordering of the \\(M_{2}\\) values of each province. Displaying the data this way reveals where each province stands in relationship with one another and, 
                                                       when used to supplement the map, helps make clear geographically clustered poverty. To view the \\(M_{2}\\) value of a specific province, hover over the respective bar. To view the ranked 
                                                      order of each province at different k-thresholds, adjust the slider to the desired value.")),
                                                   box(sliderInput("M2_prov_k", strong("k-Threshold"), 1, 9, 3),
-                                                      width = 5,
+                                                      width = 4,
                                                       footer = slider_caption)
                                                 ))
-                                     ))
-                 ),
+                                     )
+                                     )
+                            
+                            
+                            ),
+                 
                  ## Tab Decomposition------------------
                  navbarMenu("MPI Decomposition",
                             
@@ -1067,13 +1097,13 @@ The first dimension, education, consists of two variables – Max Education and 
                                 ),
                                 box(
                                   withMathJax(),
-                                  title = strong("Descrptive Analysis"),
+                                  title = strong("Descriptive Analysis"),
                                   width = 12,
                                  
                                   p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the \\(M_{0}\\) scores for high k values, we view an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as multidimensionally poor, so more of the initial population (composed largely of rural households) will influence the \\(M_{0}\\) score."),
                                   p("In our interface, selecting the adjusted-headcount ratio (\\(M_{0}\\)) and focusing first on the percent contribution of the individual variables, we can see that the three most significant contributors to the \\(M_{0}\\) index for most k-threshold values are the Lack of Household Assets, Lack of Access to Services, & Chronic Illness variables. As we increase the k-threshold, we can see that the Lack of Health Visit  , which was not as prevalent, to begin with, becomes much more so as the criteria to be labeled multidimensionally poor increase. This is because this variable is more relevant to the urban poor, which is why it does not display as contributing to the \\(M_{0}\\) scores significantly, to begin with. The opposite could be said about something like the Poor Cooking Fuel variable, which is prevalent in our \\(M_{0}\\) scores, to begin with, but less so as we increase the k-threshold, and several rural households start to be excluded as being multidimensionally poor."),
                                   p("For each variable, we can see that the unidimensional index is the greatest for Lack of Household Assets, Lack of Access to Services, & Chronic Illness. These variables are contributing the most to the \\(M_{0}\\) scores for most k-thresholds. The index for Lack of Health Visit, which contributes more to the \\(M_{0}\\) score for higher values of k, has more striking poverty gaps as k reaches its maximum of 9. Poor Cooking Fuel, which contributes more to our \\(M_{0}\\) scores at low values of k, has more striking poverty gaps at low k thresholds. Given the Alkire-Foster method that assigns weight to each component of poverty the variables with the highest unidimensional indices contribute the most to the \\(M_{0}\\) score for a given k-threshold."),
-                                  
+                                  p("The \\(M_{1}\\) and \\(M_{2}\\) measures exhibit very similar trends in terms of their components as discussed for \\(M_{0}\\). These can be explored as well.  "),
                                   p(""))
                               )),
                             
@@ -1140,7 +1170,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                        ),
                                        box(
                                          withMathJax(),
-                                         title = strong("Descrptive Analysis"),
+                                         title = strong("Descriptive Analysis"),
                                          width = 12,
                                          
                                          p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the \\(M_{0}\\) scores for high k values, we view an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as multidimensionally poor, so more of the initial population (composed largely of rural households) will influence the \\(M_{0}\\) score."),
@@ -1211,7 +1241,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                 ),
                                 box(
                                   withMathJax(),
-                                  title = strong("Descrptive Analysis"),
+                                  title = strong("Descriptive Analysis"),
                                   width = 12,
                                  
                                   p("The percent contribution and poverty gap measures are directly dependent on the k-threshold that is specified. When we increase the threshold of k, we are effectively increasing the criteria to be labeled multidimensionally poor. A trend that we notice is that households/regions that are considered multidimensionally poor when the k-threshold is set high are more heavily concentrated in urban areas like Bulawayo and Harare. Therefore, when we look at the \\(M_{0}\\) scores for high k values, we view an index score skewed towards urban households. When the k value is low, fewer households will have been ruled out as multidimensionally poor, so more of the initial population (composed largely of rural households) will influence the \\(M_{0}\\) score."),
@@ -1222,7 +1252,7 @@ The first dimension, education, consists of two variables – Max Education and 
                               ))
                  ),
                  ## Tab Temporal Comparison--------------------------------------
-                 tabPanel("MPI: from 2011 to 2017", 
+                 tabPanel("MPI: From 2011 to 2017", 
                           
                           # dashboardPage(
                           #   skin = 'black',
@@ -1263,7 +1293,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                          withMathJax(),
                                          title = "Comparison of \\(M_0 \\) for 2011 and 2017",
                                          #withSpinner(plotlyOutput("M0_Scatterplot"))
-                                         withSpinner(plotlyOutput("M0_Scatterplot")),
+                                         withSpinner(plotlyOutput("M0_Scatterplot",height = 520)),
                                          width = 6,
                                          height = 600
                                        ),
@@ -1297,21 +1327,16 @@ The first dimension, education, consists of two variables – Max Education and 
                                          title = strong("Descriptive Analysis"),
                                          width = 12,
                                          
-                                        p("The above maps display the change in the \\(M_{0}\\) index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. An alternative way to compare the same district across time is to use a scatterplot displayed in the graph beside the map. The x-axis shows the province/district’s \\(M_{0}\\) score for 2011, whereas the y-axis shows the \\(M_{0}\\) score of the same province/district for 2017. Should the province/district appear above the 45-degree line, this implies that the province/district has an increased \\(M_{0}\\) score, implying that the headcount of the multidimensionally-poor has increased. Conversely, if the province/district appears below the 45-degree line, this implies that the province/district has a decreased \\(M_{0}\\) score, implying that the headcount of multidimensionally-poor individuals has decreased. "),
-                                        p("At the district level, we can see that the majority of districts fall above the 45-degree line, implying a greater number of multidimensionally-poor households in most districts in 2017 compared to 2011. As we increase the k value, more districts fall below that 45-degree line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. The majority of districts remain over the line for low k-thresholds. Many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for urban and rural households, which we can visualize by clicking the respective button in the filter section. "),
-                                        p("If we instead focus on the MPI for provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their \\(M_{0}\\) scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts. "),
+                                        p("The above maps display the change in the \\(M_{0}\\) index from 2011 to 2017. Positive values represent increases in the adjusted headcount of the multidimensionally-poor for a given province/district. An alternative way to compare the same district across time is to use a scatterplot displayed in the graph beside the map. The x-axis shows the province/district’s \\(M_{0}\\) score for 2011, whereas the y-axis shows the \\(M_{0}\\) score of the same province/district for 2017. Should the province/district appear above the 45-degree line, this implies that the province/district has an increased \\(M_{0}\\) score, implying that the headcount of the multidimensionally-poor has increased. Conversely, if the province/district appears below the 45-degree line, this implies that the province/district has a decreased \\(M_{0}\\) score, implying that the headcount of multidimensionally-poor individuals has decreased. Finally, being on the 45-degree line means that there has been no change in the headcount of multidimensionally-poor from 2011 to 2017."),
+                                        p("At the district level, we can see that the majority of districts fall above the 45-degree line, implying a greater number of multidimensionally-poor households in most districts in 2017 compared to 2011. As we increase the k value, more districts fall below that 45-degree line. In other words, as the criteria to be labeledthreshold of multidimensionally poor poverty increases, more districts will not have increased inappear to have reduced their headcount of multidimensional poverty. The majority ofMost districts remain over the 45-degree line for low k-thresholds. Many remain over the 45-degree line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for urban and rural households, which we can visualize by clicking the respective button in the filter section. "),
+                                        p("If we instead focus on the MPI for provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased their \\(M_{0}\\) scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts. "),
                                         p("Similar patterns are observed for the \\(M_{1}\\) and \\(M_{2}\\) measures and can be explored through the dashboard presented here."),
-                                        p(strong("Summary")),
-                                        p("The analysis presented here provides an interactive way to decompose a multidimensional poverty index along many dimensions. We display the MPIs in maps and rankings, allowing users to assess multidimensional poverty by region (10 provinces/60 districts/91 districts), by population (all/urban/rural households), and by their preferred definition of poverty (k-threshold). We allow users to decompose the MPIs into their 14 components, allowing users to look at the unidimensional poverty indices of the individual components and their contribution to the multidimensional indices. Finally, we offer users the ability to view the change in multidimensional poverty between the two most recent waves of PICES surveys (2011-2017). "),
-                                        p("From our analyses, we see that when defining multidimensional poverty according to low thresholds, major urban areas such as Bulawayo and Harare are, on average, better off than their rural counterparts. Despite this, as we increase the threshold of multidimensional poverty, we see that these urban areas host the most vulnerable populations. We notice that specific components contribute more extensively to the national indices (i.e., Chronic Illness, Lack of Access to Services, Lack of Household Assets), whereas others contribute more to urban households (Lack of Health Visit) or rural households (Poor Cooking Fuel). Our sensitivity check shows that by setting a higher poverty line for a key component like Max Education, thereby considering more households deprived in that dimension, multidimensional poverty increases accordingly. Finally, the multidimensional poverty indices constructed here show that poverty has increased across most districts in Zimbabwe from 2011 to 2017. "),
-                                        p("We note that trends within our analyses are not unanimous. Individual districts do not necessarily follow national trends. The interactive dashboard presented here, providing users the ability to disaggregate the analysis from the province to the district level, allows for a more refined assessment of the trends in the individual districts."),
-                                        p(""),
-                                        p("")
+                                       
                                        ),
                                        p("")
                                      )
                             ),
-                            tabPanel("\\(M_1 \\) Comparison",
+                            tabPanel("\\(M_1 \\) Comparison Map",
                                      # Everything has to be put in a row or column
                                      fluidPage(
                                        box(
@@ -1323,7 +1348,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                        box(
                                          withMathJax(),
                                          title = "Comparison of \\(M_1 \\) for 2011 and 2017",
-                                         withSpinner(plotlyOutput("M1_Scatterplot")),
+                                         withSpinner(plotlyOutput("M1_Scatterplot",height = 520)),
                                          width = 6,
                                          height = 600
                                        ),
@@ -1360,11 +1385,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                          p("At the district level, we can see that the majority of districts fall above the 45-degree line, implying a greater number of multidimensionally-poor households in most districts in 2017 compared to 2011. As we increase the k value, more districts fall below that 45-degree line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. The majority of districts remain over the line for low k-thresholds. Many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for urban and rural households, which we can visualize by clicking the respective button in the filter section. "),
                                          p("If we instead focus on the MPI for provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their \\(M_{0}\\) scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts. "),
                                          p("Similar patterns are observed for the \\(M_{1}\\) and \\(M_{2}\\) measures and can be explored through the dashboard presented here."),
-                                         p(strong("Summary")),
-                                           p("The analysis presented here provides an interactive way to decompose a multidimensional poverty index along many dimensions. We display the MPIs in maps and rankings, allowing users to assess multidimensional poverty by region (10 provinces/60 districts/91 districts), by population (all/urban/rural households), and by their preferred definition of poverty (k-threshold). We allow users to decompose the MPIs into their 14 components, allowing users to look at the unidimensional poverty indices of the individual components and their contribution to the multidimensional indices. Finally, we offer users the ability to view the change in multidimensional poverty between the two most recent waves of PICES surveys (2011-2017). "),
-                                           p("From our analyses, we see that when defining multidimensional poverty according to low thresholds, major urban areas such as Bulawayo and Harare are, on average, better off than their rural counterparts. Despite this, as we increase the threshold of multidimensional poverty, we see that these urban areas host the most vulnerable populations. We notice that specific components contribute more extensively to the national indices (i.e., Chronic Illness, Lack of Access to Services, Lack of Household Assets), whereas others contribute more to urban households (Lack of Health Visit) or rural households (Poor Cooking Fuel). Our sensitivity check shows that by setting a higher poverty line for a key component like Max Education, thereby considering more households deprived in that dimension, multidimensional poverty increases accordingly. Finally, the multidimensional poverty indices constructed here show that poverty has increased across most districts in Zimbabwe from 2011 to 2017. "),
-                                           p("We note that trends within our analyses are not unanimous. Individual districts do not necessarily follow national trends. The interactive dashboard presented here, providing users the ability to disaggregate the analysis from the province to the district level, allows for a more refined assessment of the trends in the individual districts."),
-                                           p(""),
+                                        
                                            p(""),
                                          p("")
                                        ),
@@ -1383,7 +1404,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                          box(
                                            withMathJax(),
                                            title = "Comparison of \\(M_2 \\) for 2011 and 2017",
-                                           withSpinner(plotlyOutput("M2_Scatterplot")),
+                                           withSpinner(plotlyOutput("M2_Scatterplot",height = 520)),
                                            width = 6,
                                            height = 600
                                          ),
@@ -1420,11 +1441,7 @@ The first dimension, education, consists of two variables – Max Education and 
                                            p("At the district level, we can see that the majority of districts fall above the 45-degree line, implying a greater number of multidimensionally-poor households in most districts in 2017 compared to 2011. As we increase the k value, more districts fall below that 45-degree line. In other words, as the criteria to be labeled multidimensionally poor increases, more districts will not have increased in their headcount of multidimensional poverty. The majority of districts remain over the line for low k-thresholds. Many remain over the line for high k-thresholds, which tells us that multidimensional poverty has increased in the country, on average, over the specified 6-year period. This overall trend is applicable for urban and rural households, which we can visualize by clicking the respective button in the filter section. "),
                                            p("If we instead focus on the MPI for provinces, we can see that the same trend exists. With low k-values, all of the provinces find themselves having increased in their \\(M_{0}\\) scores. As the k-threshold increases, a few of the provinces start to fall under the 45-degree line. This is consistent when looking uniquely at either urban or rural households as well. It is worth noting that Bulawayo and Harare remain above the 45-degree line for all k-values, suggesting that multidimensional poverty has increased for the entire population of those provinces/districts. "),
                                            p("Similar patterns are observed for the \\(M_{1}\\) and \\(M_{2}\\) measures and can be explored through the dashboard presented here."),
-                                           p(strong("Summary")),
-                                             p("The analysis presented here provides an interactive way to decompose a multidimensional poverty index along many dimensions. We display the MPIs in maps and rankings, allowing users to assess multidimensional poverty by region (10 provinces/60 districts/91 districts), by population (all/urban/rural households), and by their preferred definition of poverty (k-threshold). We allow users to decompose the MPIs into their 14 components, allowing users to look at the unidimensional poverty indices of the individual components and their contribution to the multidimensional indices. Finally, we offer users the ability to view the change in multidimensional poverty between the two most recent waves of PICES surveys (2011-2017). "),
-                                             p("From our analyses, we see that when defining multidimensional poverty according to low thresholds, major urban areas such as Bulawayo and Harare are, on average, better off than their rural counterparts. Despite this, as we increase the threshold of multidimensional poverty, we see that these urban areas host the most vulnerable populations. We notice that specific components contribute more extensively to the national indices (i.e., Chronic Illness, Lack of Access to Services, Lack of Household Assets), whereas others contribute more to urban households (Lack of Health Visit) or rural households (Poor Cooking Fuel). Our sensitivity check shows that by setting a higher poverty line for a key component like Max Education, thereby considering more households deprived in that dimension, multidimensional poverty increases accordingly. Finally, the multidimensional poverty indices constructed here show that poverty has increased across most districts in Zimbabwe from 2011 to 2017. "),
-                                             p("We note that trends within our analyses are not unanimous. Individual districts do not necessarily follow national trends. The interactive dashboard presented here, providing users the ability to disaggregate the analysis from the province to the district level, allows for a more refined assessment of the trends in the individual districts."),
-                                             p(""),
+                                           
                                              p("")),
                                          p("")
                                        )
@@ -1432,6 +1449,18 @@ The first dimension, education, consists of two variables – Max Education and 
                           )
                  ),
                  
+                 ## Tab Takeaway------------------
+                 tabPanel("Takeaway",
+                    
+                          fluidPage(style = "margin-left: 100px; margin-right: 100px;",
+                            h1(strong("Takeaway"),align="center"),
+                            p("The analysis presented here provides an interactive way to decompose a multidimensional poverty index along many dimensions. We display the MPIs in maps and rankings, allowing users to assess multidimensional poverty by region (10 provinces/60 districts/91 districts), by population (all/urban/rural households), and by their preferred definition of poverty (k-threshold). We allow users to decompose the MPIs into their 14 components, allowing users to look at the unidimensional poverty indices of the individual components and their contribution to the multidimensional indices. Finally, we offer users the ability to view the change in multidimensional poverty between the two most recent waves of PICES surveys (2011-2017). "),
+                            p("From our analyses, we see that when defining multidimensional poverty according to low thresholds, major urban areas such as Bulawayo and Harare are, on average, better off than their rural counterparts. Despite this, as we increase the threshold of multidimensional poverty, we see that these urban areas host the most vulnerable populations. We notice that specific components contribute more extensively to the national indices (i.e., Chronic Illness, Lack of Access to Services, Lack of Household Assets), whereas others contribute more to urban households (Lack of Health Visit) or rural households (Poor Cooking Fuel). Our sensitivity check shows that by setting a higher poverty line for a key component like Max Education, thereby considering more households deprived in that dimension, multidimensional poverty increases accordingly. Finally, the multidimensional poverty indices constructed here show that poverty has increased across most districts in Zimbabwe from 2011 to 2017. "),
+                            p("We note that trends within our analyses are not unanimous. Individual districts do not necessarily follow national trends. The interactive dashboard presented here, providing users the ability to disaggregate the analysis from the province to the district level, allows for a more refined assessment of the trends in the individual districts."),
+                            p(""),
+                          )
+                                
+                 ),
                  
                  
                  
@@ -1831,768 +1860,7 @@ server <- function(input, output, session) {
                                                                                      MPI_2017_1_T_o$M2_k7[1],
                                                                                      MPI_2017_1_T_o$M2_k8[1],
                                                                                      MPI_2017_1_T_o$M2_k9[1]))
-    ### Graphing Ranked District 60 Bar Chart --------------------------------------
     
-    ranked_data <- read_csv("./data/MappingData/OriginalMPI/2017/2017_District.csv")
-    # Suggestion
-    #
-    M0_dist_rank <- reactive({
-      input$M0_k_threshold
-    })
-    
-    
-    
-    output$M0_ranking <- renderPlotly({
-      if (M0_dist_rank() == "1") {
-        M0_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k1)) %>% 
-          ggplot(aes(x = District_name, y = M0_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 1", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k1_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "2") {
-        M0_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k2)) %>% 
-          ggplot(aes(x = District_name, y = M0_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 2", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k2_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "3") {
-        M0_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k3)) %>% 
-          ggplot(aes(x = District_name, y = M0_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 3", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k3_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "4") {
-        M0_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k4)) %>% 
-          ggplot(aes(x = District_name, y = M0_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 4", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k4_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "5") {
-        M0_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k5)) %>% 
-          ggplot(aes(x = District_name, y = M0_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 5", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k5_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "6") {
-        M0_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k6)) %>% 
-          ggplot(aes(x = District_name, y = M0_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 6", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k6_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "7") {
-        M0_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k7)) %>% 
-          ggplot(aes(x = District_name, y = M0_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 7", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k7_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "8") {
-        M0_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k8)) %>% 
-          ggplot(aes(x = District_name, y = M0_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 8", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k8_ranking)
-        
-      }
-      
-      else if (M0_dist_rank() == "9") {
-        
-        M0_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M0_k9)) %>% 
-          ggplot(aes(x = District_name, y = M0_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 9", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k9_ranking)
-        
-      }
-      
-      
-    })
-    
-    M1_dist_rank <- reactive({
-      input$M1_k_threshold
-    })
-    
-    output$M1_ranking <- renderPlotly({
-      if (M1_dist_rank() == "1") {
-        M1_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k1)) %>% 
-          ggplot(aes(x = District_name, y = M1_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 1", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k1_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "2") {
-        M1_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k2)) %>% 
-          ggplot(aes(x = District_name, y = M1_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 2", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k2_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "3") {
-        M1_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k3)) %>% 
-          ggplot(aes(x = District_name, y = M1_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 3", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k3_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "4") {
-        M1_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k4)) %>% 
-          ggplot(aes(x = District_name, y = M1_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 4", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k4_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "5") {
-        M1_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k5)) %>% 
-          ggplot(aes(x = District_name, y = M1_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 5", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k5_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "6") {
-        M1_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k6)) %>% 
-          ggplot(aes(x = District_name, y = M1_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 6", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k6_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "7") {
-        M1_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k7)) %>% 
-          ggplot(aes(x = District_name, y = M1_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 7", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k7_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "8") {
-        M1_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k8)) %>% 
-          ggplot(aes(x = District_name, y = M1_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 8", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k8_ranking)
-        
-      }
-      
-      else if (M1_dist_rank() == "9") {
-        
-        M1_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M1_k9)) %>% 
-          ggplot(aes(x = District_name, y = M1_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 9", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k9_ranking)
-        
-      }
-      
-      
-    })
-    
-    M2_dist_rank <- reactive({
-      input$M2_k_threshold
-    })
-    
-    output$M2_ranking <- renderPlotly({
-      if (M2_dist_rank() == "1") {
-        M2_k1_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k1)) %>% 
-          ggplot(aes(x = District_name, y = M2_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 1", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k1_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "2") {
-        M2_k2_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k2)) %>% 
-          ggplot(aes(x = District_name, y = M2_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 2", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k2_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "3") {
-        M2_k3_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k3)) %>% 
-          ggplot(aes(x = District_name, y = M2_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 3", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k3_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "4") {
-        M2_k4_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k4)) %>% 
-          ggplot(aes(x = District_name, y = M2_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 4", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k4_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "5") {
-        M2_k5_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k5)) %>% 
-          ggplot(aes(x = District_name, y = M2_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 5", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k5_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "6") {
-        M2_k6_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k6)) %>% 
-          ggplot(aes(x = District_name, y = M2_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 6", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k6_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "7") {
-        M2_k7_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k7)) %>% 
-          ggplot(aes(x = District_name, y = M2_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 7", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k7_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "8") {
-        M2_k8_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k8)) %>% 
-          ggplot(aes(x = District_name, y = M2_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 8", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k8_ranking)
-        
-      }
-      
-      else if (M2_dist_rank() == "9") {
-        
-        M2_k9_ranking <- ranked_data %>% 
-          mutate(District_name = fct_reorder(District_name, M2_k9)) %>% 
-          ggplot(aes(x = District_name, y = M2_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 9", x = "Districts", title = "District Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k9_ranking)
-        
-      }
-      
-      
-    })
-    
-    ### Graphing Province Rankings ----------------------------------------------
-    
-    prov_ranked <- read_csv("./data/MappingData/OriginalMPI/2017/2017_Province.csv")
-    
-    M0_prov_k_threshold <- reactive({
-      input$M0_prov_k
-    })
-    
-    output$M0_prov_ranking <- renderPlotly({
-      if (M0_prov_k_threshold() == "1") {
-        M0_k1_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k1)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k1_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "2") {
-        M0_k2_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k2)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k2_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "3") {
-        M0_k3_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k3)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k3_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "4") {
-        M0_k4_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k4)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k4_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "5") {
-        M0_k5_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k5)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k5_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "6") {
-        M0_k6_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k6)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k6_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "7") {
-        M0_k7_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k7)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k7_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "8") {
-        M0_k8_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k8)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k8_prov_ranking)
-        
-      }
-      
-      else if (M0_prov_k_threshold() == "9") {
-        M0_k9_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M0_k9)) %>% 
-          ggplot(aes(x = Province_name, y = M0_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M0_k9_prov_ranking)
-        
-      }
-      
-      
-    })
-    
-    M1_prov_k_threshold <- reactive({
-      input$M1_prov_k
-    })
-    
-    output$M1_prov_ranking <- renderPlotly({
-      if (M1_prov_k_threshold() == "1") {
-        M1_k1_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k1)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k1_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "2") {
-        M1_k2_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k2)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k2_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "3") {
-        M1_k3_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k3)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k3_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "4") {
-        M1_k4_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k4)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k4_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "5") {
-        M1_k5_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k5)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k5_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "6") {
-        M1_k6_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k6)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k6_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "7") {
-        M1_k7_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k7)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k7_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "8") {
-        M1_k8_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k8)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k8_prov_ranking)
-        
-      }
-      
-      else if (M1_prov_k_threshold() == "9") {
-        M1_k9_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M1_k9)) %>% 
-          ggplot(aes(x = Province_name, y = M1_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M1_k9_prov_ranking)
-        
-      }
-      
-      
-    })
-    
-    M2_prov_k_threshold <- reactive({
-      input$M2_prov_k
-    })
-    
-    output$M2_prov_ranking <- renderPlotly({
-      if (M2_prov_k_threshold() == "1") {
-        M2_k1_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k1)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k1)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k1_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "2") {
-        M2_k2_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k2)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k2)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k2_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "3") {
-        M2_k3_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k3)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k3)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k3_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "4") {
-        M2_k4_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k4)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k4)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k4_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "5") {
-        M2_k5_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k5)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k5)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k5_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "6") {
-        M2_k6_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k6)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k6)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k6_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "7") {
-        M2_k7_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k7)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k7)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k7_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "8") {
-        M2_k8_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k8)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k8)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k8_prov_ranking)
-        
-      }
-      
-      else if (M2_prov_k_threshold() == "9") {
-        M2_k9_prov_ranking <- prov_ranked %>% 
-          mutate(Province_name = fct_reorder(Province_name, M2_k9)) %>% 
-          ggplot(aes(x = Province_name, y = M2_k9)) +
-          geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
-          coord_flip() +
-          labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
-          theme_minimal()
-        
-        ggplotly(M2_k9_prov_ranking)
-        
-      }
-      
-    })
     
     # MAPPING MPI 2017 90 district ----------------------------------------------------------------------
     # These lines of code fix the positioning of the "No Data" label. Previously, it
@@ -5113,13 +4381,10 @@ server <- function(input, output, session) {
       htmlwidgets::prependContent(html_fix)
   })
   
+  # This is where the scatte rplot gets plotted
   output$M0_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M0)
-    
     RegionSelection = strtoi(input$RegionSelection_M0)
-    
-    
-    
     k_threshold = input$slider_M0_Comparison
     
     map_2017 = switch(UrbRurSelection, 
@@ -5174,7 +4439,7 @@ server <- function(input, output, session) {
     M0_2017 <- M0_2017 %>% round(digits = 3)
     create_scatter(names, M0_2011, M0_2017, "M<sub>0</sub> for 2011", "M<sub>0</sub> for 2017", "Comparison of \\(M_0\\) from 2011 to 2017") 
   })
-  
+  # This is where the scatterplot gets plotted
   output$M1_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M1)
     
@@ -5238,7 +4503,8 @@ server <- function(input, output, session) {
     
     create_scatter(names, M1_2011, M1_2017, "M<sub>1</sub> for 2011", "M<sub>1</sub> for 2017", "Comparison of \\(M_1 \\) from 2011 to 2017") 
   })
-  
+   
+  # This is where the map gets plotted
   output$M1_Comparison_Map <- renderLeaflet({
     UrbRurSelection = strtoi(input$UrbRurSelection_M1)
     
@@ -5329,6 +4595,7 @@ server <- function(input, output, session) {
       htmlwidgets::prependContent(html_fix)
   })
   
+  # This is where the scatterplot gets plotted
   output$M2_Scatterplot <- renderPlotly({
     UrbRurSelection = strtoi(input$UrbRurSelection_M2)
     
@@ -5392,6 +4659,7 @@ server <- function(input, output, session) {
     create_scatter(names, M2_2011, M2_2017, "M<sub>2</sub> for 2011", "M<sub>2</sub> for 2017", "Comparison of \\(M_2\\) from 2011 to 2017")
   }) 
   
+  # This is where the map plot gets plotted
   output$M2_Comparison_Map <- renderLeaflet({
     UrbRurSelection = strtoi(input$UrbRurSelection_M2)
     
@@ -5480,6 +4748,1159 @@ server <- function(input, output, session) {
       addLegend(pal = pal, values = M2_change, opacity = 0.7, title = paste0("k = ", k_threshold),
                 position = "bottomright") %>%
       htmlwidgets::prependContent(html_fix)
+  })
+  
+  ## Graphing Ranked District 91 Bar Chart --------------------------------------
+  ranked_dis_data <- read_csv("./data/MappingData/OriginalMPI/2017/2017_91_District.csv") 
+  #ranked_dis_data[[3]] <-  ranked_dis_data[[3]] %>% round(digits =3) 
+  # Suggestion
+  #
+  M0_dist_91_rank <- reactive({
+    input$M0_k_91_threshold
+  })
+  
+  
+  
+  output$M0_dis_91_ranking <- renderPlotly({
+    if (M0_dist_91_rank () == "1") {
+      M0_k1_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k1)) %>% 
+        ggplot(aes(x = District , y = M0_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k1_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "2") {
+      M0_k2_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k2)) %>% 
+        ggplot(aes(x = District , y = M0_k2%>% round(digits = 3))) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k2_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "3") {
+      M0_k3_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k3)) %>% 
+        ggplot(aes(x = District , y = M0_k3 )) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k3_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "4") {
+      M0_k4_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k4)) %>% 
+        ggplot(aes(x = District , y = M0_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k4_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "5") {
+      M0_k5_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k5)) %>% 
+        ggplot(aes(x = District , y = M0_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k5_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "6") {
+      M0_k6_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k6)) %>% 
+        ggplot(aes(x = District , y = M0_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k6_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "7") {
+      M0_k7_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k7)) %>% 
+        ggplot(aes(x = District , y = M0_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k7_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "8") {
+      M0_k8_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k8)) %>% 
+        ggplot(aes(x = District , y = M0_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k8_ranking)
+      
+    }
+    
+    else if (M0_dist_91_rank () == "9") {
+      
+      M0_k9_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k9)) %>% 
+        ggplot(aes(x = District , y = M0_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  M1_dist_91_rank <- reactive({
+    input$M1_k_91_threshold
+  })
+  
+  
+  
+  output$M1_dis_91_ranking <- renderPlotly({
+    if (M1_dist_91_rank () == "1") {
+      M1_k1_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k1)) %>% 
+        ggplot(aes(x = District , y = M1_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k1_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "2") {
+      M1_k2_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k2)) %>% 
+        ggplot(aes(x = District , y = M1_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k2_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "3") {
+      M1_k3_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k3)) %>% 
+        ggplot(aes(x = District , y = M1_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k3_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "4") {
+      M1_k4_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k4)) %>% 
+        ggplot(aes(x = District , y = M1_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k4_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "5") {
+      M1_k5_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k5)) %>% 
+        ggplot(aes(x = District , y = M1_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k5_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "6") {
+      M1_k6_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k6)) %>% 
+        ggplot(aes(x = District , y = M1_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k6_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "7") {
+      M1_k7_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k7)) %>% 
+        ggplot(aes(x = District , y = M1_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k7_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "8") {
+      M1_k8_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k8)) %>% 
+        ggplot(aes(x = District , y = M1_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k8_ranking)
+      
+    }
+    
+    else if (M1_dist_91_rank () == "9") {
+      
+      M1_k9_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k9)) %>% 
+        ggplot(aes(x = District , y = M1_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  M2_dist_91_rank <- reactive({
+    input$M2_k_91_threshold
+  })
+  
+  
+  
+  output$M2_dis_91_ranking <- renderPlotly({
+    if (M2_dist_91_rank () == "1") {
+      M2_k1_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k1)) %>% 
+        ggplot(aes(x = District , y = M2_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k1_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "2") {
+      M2_k2_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k2)) %>% 
+        ggplot(aes(x = District , y = M2_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k2_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "3") {
+      M2_k3_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k3)) %>% 
+        ggplot(aes(x = District , y = M2_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k3_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "4") {
+      M2_k4_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k4)) %>% 
+        ggplot(aes(x = District , y = M2_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k4_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "5") {
+      M2_k5_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k5)) %>% 
+        ggplot(aes(x = District , y = M2_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k5_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "6") {
+      M2_k6_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k6)) %>% 
+        ggplot(aes(x = District , y = M2_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k6_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "7") {
+      M2_k7_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k7)) %>% 
+        ggplot(aes(x = District , y = M2_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k7_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "8") {
+      M2_k8_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k8)) %>% 
+        ggplot(aes(x = District , y = M2_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k8_ranking)
+      
+    }
+    
+    else if (M2_dist_91_rank () == "9") {
+      
+      M2_k9_ranking <- ranked_dis_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k9)) %>% 
+        ggplot(aes(x = District , y = M2_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  
+  ## Graphing Ranked District 60 Bar Chart --------------------------------------
+  
+  ranked_data <- read_csv("./data/MappingData/OriginalMPI/2017/2017_District.csv")
+  # Suggestion
+  #
+  M0_dist_rank <- reactive({
+    input$M0_k_threshold
+  })
+  
+  
+  
+  output$M0_ranking <- renderPlotly({
+    if (M0_dist_rank() == "1") {
+      M0_k1_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k1)) %>% 
+        ggplot(aes(x = District , y = M0_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k1_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "2") {
+      M0_k2_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k2)) %>% 
+        ggplot(aes(x = District , y = M0_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k2_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "3") {
+      M0_k3_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k3)) %>% 
+        ggplot(aes(x = District , y = M0_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k3_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "4") {
+      M0_k4_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k4)) %>% 
+        ggplot(aes(x = District , y = M0_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k4_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "5") {
+      M0_k5_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k5)) %>% 
+        ggplot(aes(x = District , y = M0_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k5_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "6") {
+      M0_k6_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k6)) %>% 
+        ggplot(aes(x = District , y = M0_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k6_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "7") {
+      M0_k7_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k7)) %>% 
+        ggplot(aes(x = District , y = M0_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k7_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "8") {
+      M0_k8_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k8)) %>% 
+        ggplot(aes(x = District , y = M0_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k8_ranking)
+      
+    }
+    
+    else if (M0_dist_rank() == "9") {
+      
+      M0_k9_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M0_k9)) %>% 
+        ggplot(aes(x = District , y = M0_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  M1_dist_rank <- reactive({
+    input$M1_k_threshold
+  })
+  
+  output$M1_ranking <- renderPlotly({
+    if (M1_dist_rank() == "1") {
+      M1_k1_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k1)) %>% 
+        ggplot(aes(x = District , y = M1_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k1_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "2") {
+      M1_k2_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k2)) %>% 
+        ggplot(aes(x = District , y = M1_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k2_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "3") {
+      M1_k3_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k3)) %>% 
+        ggplot(aes(x = District , y = M1_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k3_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "4") {
+      M1_k4_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k4)) %>% 
+        ggplot(aes(x = District , y = M1_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k4_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "5") {
+      M1_k5_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k5)) %>% 
+        ggplot(aes(x = District , y = M1_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k5_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "6") {
+      M1_k6_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k6)) %>% 
+        ggplot(aes(x = District , y = M1_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k6_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "7") {
+      M1_k7_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k7)) %>% 
+        ggplot(aes(x = District , y = M1_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k7_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "8") {
+      M1_k8_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k8)) %>% 
+        ggplot(aes(x = District , y = M1_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k8_ranking)
+      
+    }
+    
+    else if (M1_dist_rank() == "9") {
+      
+      M1_k9_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M1_k9)) %>% 
+        ggplot(aes(x = District , y = M1_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  M2_dist_rank <- reactive({
+    input$M2_k_threshold
+  })
+  
+  output$M2_ranking <- renderPlotly({
+    if (M2_dist_rank() == "1") {
+      M2_k1_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k1)) %>% 
+        ggplot(aes(x = District , y = M2_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k1_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "2") {
+      M2_k2_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k2)) %>% 
+        ggplot(aes(x = District , y = M2_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k2_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "3") {
+      M2_k3_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k3)) %>% 
+        ggplot(aes(x = District , y = M2_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k3_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "4") {
+      M2_k4_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k4)) %>% 
+        ggplot(aes(x = District , y = M2_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k4_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "5") {
+      M2_k5_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k5)) %>% 
+        ggplot(aes(x = District , y = M2_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k5_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "6") {
+      M2_k6_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k6)) %>% 
+        ggplot(aes(x = District , y = M2_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k6_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "7") {
+      M2_k7_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k7)) %>% 
+        ggplot(aes(x = District , y = M2_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k7_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "8") {
+      M2_k8_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k8)) %>% 
+        ggplot(aes(x = District , y = M2_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k8_ranking)
+      
+    }
+    
+    else if (M2_dist_rank() == "9") {
+      
+      M2_k9_ranking <- ranked_data %>% 
+        mutate(District = fct_reorder(District_name, M2_k9)) %>% 
+        ggplot(aes(x = District , y = M2_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k9_ranking)
+      
+    }
+    
+    
+  })
+  
+  ## Graphing Province Rankings ----------------------------------------------
+  
+  prov_ranked <- read_csv("./data/MappingData/OriginalMPI/2017/2017_Province.csv") 
+  
+  M0_prov_k_threshold <- reactive({
+    input$M0_prov_k
+  })
+  
+  output$M0_prov_ranking <- renderPlotly({
+    if (M0_prov_k_threshold() == "1") {
+      M0_k1_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k1)) %>% 
+        ggplot(aes(x = Province, y = M0_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k1_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "2") {
+      M0_k2_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k2)) %>% 
+        ggplot(aes(x = Province, y = M0_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k2_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "3") {
+      M0_k3_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k3)) %>% 
+        ggplot(aes(x = Province, y = M0_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k3_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "4") {
+      M0_k4_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k4)) %>% 
+        ggplot(aes(x = Province, y = M0_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k4_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "5") {
+      M0_k5_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k5)) %>% 
+        ggplot(aes(x = Province, y = M0_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k5_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "6") {
+      M0_k6_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k6)) %>% 
+        ggplot(aes(x = Province, y = M0_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k6_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "7") {
+      M0_k7_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k7)) %>% 
+        ggplot(aes(x = Province, y = M0_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k7_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "8") {
+      M0_k8_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k8)) %>% 
+        ggplot(aes(x = Province, y = M0_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k8_prov_ranking)
+      
+    }
+    
+    else if (M0_prov_k_threshold() == "9") {
+      M0_k9_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M0_k9)) %>% 
+        ggplot(aes(x = Province, y = M0_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M0_k9_prov_ranking)
+      
+    }
+    
+    
+  })
+  
+  M1_prov_k_threshold <- reactive({
+    input$M1_prov_k
+  })
+  
+  output$M1_prov_ranking <- renderPlotly({
+    if (M1_prov_k_threshold() == "1") {
+      M1_k1_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k1)) %>% 
+        ggplot(aes(x = Province, y = M1_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k1_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "2") {
+      M1_k2_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k2)) %>% 
+        ggplot(aes(x = Province, y = M1_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k2_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "3") {
+      M1_k3_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k3)) %>% 
+        ggplot(aes(x = Province, y = M1_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k3_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "4") {
+      M1_k4_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k4)) %>% 
+        ggplot(aes(x = Province, y = M1_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k4_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "5") {
+      M1_k5_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k5)) %>% 
+        ggplot(aes(x = Province, y = M1_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k5_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "6") {
+      M1_k6_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k6)) %>% 
+        ggplot(aes(x = Province, y = M1_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k6_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "7") {
+      M1_k7_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k7)) %>% 
+        ggplot(aes(x = Province, y = M1_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k7_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "8") {
+      M1_k8_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k8)) %>% 
+        ggplot(aes(x = Province, y = M1_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k8_prov_ranking)
+      
+    }
+    
+    else if (M1_prov_k_threshold() == "9") {
+      M1_k9_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M1_k9)) %>% 
+        ggplot(aes(x = Province, y = M1_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M1_k9_prov_ranking)
+      
+    }
+    
+    
+  })
+  
+  M2_prov_k_threshold <- reactive({
+    input$M2_prov_k
+  })
+  
+  output$M2_prov_ranking <- renderPlotly({
+    if (M2_prov_k_threshold() == "1") {
+      M2_k1_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k1)) %>% 
+        ggplot(aes(x = Province, y = M2_k1)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k1_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "2") {
+      M2_k2_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k2)) %>% 
+        ggplot(aes(x = Province, y = M2_k2)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k2_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "3") {
+      M2_k3_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k3)) %>% 
+        ggplot(aes(x = Province, y = M2_k3)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k3_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "4") {
+      M2_k4_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k4)) %>% 
+        ggplot(aes(x = Province, y = M2_k4)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k4_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "5") {
+      M2_k5_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k5)) %>% 
+        ggplot(aes(x = Province, y = M2_k5)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k5_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "6") {
+      M2_k6_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k6)) %>% 
+        ggplot(aes(x = Province, y = M2_k6)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k6_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "7") {
+      M2_k7_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k7)) %>% 
+        ggplot(aes(x = Province, y = M2_k7)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k7_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "8") {
+      M2_k8_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k8)) %>% 
+        ggplot(aes(x = Province, y = M2_k8)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k8_prov_ranking)
+      
+    }
+    
+    else if (M2_prov_k_threshold() == "9") {
+      M2_k9_prov_ranking <- prov_ranked %>% 
+        mutate(Province = fct_reorder(Province_name, M2_k9)) %>% 
+        ggplot(aes(x = Province, y = M2_k9)) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        coord_flip() +
+        labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        theme_minimal()
+      
+      ggplotly(M2_k9_prov_ranking)
+      
+    }
+    
   })
 }
 
