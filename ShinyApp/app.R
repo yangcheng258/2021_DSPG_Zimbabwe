@@ -625,9 +625,9 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    " and considers all of the dimensions described in the methodology section."),
                                            tags$li("\\(M_{1}\\)
                                       is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
-                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
-                                                   )
-                                           ),
+                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap."),"By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                           
+                                         ),
                                          p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph.")
                                        )),
@@ -707,8 +707,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                                     " and considers all of the dimensions described in the methodology section."),
                                             tags$li("\\(M_{1}\\)
                                       is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
-                                            tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
-                                            )
+                                            tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap."),"By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                            
                                           ),
                                           p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph.")
@@ -782,8 +782,8 @@ ui <- navbarPage(title = "Zimbabwe",
                                                    " and considers all of the dimensions described in the methodology section."),
                                            tags$li("\\(M_{1}\\)
                                       is the ",strong("adjusted poverty gap")," an index to show how far below the poor people are from the poverty line."),
-                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap.","By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
-                                           )
+                                           tags$li("\\(M_{2}\\) is the ",strong("square of the adjusted poverty gap."),"By squaring the poverty gaps, this measure puts a higher weight on those who are farther away from the poverty line. Thus, this index measures severity of poverty.")
+                                           
                                          ),
                                          p("To adjust the threshold cutoff, k, by which an individual is considered poor,
                                       adjust the slider below the graph.")
@@ -1049,7 +1049,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   title = "Description",
                                   p("This page presents the unidimensional indices for the individual components that make up the MPI.  The dropdown menu allows the user to display the unidimensional index (i.e., the health, education, or asset component) or to display the component’s contribution to the multidimensional index. This can be shown at the district or province level.   The user can display these values for rural or urban areas and with different k-threshold values.  "), 
                                   
-                                  p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
+                                  p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\)), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
                                   width = 4
                                 ),
                                 
@@ -1123,7 +1123,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                          title = "Description",
                                          p("This page presents the unidimensional indices for the individual components that make up the MPI.  The dropdown menu allows the user to display the unidimensional index (i.e., the health, education, or asset component) or to display the component’s contribution to the multidimensional index. This can be shown at the district or province level.   The user can display these values for rural or urban areas and with different k-threshold values.  "), 
                                          
-                                         p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
+                                         p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\)), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
                                          width = 4
                                        )),
                                        fluidRow(
@@ -1195,7 +1195,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                   title = "Description",
                                   p("This page presents the unidimensional indices for the individual components that make up the MPI.  The dropdown menu allows the user to display the unidimensional index (i.e., the health, education, or asset component) or to display the component’s contribution to the multidimensional index. This can be shown at the district or province level.   The user can display these values for rural or urban areas and with different k-threshold values.  "), 
                                   
-                                  p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
+                                  p("Note: for our district-level analysis, a grey-filled area with an NA means that no districts fulfill the criteria chosen. For example, this would apply if there are high k-thresholds and no households exist at this level, or for the regional analysis if there are no urban or rural households.These results are presented for the incidence (\\(M_{0}\\)), gap (\\(M_{1}\\)), and severity of poverty (\\(M_{2}\\)). "),
                                   width = 4
                                 ),
                                 fluidRow(
@@ -1449,11 +1449,11 @@ ui <- navbarPage(title = "Zimbabwe",
                           )
                  ),
                  
-                 ## Tab Takeaway------------------
-                 tabPanel("Takeaway",
+                 ## Takeaways------------------
+                 tabPanel("Takeaways",
                     
                           fluidPage(style = "margin-left: 100px; margin-right: 100px;",
-                            h1(strong("Takeaway"),align="center"),
+                            h1(strong("Takeaways"),align="center"),
                             p("The analysis presented here provides an interactive way to decompose a multidimensional poverty index along many dimensions. We display the MPIs in maps and rankings, allowing users to assess multidimensional poverty by region (10 provinces/60 districts/91 districts), by population (all/urban/rural households), and by their preferred definition of poverty (k-threshold). We allow users to decompose the MPIs into their 14 components, allowing users to look at the unidimensional poverty indices of the individual components and their contribution to the multidimensional indices. Finally, we offer users the ability to view the change in multidimensional poverty between the two most recent waves of PICES surveys (2011-2017). "),
                             p("From our analyses, we see that when defining multidimensional poverty according to low thresholds, major urban areas such as Bulawayo and Harare are, on average, better off than their rural counterparts. Despite this, as we increase the threshold of multidimensional poverty, we see that these urban areas host the most vulnerable populations. We notice that specific components contribute more extensively to the national indices (i.e., Chronic Illness, Lack of Access to Services, Lack of Household Assets), whereas others contribute more to urban households (Lack of Health Visit) or rural households (Poor Cooking Fuel). Our sensitivity check shows that by setting a higher poverty line for a key component like Max Education, thereby considering more households deprived in that dimension, multidimensional poverty increases accordingly. Finally, the multidimensional poverty indices constructed here show that poverty has increased across most districts in Zimbabwe from 2011 to 2017. "),
                             p("We note that trends within our analyses are not unanimous. Individual districts do not necessarily follow national trends. The interactive dashboard presented here, providing users the ability to disaggregate the analysis from the province to the district level, allows for a more refined assessment of the trends in the individual districts."),
