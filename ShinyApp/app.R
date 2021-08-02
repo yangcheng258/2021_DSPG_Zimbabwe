@@ -851,7 +851,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             tabPanel("91 District Rankings",
                                      
                                      tabsetPanel(
-                                       tabPanel("M0",
+                                       tabPanel("\\(M_{0}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M0_dis_91_ranking", height = 950))
@@ -867,7 +867,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       footer = slider_caption)
                                                 )),
                                        
-                                       tabPanel("M1",
+                                       tabPanel("\\(M_{1}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M1_dis_91_ranking", height = 950))
@@ -883,7 +883,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       footer = slider_caption)
                                                 )),
                                        
-                                       tabPanel("M2",
+                                       tabPanel("\\(M_{2}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M2_dis_91_ranking", height = 950))
@@ -906,7 +906,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             tabPanel("60 District Rankings",
                                      #tabName = "rank_60",
                                      tabsetPanel(
-                                       tabPanel("M0",
+                                       tabPanel("\\(M_{0}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M0_ranking", height = 950))
@@ -922,7 +922,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       footer = slider_caption)
                                                 )),
                                        
-                                       tabPanel("M1",
+                                       tabPanel("\\(M_{1}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M1_ranking", height = 950))
@@ -938,7 +938,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       footer = slider_caption)
                                                 )),
                                        
-                                       tabPanel("M2",
+                                       tabPanel("\\(M_{2}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M2_ranking", height = 950))
@@ -957,7 +957,7 @@ ui <- navbarPage(title = "Zimbabwe",
                             ### Province ranking-------------
                             tabPanel("Province Rankings",
                                      tabsetPanel(
-                                       tabPanel("M0",
+                                       tabPanel("\\(M_{0}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M0_prov_ranking", height = 950))
@@ -973,7 +973,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       footer = slider_caption)
                                                 )),
                                        
-                                       tabPanel("M1",
+                                       tabPanel("\\(M_{1}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M1_prov_ranking", height = 950))
@@ -988,7 +988,7 @@ ui <- navbarPage(title = "Zimbabwe",
                                                       width = 4,
                                                       footer = slider_caption)
                                                 )),
-                                       tabPanel("M2",
+                                       tabPanel("\\(M_{2}\\) Rankings",
                                                 fluidRow(
                                                   box(width = 8,
                                                       withSpinner(plotlyOutput("M2_prov_ranking", height = 950))
@@ -4751,9 +4751,9 @@ server <- function(input, output, session) {
       M0_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k1)) %>% 
         ggplot(aes(x = District , y = M0_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 1", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k1_ranking)
@@ -4766,7 +4766,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k2%>% round(digits = 3))) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 2", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k2_ranking)
@@ -4779,7 +4779,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k3 )) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 3", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k3_ranking)
@@ -4792,7 +4792,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 4", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k4_ranking)
@@ -4805,7 +4805,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 5", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k5_ranking)
@@ -4818,7 +4818,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 6", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k6_ranking)
@@ -4831,7 +4831,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 7", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k7_ranking)
@@ -4844,7 +4844,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 8", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k8_ranking)
@@ -4858,7 +4858,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 9", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k9_ranking)
@@ -4879,9 +4879,9 @@ server <- function(input, output, session) {
       M1_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k1)) %>% 
         ggplot(aes(x = District , y = M1_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 1", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k1_ranking)
@@ -4894,7 +4894,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 2", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k2_ranking)
@@ -4907,7 +4907,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k3)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 3", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k3_ranking)
@@ -4920,7 +4920,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 4", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k4_ranking)
@@ -4933,7 +4933,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 5", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k5_ranking)
@@ -4946,7 +4946,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 6", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k6_ranking)
@@ -4959,7 +4959,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 7", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k7_ranking)
@@ -4972,7 +4972,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 8", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k8_ranking)
@@ -4986,7 +4986,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 9", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k9_ranking)
@@ -5007,9 +5007,9 @@ server <- function(input, output, session) {
       M2_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k1)) %>% 
         ggplot(aes(x = District , y = M2_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 1", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 1", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k1_ranking)
@@ -5022,7 +5022,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 2", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 2", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k2_ranking)
@@ -5035,7 +5035,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k3)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 3", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 3", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k3_ranking)
@@ -5048,7 +5048,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 4", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 4", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k4_ranking)
@@ -5061,7 +5061,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 5", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 5", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k5_ranking)
@@ -5074,7 +5074,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 6", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 6", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k6_ranking)
@@ -5087,7 +5087,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 7", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 7", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k7_ranking)
@@ -5100,7 +5100,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 8", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 8", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k8_ranking)
@@ -5114,7 +5114,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 9", x = "Districts", title = "91 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 9", x = "Districts", title = "91 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k9_ranking)
@@ -5141,9 +5141,9 @@ server <- function(input, output, session) {
       M0_k1_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k1)) %>% 
         ggplot(aes(x = District , y = M0_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 1", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k1_ranking)
@@ -5156,7 +5156,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 2", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k2_ranking)
@@ -5169,7 +5169,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k3)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 3", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k3_ranking)
@@ -5182,7 +5182,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 4", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k4_ranking)
@@ -5195,7 +5195,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 5", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k5_ranking)
@@ -5208,7 +5208,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 6", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k6_ranking)
@@ -5221,7 +5221,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 7", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k7_ranking)
@@ -5234,7 +5234,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 8", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k8_ranking)
@@ -5248,7 +5248,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M0_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 9", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M0_k9_ranking)
@@ -5269,7 +5269,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k1)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 1", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k1_ranking)
@@ -5282,7 +5282,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 2", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k2_ranking)
@@ -5295,7 +5295,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k3)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 3", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k3_ranking)
@@ -5308,7 +5308,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 4", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k4_ranking)
@@ -5321,7 +5321,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 5", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k5_ranking)
@@ -5334,7 +5334,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 6", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k6_ranking)
@@ -5347,7 +5347,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 7", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k7_ranking)
@@ -5360,7 +5360,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 8", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k8_ranking)
@@ -5374,7 +5374,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M1_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 9", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M1_k9_ranking)
@@ -5395,7 +5395,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k1)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 1", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 1", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k1_ranking)
@@ -5408,7 +5408,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 2", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 2", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k2_ranking)
@@ -5421,7 +5421,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k3)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 3", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 3", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k3_ranking)
@@ -5434,7 +5434,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k4)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 4", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 4", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k4_ranking)
@@ -5447,7 +5447,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k5)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 5", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 5", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k5_ranking)
@@ -5460,7 +5460,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k6)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 6", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 6", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k6_ranking)
@@ -5473,7 +5473,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k7)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 7", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 7", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k7_ranking)
@@ -5486,7 +5486,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k8)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 8", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 8", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k8_ranking)
@@ -5500,7 +5500,7 @@ server <- function(input, output, session) {
         ggplot(aes(x = District , y = M2_k9)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 9", x = "Districts", title = "60 District Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 9", x = "Districts", title = "60 District Comparison") +
         theme_minimal()
       
       ggplotly(M2_k9_ranking)
@@ -5523,9 +5523,9 @@ server <- function(input, output, session) {
       M0_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k1)) %>% 
         ggplot(aes(x = Province, y = M0_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 1", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k1_prov_ranking)
@@ -5536,9 +5536,9 @@ server <- function(input, output, session) {
       M0_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k2)) %>% 
         ggplot(aes(x = Province, y = M0_k2)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 2", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k2_prov_ranking)
@@ -5549,9 +5549,9 @@ server <- function(input, output, session) {
       M0_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k3)) %>% 
         ggplot(aes(x = Province, y = M0_k3)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 3", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k3_prov_ranking)
@@ -5562,9 +5562,9 @@ server <- function(input, output, session) {
       M0_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k4)) %>% 
         ggplot(aes(x = Province, y = M0_k4)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 4", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k4_prov_ranking)
@@ -5575,9 +5575,9 @@ server <- function(input, output, session) {
       M0_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k5)) %>% 
         ggplot(aes(x = Province, y = M0_k5)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 5", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k5_prov_ranking)
@@ -5588,9 +5588,9 @@ server <- function(input, output, session) {
       M0_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k6)) %>% 
         ggplot(aes(x = Province, y = M0_k6)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 6", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k6_prov_ranking)
@@ -5601,9 +5601,9 @@ server <- function(input, output, session) {
       M0_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k7)) %>% 
         ggplot(aes(x = Province, y = M0_k7)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 7", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k7_prov_ranking)
@@ -5614,9 +5614,9 @@ server <- function(input, output, session) {
       M0_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k8)) %>% 
         ggplot(aes(x = Province, y = M0_k8)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 8", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k8_prov_ranking)
@@ -5627,9 +5627,9 @@ server <- function(input, output, session) {
       M0_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k9)) %>% 
         ggplot(aes(x = Province, y = M0_k9)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M0 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>0</sub> at Threshold k = 9", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M0_k9_prov_ranking)
@@ -5648,9 +5648,9 @@ server <- function(input, output, session) {
       M1_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k1)) %>% 
         ggplot(aes(x = Province, y = M1_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 1", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k1_prov_ranking)
@@ -5661,9 +5661,9 @@ server <- function(input, output, session) {
       M1_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k2)) %>% 
         ggplot(aes(x = Province, y = M1_k2)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 2", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k2_prov_ranking)
@@ -5674,9 +5674,9 @@ server <- function(input, output, session) {
       M1_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k3)) %>% 
         ggplot(aes(x = Province, y = M1_k3)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 3", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k3_prov_ranking)
@@ -5687,9 +5687,9 @@ server <- function(input, output, session) {
       M1_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k4)) %>% 
         ggplot(aes(x = Province, y = M1_k4)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 4", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k4_prov_ranking)
@@ -5700,9 +5700,9 @@ server <- function(input, output, session) {
       M1_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k5)) %>% 
         ggplot(aes(x = Province, y = M1_k5)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 5", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k5_prov_ranking)
@@ -5713,9 +5713,9 @@ server <- function(input, output, session) {
       M1_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k6)) %>% 
         ggplot(aes(x = Province, y = M1_k6)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 6", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k6_prov_ranking)
@@ -5726,9 +5726,9 @@ server <- function(input, output, session) {
       M1_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k7)) %>% 
         ggplot(aes(x = Province, y = M1_k7)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 7", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k7_prov_ranking)
@@ -5739,9 +5739,9 @@ server <- function(input, output, session) {
       M1_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k8)) %>% 
         ggplot(aes(x = Province, y = M1_k8)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 8", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k8_prov_ranking)
@@ -5752,9 +5752,9 @@ server <- function(input, output, session) {
       M1_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k9)) %>% 
         ggplot(aes(x = Province, y = M1_k9)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M1 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>1</sub> at Threshold k = 9", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M1_k9_prov_ranking)
@@ -5773,9 +5773,9 @@ server <- function(input, output, session) {
       M2_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k1)) %>% 
         ggplot(aes(x = Province, y = M2_k1)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 1", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 1", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k1_prov_ranking)
@@ -5786,9 +5786,9 @@ server <- function(input, output, session) {
       M2_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k2)) %>% 
         ggplot(aes(x = Province, y = M2_k2)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 2", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 2", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k2_prov_ranking)
@@ -5799,9 +5799,9 @@ server <- function(input, output, session) {
       M2_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k3)) %>% 
         ggplot(aes(x = Province, y = M2_k3)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 3", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 3", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k3_prov_ranking)
@@ -5812,9 +5812,9 @@ server <- function(input, output, session) {
       M2_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k4)) %>% 
         ggplot(aes(x = Province, y = M2_k4)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 4", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 4", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k4_prov_ranking)
@@ -5825,9 +5825,9 @@ server <- function(input, output, session) {
       M2_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k5)) %>% 
         ggplot(aes(x = Province, y = M2_k5)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 5", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 5", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k5_prov_ranking)
@@ -5838,9 +5838,9 @@ server <- function(input, output, session) {
       M2_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k6)) %>% 
         ggplot(aes(x = Province, y = M2_k6)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 6", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 6", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k6_prov_ranking)
@@ -5851,9 +5851,9 @@ server <- function(input, output, session) {
       M2_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k7)) %>% 
         ggplot(aes(x = Province, y = M2_k7)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 7", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 7", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k7_prov_ranking)
@@ -5864,9 +5864,9 @@ server <- function(input, output, session) {
       M2_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k8)) %>% 
         ggplot(aes(x = Province, y = M2_k8)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 8", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 8", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k8_prov_ranking)
@@ -5877,9 +5877,9 @@ server <- function(input, output, session) {
       M2_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k9)) %>% 
         ggplot(aes(x = Province, y = M2_k9)) +
-        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4, ) +
+        geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4 ) +
         coord_flip() +
-        labs(y = "M2 at Threshold K = 9", x = "Province", title = "Province Comparison") +
+        labs(y = "M<sub>2</sub> at Threshold k = 9", x = "Province", title = "Province Comparison") +
         theme_minimal()
       
       ggplotly(M2_k9_prov_ranking)
