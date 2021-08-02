@@ -390,14 +390,23 @@ get_polygon <- function(map, data, palette, palette_data, labels, group_name) {
                       group = group_name))
 }
 
-get_label <- function(name_data, metric_name, metric, national_metric) {
+get_label <- function(name_data, metric_name, metric, national_metric, percent = FALSE) {
   metric <- metric %>% round(digits = 3)
-  national_metric <- national_metric%>% round(digits = 3)
+  national_metric <- national_metric %>% round(digits = 3)
   label <- sprintf(
     paste0("<strong>%s</strong><br/>
-    <strong>" , metric_name , ":</strong> %g<br/>
-    <strong>National " , metric_name , ":</strong> %g"),
-    name_data, round(metric,digits = 3), round(national_metric,digits = 3)) %>% lapply(htmltools::HTML)
+    <strong>" , metric_name , ":</strong> %g <br/>
+    <strong>National " , metric_name , ":</strong> %g "),
+    name_data, round(metric,digits = 3), round(national_metric, digits = 3)) %>% lapply(htmltools::HTML)
+  if (percent) {
+    label <- sprintf(
+      paste0("<strong>%s</strong><br/>
+    <strong>" , metric_name , ":</strong> %g %% <br/>
+    <strong>National " , metric_name , ":</strong> %g %% "),
+      name_data, round(metric,digits = 3), round(national_metric,digits = 3)) %>% lapply(htmltools::HTML)
+  }
+    
+  
   return(label)
 }
 
@@ -2595,27 +2604,60 @@ server <- function(input, output, session) {
     n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
     n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
    
+    if (c_g_selection == 1) {
+      edu_max      = edu_max * 100
+      edu_dropout  = edu_dropout * 100
+      hea_chronic  = hea_chronic * 100
+      hea_visit    = hea_visit * 100
+      employment   = employment * 100
+      assets       = assets * 100
+      services     = services * 100
+      electricity  = electricity * 100
+      cooking_fuel = cooking_fuel * 100
+      water        = water * 100
+      toilet       = toilet * 100
+      land         = land * 100
+      livestock    = livestock * 100
+      rural_equip  = rural_equip * 100
+      
+      n_edu_max      = n_edu_max * 100
+      n_edu_dropout  = n_edu_dropout * 100
+      n_hea_chronic  = n_hea_chronic * 100
+      n_hea_visit    = n_hea_visit * 100
+      n_employment   = n_employment * 100
+      n_assets       = n_assets * 100
+      n_services     = n_services * 100
+      n_electricity  = n_electricity * 100
+      n_cooking_fuel = n_cooking_fuel * 100
+      n_water        = n_water * 100
+      n_toilet       = n_toilet * 100
+      n_land         = n_land * 100
+      n_livestock    = n_livestock * 100
+      n_rural_equip  = n_rural_equip * 100
+    }
     
-    edu_max_labels <- get_label(map@data$ADM2_EN, "Max. Education", edu_max, n_edu_max)
-    edu_dropout_labels <- get_label(map@data$ADM2_EN, "Education Dropout", edu_dropout, n_edu_dropout)
-    hea_chronic_labels <- get_label(map@data$ADM2_EN, "Chronic Illness", hea_chronic, n_hea_chronic)
-    hea_visit_labels <- get_label(map@data$ADM2_EN, "Lack of Health Visit", hea_visit, n_hea_visit)
-    employment_labels <- get_label(map@data$ADM2_EN, "Unemployment", employment, n_employment)
-    assets_labels <- get_label(map@data$ADM2_EN, "Household Assets", assets, n_assets)
-    services_labels <- get_label(map@data$ADM2_EN, "Access to Services", services, n_services)
-    electricity_labels <- get_label(map@data$ADM2_EN, "Lack of Electricity", electricity, n_electricity)
-    cooking_fuel_labels <- get_label(map@data$ADM2_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
-    water_labels <- get_label(map@data$ADM2_EN, "Poor Water Source", water, n_water)
-    toilet_labels <- get_label(map@data$ADM2_EN, "Lack of Toilet", toilet, n_toilet)
-    land_labels <- get_label(map@data$ADM2_EN, "Lack of Land", land, n_land)
-    livestock_labels <- get_label(map@data$ADM2_EN, "Lack of Livestock", livestock, n_livestock)
-    rural_equip_labels <- get_label(map@data$ADM2_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip)
+    if (c_g_selection == 1) {percent= TRUE} else {percent = FALSE}
+    
+    edu_max_labels <- get_label(map@data$ADM2_EN, "Max. Education", edu_max, n_edu_max, percent = percent)
+    edu_dropout_labels <- get_label(map@data$ADM2_EN, "Education Dropout", edu_dropout, n_edu_dropout, percent = percent)
+    hea_chronic_labels <- get_label(map@data$ADM2_EN, "Chronic Illness", hea_chronic, n_hea_chronic, percent = percent)
+    hea_visit_labels <- get_label(map@data$ADM2_EN, "Lack of Health Visit", hea_visit, n_hea_visit, percent = percent)
+    employment_labels <- get_label(map@data$ADM2_EN, "Unemployment", employment, n_employment, percent = percent)
+    assets_labels <- get_label(map@data$ADM2_EN, "Household Assets", assets, n_assets, percent = percent)
+    services_labels <- get_label(map@data$ADM2_EN, "Access to Services", services, n_services, percent = percent)
+    electricity_labels <- get_label(map@data$ADM2_EN, "Lack of Electricity", electricity, n_electricity, percent = percent)
+    cooking_fuel_labels <- get_label(map@data$ADM2_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel, percent = percent)
+    water_labels <- get_label(map@data$ADM2_EN, "Poor Water Source", water, n_water, percent = percent)
+    toilet_labels <- get_label(map@data$ADM2_EN, "Lack of Toilet", toilet, n_toilet, percent = percent)
+    land_labels <- get_label(map@data$ADM2_EN, "Lack of Land", land, n_land, percent = percent)
+    livestock_labels <- get_label(map@data$ADM2_EN, "Lack of Livestock", livestock, n_livestock, percent = percent)
+    rural_equip_labels <- get_label(map@data$ADM2_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip, percent = percent)
 
     
     pal <- colorNumeric(
       palette = "viridis",
       domain = switch(c_g_selection,
-                      c(0, .6),
+                      c(0, 60),
                       c(0, 1)),
       reverse = TRUE)
     
@@ -2665,7 +2707,9 @@ server <- function(input, output, session) {
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
         options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("k = ", input$slider_91_Decomp),
+      addLegend(pal = pal, values = switch(c_g_selection,
+                                           c(0, 60),
+                                           c(0, 1)), opacity = 0.7, title = paste0("k = ", input$slider_91_Decomp),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
                 position = "bottomleft") %>%
@@ -3397,28 +3441,76 @@ server <- function(input, output, session) {
     n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
     n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
     
-   
+    if (c_g_selection == 1) {
+      edu_max      = edu_max * 100
+      edu_dropout  = edu_dropout * 100
+      hea_chronic  = hea_chronic * 100
+      hea_visit    = hea_visit * 100
+      employment   = employment * 100
+      assets       = assets * 100
+      services     = services * 100
+      electricity  = electricity * 100
+      cooking_fuel = cooking_fuel * 100
+      water        = water * 100
+      toilet       = toilet * 100
+      land         = land * 100
+      livestock    = livestock * 100
+      rural_equip  = rural_equip * 100
+      
+      n_edu_max      = n_edu_max * 100
+      n_edu_dropout  = n_edu_dropout * 100
+      n_hea_chronic  = n_hea_chronic * 100
+      n_hea_visit    = n_hea_visit * 100
+      n_employment   = n_employment * 100
+      n_assets       = n_assets * 100
+      n_services     = n_services * 100
+      n_electricity  = n_electricity * 100
+      n_cooking_fuel = n_cooking_fuel * 100
+      n_water        = n_water * 100
+      n_toilet       = n_toilet * 100
+      n_land         = n_land * 100
+      n_livestock    = n_livestock * 100
+      n_rural_equip  = n_rural_equip * 100
+      
+      
+    }
     
-    edu_max_labels <- get_label(map@data$NAME_2, "Max. Education", edu_max, n_edu_max)
-    edu_dropout_labels <- get_label(map@data$NAME_2, "Education Dropout", edu_dropout, n_edu_dropout)
-    hea_chronic_labels <- get_label(map@data$NAME_2, "Chronic Illness", hea_chronic, n_hea_chronic)
-    hea_visit_labels <- get_label(map@data$NAME_2, "Lack of Health Visit", hea_visit, n_hea_visit)
-    employment_labels <- get_label(map@data$NAME_2, "Unemployment", employment, n_employment)
-    assets_labels <- get_label(map@data$NAME_2, "Household Assets", assets, n_assets)
-    services_labels <- get_label(map@data$NAME_2, "Access to Services", services, n_services)
-    electricity_labels <- get_label(map@data$NAME_2, "Lack of Electricity", electricity, n_electricity)
-    cooking_fuel_labels <- get_label(map@data$NAME_2, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
-    water_labels <- get_label(map@data$NAME_2, "Poor Water Source", water, n_water)
-    toilet_labels <- get_label(map@data$NAME_2, "Lack of Toilet", toilet, n_toilet)
-    land_labels <- get_label(map@data$NAME_2, "Lack of Land", land, n_land)
-    livestock_labels <- get_label(map@data$NAME_2, "Lack of Livestock", livestock, n_livestock)
-    rural_equip_labels <- get_label(map@data$NAME_2, "Lack of Rural Equipment", rural_equip, n_rural_equip)
-
+    if (c_g_selection == 1) {percent= TRUE} else {percent = FALSE}
+    
+    edu_max_labels <- get_label(map@data$NAME_2, "Max. Education", edu_max, n_edu_max, percent = percent)
+    edu_dropout_labels <- get_label(map@data$NAME_2, "Education Dropout", edu_dropout, n_edu_dropout, percent = percent)
+    hea_chronic_labels <- get_label(map@data$NAME_2, "Chronic Illness", hea_chronic, n_hea_chronic, percent = percent)
+    hea_visit_labels <- get_label(map@data$NAME_2, "Lack of Health Visit", hea_visit, n_hea_visit, percent = percent)
+    employment_labels <- get_label(map@data$NAME_2, "Unemployment", employment, n_employment, percent = percent)
+    assets_labels <- get_label(map@data$NAME_2, "Household Assets", assets, n_assets, percent = percent)
+    services_labels <- get_label(map@data$NAME_2, "Access to Services", services, n_services, percent = percent)
+    electricity_labels <- get_label(map@data$NAME_2, "Lack of Electricity", electricity, n_electricity, percent = percent)
+    cooking_fuel_labels <- get_label(map@data$NAME_2, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel, percent = percent)
+    water_labels <- get_label(map@data$NAME_2, "Poor Water Source", water, n_water, percent = percent)
+    toilet_labels <- get_label(map@data$NAME_2, "Lack of Toilet", toilet, n_toilet, percent = percent)
+    land_labels <- get_label(map@data$NAME_2, "Lack of Land", land, n_land, percent = percent)
+    livestock_labels <- get_label(map@data$NAME_2, "Lack of Livestock", livestock, n_livestock, percent = percent)
+    rural_equip_labels <- get_label(map@data$NAME_2, "Lack of Rural Equipment", rural_equip, n_rural_equip, percent = percent)
+    
+    print(n_edu_max    )
+    print(n_edu_dropout)
+    print(n_hea_chronic)
+    print(n_hea_visit  )
+    print(n_employment )
+    print(n_assets     )
+    print(n_services   )
+    print(n_electricity)
+    print(n_cooking_fuel)
+    print(n_water      )
+    print(n_toilet     )
+    print(n_land       )
+    print(n_livestock  )
+    print(n_rural_equip)
     
     pal <- colorNumeric(
       palette = "viridis",
       domain = switch(c_g_selection,
-                      c(0, .6),
+                      c(0, 60),
                       c(0, 1)),
       reverse = TRUE)
     
@@ -3466,7 +3558,9 @@ server <- function(input, output, session) {
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
         options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("k = ", input$slider_60_Decomp),
+      addLegend(pal = pal, values = switch(c_g_selection,
+                                           c(0, 60),
+                                           c(0, 1)), opacity = 0.7, title = paste0("k = ", input$slider_60_Decomp),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
                 position = "bottomleft") %>%
@@ -4182,6 +4276,9 @@ server <- function(input, output, session) {
     livestock = switch(c_g_selection, c_livestock, g_livestock)
     rural_equip = switch(c_g_selection, c_rural_equip, g_rural_equip)
     
+    
+    
+    
     n_edu_max = switch(c_g_selection, n_c_edu_max, n_g_edu_max)
     n_edu_dropout = switch(c_g_selection, n_c_edu_dropout, n_g_edu_dropout)
     n_hea_chronic = switch(c_g_selection, n_c_hea_chronic, n_g_hea_chronic)
@@ -4197,26 +4294,62 @@ server <- function(input, output, session) {
     n_livestock = switch(c_g_selection, n_c_livestock, n_g_livestock)
     n_rural_equip = switch(c_g_selection, n_c_rural_equip, n_g_rural_equip)
     
-    edu_max_labels <- get_label(map@data$ADM1_EN, "Max. Education", edu_max, n_edu_max)
-    edu_dropout_labels <- get_label(map@data$ADM1_EN, "Education Dropout", edu_dropout, n_edu_dropout)
-    hea_chronic_labels <- get_label(map@data$ADM1_EN, "Chronic Illness", hea_chronic, n_hea_chronic)
-    hea_visit_labels <- get_label(map@data$ADM1_EN, "Lack of Health Visit", hea_visit, n_hea_visit)
-    employment_labels <- get_label(map@data$ADM1_EN, "Unemployment", employment, n_employment)
-    assets_labels <- get_label(map@data$ADM1_EN, "Household Assets", assets, n_assets)
-    services_labels <- get_label(map@data$ADM1_EN, "Access to Services", services, n_services)
-    electricity_labels <- get_label(map@data$ADM1_EN, "Lack of Electricity", electricity, n_electricity)
-    cooking_fuel_labels <- get_label(map@data$ADM1_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel)
-    water_labels <- get_label(map@data$ADM1_EN, "Poor Water Source", water, n_water)
-    toilet_labels <- get_label(map@data$ADM1_EN, "Lack of Toilet", toilet, n_toilet)
-    land_labels <- get_label(map@data$ADM1_EN, "Lack of Land", land, n_land)
-    livestock_labels <- get_label(map@data$ADM1_EN, "Lack of Livestock", livestock, n_livestock)
-    rural_equip_labels <- get_label(map@data$ADM1_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip)
+    if (c_g_selection == 1) {
+      edu_max      = edu_max * 100
+      edu_dropout  = edu_dropout * 100
+      hea_chronic  = hea_chronic * 100
+      hea_visit    = hea_visit * 100
+      employment   = employment * 100
+      assets       = assets * 100
+      services     = services * 100
+      electricity  = electricity * 100
+      cooking_fuel = cooking_fuel * 100
+      water        = water * 100
+      toilet       = toilet * 100
+      land         = land * 100
+      livestock    = livestock * 100
+      rural_equip  = rural_equip * 100
+      
+      n_edu_max      = n_edu_max * 100
+      n_edu_dropout  = n_edu_dropout * 100
+      n_hea_chronic  = n_hea_chronic * 100
+      n_hea_visit    = n_hea_visit * 100
+      n_employment   = n_employment * 100
+      n_assets       = n_assets * 100
+      n_services     = n_services * 100
+      n_electricity  = n_electricity * 100
+      n_cooking_fuel = n_cooking_fuel * 100
+      n_water        = n_water * 100
+      n_toilet       = n_toilet * 100
+      n_land         = n_land * 100
+      n_livestock    = n_livestock * 100
+      n_rural_equip  = n_rural_equip * 100
+      
+      
+    }
+    
+    if (c_g_selection == 1) {percent= TRUE} else {percent = FALSE}
+    
+    edu_max_labels <- get_label(map@data$ADM1_EN, "Max. Education", edu_max, n_edu_max, percent = percent)
+    edu_dropout_labels <- get_label(map@data$ADM1_EN, "Education Dropout", edu_dropout, n_edu_dropout, percent = percent)
+    hea_chronic_labels <- get_label(map@data$ADM1_EN, "Chronic Illness", hea_chronic, n_hea_chronic, percent = percent)
+    hea_visit_labels <- get_label(map@data$ADM1_EN, "Lack of Health Visit", hea_visit, n_hea_visit, percent = percent)
+    employment_labels <- get_label(map@data$ADM1_EN, "Unemployment", employment, n_employment, percent = percent)
+    assets_labels <- get_label(map@data$ADM1_EN, "Household Assets", assets, n_assets, percent = percent)
+    services_labels <- get_label(map@data$ADM1_EN, "Access to Services", services, n_services, percent = percent)
+    electricity_labels <- get_label(map@data$ADM1_EN, "Lack of Electricity", electricity, n_electricity, percent = percent)
+    cooking_fuel_labels <- get_label(map@data$ADM1_EN, "Poor Cooking Fuel", cooking_fuel, n_cooking_fuel, percent = percent)
+    water_labels <- get_label(map@data$ADM1_EN, "Poor Water Source", water, n_water, percent = percent)
+    toilet_labels <- get_label(map@data$ADM1_EN, "Lack of Toilet", toilet, n_toilet, percent = percent)
+    land_labels <- get_label(map@data$ADM1_EN, "Lack of Land", land, n_land, percent = percent)
+    livestock_labels <- get_label(map@data$ADM1_EN, "Lack of Livestock", livestock, n_livestock, percent = percent)
+    rural_equip_labels <- get_label(map@data$ADM1_EN, "Lack of Rural Equipment", rural_equip, n_rural_equip, percent = percent)
     
     
     pal <- colorNumeric(
       palette = "viridis",
       domain = switch(c_g_selection,
-                      c(0, .6),
+                      c(0, 60),
                       c(0, 1)),
       reverse = TRUE)
     
@@ -4264,7 +4397,9 @@ server <- function(input, output, session) {
                        "Lack of Livestock",
                        "Lack of Rural Equipment"),
         options = layersControlOptions(collapsed = FALSE)) %>%
-      addLegend(pal = pal, values = c(0, 0.6), opacity = 0.7, title = paste0("k = ", input$slider_Prov_Decomp),
+      addLegend(pal = pal, values = switch(c_g_selection,
+                                          c(0, 60),
+                                          c(0, 1)), opacity = 0.7, title = paste0("k = ", input$slider_Prov_Decomp),
                 na.label = "No Data",
                 group = c("Poverty Index", "Max. Education"),
                 position = "bottomleft") %>%
@@ -4747,7 +4882,9 @@ server <- function(input, output, session) {
   
   
   output$M0_dis_91_ranking <- renderPlotly({
+    
     if (M0_dist_91_rank () == "1") {
+      ranked_dis_data$M0_k1 = round(ranked_dis_data$M0_k1, digits = 3)
       M0_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k1)) %>% 
         ggplot(aes(x = District , y = M0_k1)) +
@@ -4761,9 +4898,10 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "2") {
+      ranked_dis_data$M0_k2 = round(ranked_dis_data$M0_k2, digits = 3)
       M0_k2_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k2)) %>% 
-        ggplot(aes(x = District , y = M0_k2%>% round(digits = 3))) +
+        ggplot(aes(x = District , y = M0_k2)) +
         geom_bar(stat = "identity", fill = "#f68061", alpha = .6, width = .4) +
         coord_flip() +
         labs(y = "M<sub>0</sub> at Threshold k = 2", x = "Districts", title = "91 District Comparison") +
@@ -4774,6 +4912,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "3") {
+      ranked_dis_data$M0_k3 = round(ranked_dis_data$M0_k3, digits = 3)
       M0_k3_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k3)) %>% 
         ggplot(aes(x = District , y = M0_k3 )) +
@@ -4787,6 +4926,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "4") {
+      ranked_dis_data$M0_k4 = round(ranked_dis_data$M0_k4, digits = 3)
       M0_k4_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k4)) %>% 
         ggplot(aes(x = District , y = M0_k4)) +
@@ -4800,6 +4940,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "5") {
+      ranked_dis_data$M0_k5 = round(ranked_dis_data$M0_k5, digits = 3)
       M0_k5_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k5)) %>% 
         ggplot(aes(x = District , y = M0_k5)) +
@@ -4813,6 +4954,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "6") {
+      ranked_dis_data$M0_k6 = round(ranked_dis_data$M0_k6, digits = 3)
       M0_k6_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k6)) %>% 
         ggplot(aes(x = District , y = M0_k6)) +
@@ -4826,6 +4968,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "7") {
+      ranked_dis_data$M0_k7 = round(ranked_dis_data$M0_k7, digits = 3)
       M0_k7_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k7)) %>% 
         ggplot(aes(x = District , y = M0_k7)) +
@@ -4839,6 +4982,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "8") {
+      ranked_dis_data$M0_k8 = round(ranked_dis_data$M0_k8, digits = 3)
       M0_k8_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k8)) %>% 
         ggplot(aes(x = District , y = M0_k8)) +
@@ -4852,7 +4996,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_91_rank () == "9") {
-      
+      ranked_dis_data$M0_k9 = round(ranked_dis_data$M0_k9, digits = 3)
       M0_k9_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M0_k9)) %>% 
         ggplot(aes(x = District , y = M0_k9)) +
@@ -4876,6 +5020,7 @@ server <- function(input, output, session) {
   
   output$M1_dis_91_ranking <- renderPlotly({
     if (M1_dist_91_rank () == "1") {
+      ranked_dis_data$M1_k1 = round(ranked_dis_data$M1_k1, digits = 3)
       M1_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k1)) %>% 
         ggplot(aes(x = District , y = M1_k1)) +
@@ -4889,6 +5034,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "2") {
+      ranked_dis_data$M1_k2 = round(ranked_dis_data$M1_k2, digits = 3)
       M1_k2_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k2)) %>% 
         ggplot(aes(x = District , y = M1_k2)) +
@@ -4902,6 +5048,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "3") {
+      ranked_dis_data$M1_k3 = round(ranked_dis_data$M1_k3, digits = 3)
       M1_k3_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k3)) %>% 
         ggplot(aes(x = District , y = M1_k3)) +
@@ -4915,6 +5062,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "4") {
+      ranked_dis_data$M1_k4 = round(ranked_dis_data$M1_k4, digits = 3)
       M1_k4_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k4)) %>% 
         ggplot(aes(x = District , y = M1_k4)) +
@@ -4928,6 +5076,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "5") {
+      ranked_dis_data$M1_k5 = round(ranked_dis_data$M1_k5, digits = 3)
       M1_k5_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k5)) %>% 
         ggplot(aes(x = District , y = M1_k5)) +
@@ -4941,6 +5090,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "6") {
+      ranked_dis_data$M1_k6 = round(ranked_dis_data$M1_k6, digits = 3)
       M1_k6_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k6)) %>% 
         ggplot(aes(x = District , y = M1_k6)) +
@@ -4954,6 +5104,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "7") {
+      ranked_dis_data$M1_k7 = round(ranked_dis_data$M1_k7, digits = 3)
       M1_k7_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k7)) %>% 
         ggplot(aes(x = District , y = M1_k7)) +
@@ -4967,6 +5118,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "8") {
+      ranked_dis_data$M1_k8 = round(ranked_dis_data$M1_k8, digits = 3)
       M1_k8_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k8)) %>% 
         ggplot(aes(x = District , y = M1_k8)) +
@@ -4980,7 +5132,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_91_rank () == "9") {
-      
+      ranked_dis_data$M1_k9 = round(ranked_dis_data$M1_k9, digits = 3)
       M1_k9_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M1_k9)) %>% 
         ggplot(aes(x = District , y = M1_k9)) +
@@ -5004,6 +5156,7 @@ server <- function(input, output, session) {
   
   output$M2_dis_91_ranking <- renderPlotly({
     if (M2_dist_91_rank () == "1") {
+      ranked_dis_data$M2_k1 = round(ranked_dis_data$M2_k1, digits = 3)
       M2_k1_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k1)) %>% 
         ggplot(aes(x = District , y = M2_k1)) +
@@ -5017,6 +5170,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "2") {
+      ranked_dis_data$M2_k2 = round(ranked_dis_data$M2_k2, digits = 3)
       M2_k2_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k2)) %>% 
         ggplot(aes(x = District , y = M2_k2)) +
@@ -5030,6 +5184,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "3") {
+      ranked_dis_data$M2_k3 = round(ranked_dis_data$M2_k3, digits = 3)
       M2_k3_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k3)) %>% 
         ggplot(aes(x = District , y = M2_k3)) +
@@ -5043,6 +5198,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "4") {
+      ranked_dis_data$M2_k4 = round(ranked_dis_data$M2_k4, digits = 3)
       M2_k4_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k4)) %>% 
         ggplot(aes(x = District , y = M2_k4)) +
@@ -5056,6 +5212,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "5") {
+      ranked_dis_data$M2_k5 = round(ranked_dis_data$M2_k5, digits = 3)
       M2_k5_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k5)) %>% 
         ggplot(aes(x = District , y = M2_k5)) +
@@ -5069,6 +5226,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "6") {
+      ranked_dis_data$M2_k6 = round(ranked_dis_data$M2_k6, digits = 3)
       M2_k6_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k6)) %>% 
         ggplot(aes(x = District , y = M2_k6)) +
@@ -5082,6 +5240,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "7") {
+      ranked_dis_data$M2_k7 = round(ranked_dis_data$M2_k7, digits = 3)
       M2_k7_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k7)) %>% 
         ggplot(aes(x = District , y = M2_k7)) +
@@ -5095,6 +5254,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "8") {
+      ranked_dis_data$M2_k8 = round(ranked_dis_data$M2_k8, digits = 3)
       M2_k8_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k8)) %>% 
         ggplot(aes(x = District , y = M2_k8)) +
@@ -5108,7 +5268,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_91_rank () == "9") {
-      
+      ranked_dis_data$M2_k9 = round(ranked_dis_data$M2_k9, digits = 3)
       M2_k9_ranking <- ranked_dis_data %>% 
         mutate(District = fct_reorder(District_name, M2_k9)) %>% 
         ggplot(aes(x = District , y = M2_k9)) +
@@ -5138,6 +5298,7 @@ server <- function(input, output, session) {
   
   output$M0_ranking <- renderPlotly({
     if (M0_dist_rank() == "1") {
+      ranked_data$M0_k1 = round(ranked_data$M0_k1, digits = 3)
       M0_k1_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k1)) %>% 
         ggplot(aes(x = District , y = M0_k1)) +
@@ -5151,6 +5312,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "2") {
+      ranked_data$M0_k2 = round(ranked_data$M0_k2, digits = 3)
       M0_k2_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k2)) %>% 
         ggplot(aes(x = District , y = M0_k2)) +
@@ -5164,6 +5326,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "3") {
+      ranked_data$M0_k3 = round(ranked_data$M0_k3, digits = 3)
       M0_k3_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k3)) %>% 
         ggplot(aes(x = District , y = M0_k3)) +
@@ -5177,6 +5340,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "4") {
+      ranked_data$M0_k4 = round(ranked_data$M0_k4, digits = 3)
       M0_k4_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k4)) %>% 
         ggplot(aes(x = District , y = M0_k4)) +
@@ -5190,6 +5354,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "5") {
+      ranked_data$M0_k5 = round(ranked_data$M0_k5, digits = 3)
       M0_k5_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k5)) %>% 
         ggplot(aes(x = District , y = M0_k5)) +
@@ -5203,6 +5368,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "6") {
+      ranked_data$M0_k6 = round(ranked_data$M0_k6, digits = 3)
       M0_k6_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k6)) %>% 
         ggplot(aes(x = District , y = M0_k6)) +
@@ -5216,6 +5382,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "7") {
+      ranked_data$M0_k7 = round(ranked_data$M0_k7, digits = 3)
       M0_k7_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k7)) %>% 
         ggplot(aes(x = District , y = M0_k7)) +
@@ -5229,6 +5396,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "8") {
+      ranked_data$M0_k8 = round(ranked_data$M0_k8, digits = 3)
       M0_k8_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k8)) %>% 
         ggplot(aes(x = District , y = M0_k8)) +
@@ -5242,7 +5410,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_dist_rank() == "9") {
-      
+      ranked_data$M0_k9 = round(ranked_data$M0_k9, digits = 3)
       M0_k9_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M0_k9)) %>% 
         ggplot(aes(x = District , y = M0_k9)) +
@@ -5264,6 +5432,7 @@ server <- function(input, output, session) {
   
   output$M1_ranking <- renderPlotly({
     if (M1_dist_rank() == "1") {
+      ranked_data$M1_k1 = round(ranked_data$M1_k1, digits = 3)
       M1_k1_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k1)) %>% 
         ggplot(aes(x = District , y = M1_k1)) +
@@ -5277,6 +5446,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "2") {
+      ranked_data$M1_k2 = round(ranked_data$M1_k2, digits = 3)
       M1_k2_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k2)) %>% 
         ggplot(aes(x = District , y = M1_k2)) +
@@ -5290,6 +5460,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "3") {
+      ranked_data$M1_k3 = round(ranked_data$M1_k3, digits = 3)
       M1_k3_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k3)) %>% 
         ggplot(aes(x = District , y = M1_k3)) +
@@ -5303,6 +5474,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "4") {
+      ranked_data$M1_k4 = round(ranked_data$M1_k4, digits = 3)
       M1_k4_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k4)) %>% 
         ggplot(aes(x = District , y = M1_k4)) +
@@ -5316,6 +5488,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "5") {
+      ranked_data$M1_k5 = round(ranked_data$M1_k5, digits = 3)
       M1_k5_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k5)) %>% 
         ggplot(aes(x = District , y = M1_k5)) +
@@ -5329,6 +5502,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "6") {
+      ranked_data$M1_k6 = round(ranked_data$M1_k6, digits = 3)
       M1_k6_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k6)) %>% 
         ggplot(aes(x = District , y = M1_k6)) +
@@ -5342,6 +5516,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "7") {
+      ranked_data$M1_k7 = round(ranked_data$M1_k7, digits = 3)
       M1_k7_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k7)) %>% 
         ggplot(aes(x = District , y = M1_k7)) +
@@ -5355,6 +5530,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "8") {
+      ranked_data$M1_k8 = round(ranked_data$M1_k8, digits = 3)
       M1_k8_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k8)) %>% 
         ggplot(aes(x = District , y = M1_k8)) +
@@ -5368,7 +5544,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_dist_rank() == "9") {
-      
+      ranked_data$M1_k9 = round(ranked_data$M1_k9, digits = 3)
       M1_k9_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M1_k9)) %>% 
         ggplot(aes(x = District , y = M1_k9)) +
@@ -5389,6 +5565,7 @@ server <- function(input, output, session) {
   })
   
   output$M2_ranking <- renderPlotly({
+    ranked_data$M2_k1 = round(ranked_data$M2_k1, digits = 3)
     if (M2_dist_rank() == "1") {
       M2_k1_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k1)) %>% 
@@ -5403,6 +5580,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "2") {
+      ranked_data$M2_k2 = round(ranked_data$M2_k2, digits = 3)
       M2_k2_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k2)) %>% 
         ggplot(aes(x = District , y = M2_k2)) +
@@ -5416,6 +5594,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "3") {
+      ranked_data$M2_k3 = round(ranked_data$M2_k3, digits = 3)
       M2_k3_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k3)) %>% 
         ggplot(aes(x = District , y = M2_k3)) +
@@ -5429,6 +5608,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "4") {
+      ranked_data$M2_k4 = round(ranked_data$M2_k4, digits = 3)
       M2_k4_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k4)) %>% 
         ggplot(aes(x = District , y = M2_k4)) +
@@ -5442,6 +5622,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "5") {
+      ranked_data$M2_k5 = round(ranked_data$M2_k5, digits = 3)
       M2_k5_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k5)) %>% 
         ggplot(aes(x = District , y = M2_k5)) +
@@ -5455,6 +5636,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "6") {
+      ranked_data$M2_k6 = round(ranked_data$M2_k6, digits = 3)
       M2_k6_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k6)) %>% 
         ggplot(aes(x = District , y = M2_k6)) +
@@ -5468,6 +5650,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "7") {
+      ranked_data$M2_k7 = round(ranked_data$M2_k7, digits = 3)
       M2_k7_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k7)) %>% 
         ggplot(aes(x = District , y = M2_k7)) +
@@ -5481,6 +5664,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "8") {
+      ranked_data$M2_k8 = round(ranked_data$M2_k8, digits = 3)
       M2_k8_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k8)) %>% 
         ggplot(aes(x = District , y = M2_k8)) +
@@ -5494,7 +5678,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_dist_rank() == "9") {
-      
+      ranked_data$M2_k9 = round(ranked_data$M2_k9, digits = 3)
       M2_k9_ranking <- ranked_data %>% 
         mutate(District = fct_reorder(District_name, M2_k9)) %>% 
         ggplot(aes(x = District , y = M2_k9)) +
@@ -5519,6 +5703,7 @@ server <- function(input, output, session) {
   })
   
   output$M0_prov_ranking <- renderPlotly({
+    prov_ranked$M0_k1 = round(prov_ranked$M0_k1, digits = 3)
     if (M0_prov_k_threshold() == "1") {
       M0_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k1)) %>% 
@@ -5533,6 +5718,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "2") {
+      prov_ranked$M0_k2 = round(prov_ranked$M0_k2, digits = 3)
       M0_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k2)) %>% 
         ggplot(aes(x = Province, y = M0_k2)) +
@@ -5546,6 +5732,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "3") {
+      prov_ranked$M0_k3 = round(prov_ranked$M0_k3, digits = 3)
       M0_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k3)) %>% 
         ggplot(aes(x = Province, y = M0_k3)) +
@@ -5559,6 +5746,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "4") {
+      prov_ranked$M0_k4 = round(prov_ranked$M0_k4, digits = 3)
       M0_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k4)) %>% 
         ggplot(aes(x = Province, y = M0_k4)) +
@@ -5572,6 +5760,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "5") {
+      prov_ranked$M0_k5 = round(prov_ranked$M0_k5, digits = 3)
       M0_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k5)) %>% 
         ggplot(aes(x = Province, y = M0_k5)) +
@@ -5585,6 +5774,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "6") {
+      prov_ranked$M0_k6 = round(prov_ranked$M0_k6, digits = 3)
       M0_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k6)) %>% 
         ggplot(aes(x = Province, y = M0_k6)) +
@@ -5598,6 +5788,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "7") {
+      prov_ranked$M0_k7 = round(prov_ranked$M0_k7, digits = 3)
       M0_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k7)) %>% 
         ggplot(aes(x = Province, y = M0_k7)) +
@@ -5611,6 +5802,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "8") {
+      prov_ranked$M0_k8 = round(prov_ranked$M0_k8, digits = 3)
       M0_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k8)) %>% 
         ggplot(aes(x = Province, y = M0_k8)) +
@@ -5624,6 +5816,7 @@ server <- function(input, output, session) {
     }
     
     else if (M0_prov_k_threshold() == "9") {
+      prov_ranked$M0_k9 = round(prov_ranked$M0_k9, digits = 3)
       M0_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M0_k9)) %>% 
         ggplot(aes(x = Province, y = M0_k9)) +
@@ -5644,6 +5837,7 @@ server <- function(input, output, session) {
   })
   
   output$M1_prov_ranking <- renderPlotly({
+    prov_ranked$M1_k1 = round(prov_ranked$M1_k1, digits = 3)
     if (M1_prov_k_threshold() == "1") {
       M1_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k1)) %>% 
@@ -5658,6 +5852,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "2") {
+      prov_ranked$M1_k2 = round(prov_ranked$M1_k2, digits = 3)
       M1_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k2)) %>% 
         ggplot(aes(x = Province, y = M1_k2)) +
@@ -5671,6 +5866,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "3") {
+      prov_ranked$M1_k3 = round(prov_ranked$M1_k3, digits = 3)
       M1_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k3)) %>% 
         ggplot(aes(x = Province, y = M1_k3)) +
@@ -5684,6 +5880,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "4") {
+      prov_ranked$M1_k4 = round(prov_ranked$M1_k4, digits = 3)
       M1_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k4)) %>% 
         ggplot(aes(x = Province, y = M1_k4)) +
@@ -5697,6 +5894,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "5") {
+      prov_ranked$M1_k5 = round(prov_ranked$M1_k5, digits = 3)
       M1_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k5)) %>% 
         ggplot(aes(x = Province, y = M1_k5)) +
@@ -5710,6 +5908,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "6") {
+      prov_ranked$M1_k6 = round(prov_ranked$M1_k6, digits = 3)
       M1_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k6)) %>% 
         ggplot(aes(x = Province, y = M1_k6)) +
@@ -5723,6 +5922,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "7") {
+      prov_ranked$M1_k7 = round(prov_ranked$M1_k7, digits = 3)
       M1_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k7)) %>% 
         ggplot(aes(x = Province, y = M1_k7)) +
@@ -5736,6 +5936,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "8") {
+      prov_ranked$M1_k8 = round(prov_ranked$M1_k8, digits = 3)
       M1_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k8)) %>% 
         ggplot(aes(x = Province, y = M1_k8)) +
@@ -5749,6 +5950,7 @@ server <- function(input, output, session) {
     }
     
     else if (M1_prov_k_threshold() == "9") {
+      prov_ranked$M1_k9 = round(prov_ranked$M1_k9, digits = 3)
       M1_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M1_k9)) %>% 
         ggplot(aes(x = Province, y = M1_k9)) +
@@ -5769,6 +5971,7 @@ server <- function(input, output, session) {
   })
   
   output$M2_prov_ranking <- renderPlotly({
+    prov_ranked$M2_k1 = round(prov_ranked$M2_k1, digits = 3)
     if (M2_prov_k_threshold() == "1") {
       M2_k1_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k1)) %>% 
@@ -5783,6 +5986,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "2") {
+      prov_ranked$M2_k2 = round(prov_ranked$M2_k2, digits = 3)
       M2_k2_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k2)) %>% 
         ggplot(aes(x = Province, y = M2_k2)) +
@@ -5796,6 +6000,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "3") {
+      prov_ranked$M2_k3 = round(prov_ranked$M2_k3, digits = 3)
       M2_k3_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k3)) %>% 
         ggplot(aes(x = Province, y = M2_k3)) +
@@ -5809,6 +6014,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "4") {
+      prov_ranked$M2_k4 = round(prov_ranked$M2_k4, digits = 3)
       M2_k4_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k4)) %>% 
         ggplot(aes(x = Province, y = M2_k4)) +
@@ -5822,6 +6028,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "5") {
+      prov_ranked$M2_k5 = round(prov_ranked$M2_k5, digits = 3)
       M2_k5_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k5)) %>% 
         ggplot(aes(x = Province, y = M2_k5)) +
@@ -5835,6 +6042,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "6") {
+      prov_ranked$M2_k6 = round(prov_ranked$M2_k6, digits = 3)
       M2_k6_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k6)) %>% 
         ggplot(aes(x = Province, y = M2_k6)) +
@@ -5848,6 +6056,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "7") {
+      prov_ranked$M2_k7 = round(prov_ranked$M2_k7, digits = 3)
       M2_k7_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k7)) %>% 
         ggplot(aes(x = Province, y = M2_k7)) +
@@ -5861,6 +6070,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "8") {
+      prov_ranked$M2_k8 = round(prov_ranked$M2_k8, digits = 3)
       M2_k8_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k8)) %>% 
         ggplot(aes(x = Province, y = M2_k8)) +
@@ -5874,6 +6084,7 @@ server <- function(input, output, session) {
     }
     
     else if (M2_prov_k_threshold() == "9") {
+      prov_ranked$M2_k9 = round(prov_ranked$M2_k9, digits = 3)
       M2_k9_prov_ranking <- prov_ranked %>% 
         mutate(Province = fct_reorder(Province_name, M2_k9)) %>% 
         ggplot(aes(x = Province, y = M2_k9)) +
