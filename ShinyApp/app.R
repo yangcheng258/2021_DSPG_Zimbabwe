@@ -362,7 +362,7 @@ slider_caption = "Adjust the poverty line or cutoff threshold for an individual 
 urban_rural_caption = "Choose between displaying data from all households, only urban households or only rural households"
 level_caption = "Choose which poverty index to display the relevant data for"
 c_g_caption = "Choose whether to display the percentage contribution to the specified poverty index or the raw calculation
-of the gap for each component of the multidimensional poverty index.  Note: Users have to multiply by 100 to get the percentage contribution to MPI. E.g. 0.001*100 = 1%."
+of the gap for each component of the multidimensional poverty index.  "
 
 
 ## MAPPING FUNCTIONs------------------------------------------------------------
